@@ -8,67 +8,72 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0b0e14; color: #e1e1e1; margin: 0; padding: 20px; line-height: 1.6; }
         .container { max-width: 1200px; margin: auto; display: none; }
         
-        /* BANNERI */
-        .banner-container { position: relative; width: 100%; height: 220px; margin-bottom: 30px; border-radius: 15px; overflow: hidden; border: 2px solid #f39c12; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        /* KIRJAUTUMISRUUDUT */
+        .auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0e14; display: flex; justify-content: center; align-items: center; z-index: 2000; }
+        .auth-box { background: #1a1f29; padding: 40px; border-radius: 15px; border: 2px solid #f39c12; text-align: center; width: 90%; max-width: 400px; }
+        
+        .btn { border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; margin-bottom: 10px; width: 100%; display: block; }
+        .btn-google { background: #fff; color: #000; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-bet { background: #f39c12; color: #000; text-transform: uppercase; }
+        .btn-secondary { background: #2a303c; color: #fff; border: 1px solid #444; }
+
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #0b0e14; color: white; box-sizing: border-box; }
+
+        /* BANNERI & MUUT */
+        .banner-container { position: relative; width: 100%; height: 220px; margin-bottom: 30px; border-radius: 15px; overflow: hidden; border: 2px solid #f39c12; }
         .main-banner { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.9); }
-
-        /* LEADERBOARD (UUSI) */
-        .leaderboard-section { background: #1a1f29; padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #333; }
-        .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .leaderboard-table th { text-align: left; color: #888; font-size: 0.8rem; text-transform: uppercase; padding: 10px; }
-        .leaderboard-table td { padding: 12px 10px; border-bottom: 1px solid #2a303c; }
-        .rank-1 { color: #f39c12; font-weight: bold; }
-
-        /* TILASTOT */
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; }
         .stat-card { background: #1a1f29; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; }
         .stat-value { display: block; font-size: 1.8rem; font-weight: bold; color: #f39c12; }
+        
+        .leaderboard-section { background: #1a1f29; padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #333; }
+        .leaderboard-table { width: 100%; border-collapse: collapse; }
+        .leaderboard-table th { text-align: left; color: #888; font-size: 0.8rem; padding: 10px; }
+        .leaderboard-table td { padding: 12px 10px; border-bottom: 1px solid #2a303c; }
 
-        /* KIRJAUTUMINEN */
-        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0e14; display: flex; justify-content: center; align-items: center; z-index: 2000; }
-        .login-box { background: #1a1f29; padding: 40px; border-radius: 15px; border: 2px solid #f39c12; text-align: center; width: 90%; max-width: 400px; }
-        .login-box input { width: 100%; padding: 12px; margin: 20px 0; border-radius: 8px; border: 1px solid #333; background: #0b0e14; color: white; box-sizing: border-box; }
-
-        /* OTTELUT */
         .tournament-section { margin-bottom: 40px; }
-        .tournament-header { background: #1e2533; padding: 10px 20px; border-radius: 8px; margin-bottom: 15px; border-bottom: 2px solid #f39c12; color: #f39c12; font-weight: bold; text-transform: uppercase; }
+        .tournament-header { background: #1e2533; padding: 10px 20px; border-radius: 8px; margin-bottom: 15px; border-bottom: 2px solid #f39c12; color: #f39c12; font-weight: bold; }
         .match-card { background: #1a1f29; margin-bottom: 10px; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .teams { display: flex; align-items: center; gap: 15px; flex: 2; }
-        .team { display: flex; flex-direction: column; align-items: center; width: 110px; text-align: center; }
-        .team img { width: 45px; height: 45px; object-fit: contain; background: #131720; border-radius: 50%; padding: 5px; border: 1px solid #333; }
-        .odds-badge { background: #222; color: #f39c12; font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; font-weight: bold; margin-top: 5px; }
+        .team img { width: 45px; height: 45px; object-fit: contain; }
 
-        /* MODAALI */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: #1a1f29; padding: 30px; border-radius: 15px; border: 2px solid #f39c12; text-align: center; max-width: 450px; width: 90%; }
-        .modal-teams { display: flex; justify-content: space-around; margin: 25px 0; gap: 15px; }
-        .team-select-btn { background: #2a303c; color: white; border: 1px solid #444; padding: 20px; border-radius: 12px; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .team-select-btn { background: #2a303c; color: white; padding: 20px; border-radius: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; }
 
-        /* OMAT VEDOT */
         #my-bets-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
-        .bet-card { background: #2a303c; padding: 12px; border-radius: 10px; font-size: 0.8rem; border: 1px solid #444; display: flex; justify-content: space-between; align-items: center; }
-        .status-win { border-left: 5px solid #2ecc71; }
-        .status-loss { border-left: 5px solid #e74c3c; }
-
-        .btn { border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-bet { background: #f39c12; color: #000; text-transform: uppercase; }
-
+        .bet-card { background: #2a303c; padding: 12px; border-radius: 10px; border: 1px solid #444; display: flex; justify-content: space-between; align-items: center; }
+        
         @media (max-width: 600px) { .stats-grid { grid-template-columns: 1fr; } .match-card { flex-direction: column; gap: 15px; } }
     </style>
 </head>
 <body>
 
-<div id="login-screen">
-    <div class="login-box">
-        <h2>CS2 Vedonlyönti</h2>
-        <input type="text" id="username-input" placeholder="Valitse nimimerkki..." maxlength="15">
-        <button class="btn btn-bet" style="width:100%" onclick="app.login()">Aloita</button>
+<div id="auth-screen" class="auth-screen">
+    <div class="auth-box">
+        <h2 style="margin-top:0">CS2 Vedot</h2>
+        <button class="btn btn-google" onclick="app.loginGoogle()">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> Jatka Google-tilillä
+        </button>
+        <div style="margin: 15px 0; color: #555;">─ tai sähköpostilla ─</div>
+        <input type="email" id="email-input" placeholder="Sähköposti">
+        <input type="password" id="pass-input" placeholder="Salasana">
+        <button class="btn btn-bet" onclick="app.loginEmail()">Kirjaudu</button>
+        <button class="btn btn-secondary" onclick="app.registerEmail()">Luo uusi tili</button>
+    </div>
+</div>
+
+<div id="username-screen" class="auth-screen" style="display:none">
+    <div class="auth-box">
+        <h3>Valitse käyttäjänimi</h3>
+        <p style="font-size: 0.8rem; color: #888;">Tämä nimi näkyy Leaderboardilla.</p>
+        <input type="text" id="username-input" placeholder="Esim. CS_Mestari_26" maxlength="15">
+        <button class="btn btn-bet" onclick="app.saveUsername()">Tallenna ja jatka</button>
     </div>
 </div>
 
 <div class="container" id="main-content">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-        <div style="color:#f39c12; font-weight:bold;">Pelaaja: <span id="display-username"></span></div>
+        <div style="color:#f39c12; font-weight:bold;">Tervetuloa, <span id="display-username"></span></div>
         <button onclick="app.logout()" style="background:none; border:none; color:#666; cursor:pointer; text-decoration:underline;">Kirjaudu ulos</button>
     </div>
 
@@ -79,18 +84,15 @@
     <div class="leaderboard-section">
         <h3 style="margin-top:0; color:#f39c12;">🏆 Porukan Leaderboard</h3>
         <table class="leaderboard-table">
-            <thead>
-                <tr><th>Sija</th><th>Pelaaja</th><th>Voitot</th><th>Pisteet</th></tr>
-            </thead>
-            <tbody id="leaderboard-body">
-                </tbody>
+            <thead><tr><th>Sija</th><th>Pelaaja</th><th>Voitot</th><th>Pisteet</th></tr></thead>
+            <tbody id="leaderboard-body"></tbody>
         </table>
     </div>
 
     <div class="stats-grid">
         <div class="stat-card"><span class="stat-value" id="user-points">0.00</span><span class="stat-label">Omat Pisteet</span></div>
         <div class="stat-card"><span class="stat-value" id="user-wins">0</span><span class="stat-label">Omat Voitot</span></div>
-        <div class="stat-card"><span class="stat-value" id="user-acc">0%</span><span class="stat-label">Osumatarkkuus</span></div>
+        <div class="stat-card"><span class="stat-value" id="user-acc">0%</span><span class="stat-label">Osumat</span></div>
     </div>
     
     <div id="match-container"></div>
@@ -101,14 +103,15 @@
 <div class="modal-overlay" id="betModal">
     <div class="modal-content">
         <h3>Aseta veto</h3>
-        <div class="modal-teams" id="modalTeamsContainer"></div>
-        <button class="btn" style="background:transparent; color:#888" onclick="app.closeModal()">Peruuta</button>
+        <div class="modal-teams" id="modalTeamsContainer" style="display:flex; gap:10px;"></div>
+        <button class="btn" style="background:transparent; color:#888; margin-top:15px;" onclick="app.closeModal()">Peruuta</button>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDoc, getDocs, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCyj2zKkNw8JP_gG0F6AjyHiIr_EUjbFMA",
@@ -120,70 +123,95 @@
     };
 
     const fbApp = initializeApp(firebaseConfig);
+    const auth = getAuth(fbApp);
     const db = getFirestore(fbApp);
+    const provider = new GoogleAuthProvider();
 
     const PANDASCORE_TOKEN = '-p-nSCX_xPTuzmVICmpPuAx_nxSAmGVE7cXB01x0rbY8zWU1AFA';
     const PROXY = 'https://cors-anywhere.herokuapp.com/';
-    const LOGO_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='50' height='50'%3E%3Cpath fill='%232a303c' d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'/%3E%3Cpath fill='%23555' d='M12 4L5 7v5c0 4.5 2.9 8.9 7 10.3 4.1-1.4 7-5.8 7-10.3V7l-7-3z'/%3E%3Ctext x='12' y='16' font-family='Arial, sans-serif' font-size='8' fill='%23aaa' text-anchor='middle'%3ECS%3C/text%3E%3C/svg%3E";
-
-    const TIERS = { "Natus Vincere": 10, "Vitality": 10, "Spirit": 10, "FaZe": 10, "G2": 10, "MOUZ": 10, "Astralis": 8, "Virtus.pro": 8, "Liquid": 8, "Cloud9": 8, "Eternal Fire": 8, "Complexity": 8, "Heroic": 8, "The MongolZ": 8, "ENCE": 6, "BIG": 6, "FURIA": 6, "GamerLegion": 6 };
 
     window.app = {
-        currentUser: null,
+        user: null,
+        username: null,
         matches: [],
 
-        init: async function() {
-            const saved = localStorage.getItem('cs_user');
-            if (saved) {
-                this.currentUser = saved;
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('main-content').style.display = 'block';
-                document.getElementById('display-username').innerText = this.currentUser;
-                this.listenToLeaderboard();
-                await this.getMatches();
-                await this.checkResults();
-            }
+        init: function() {
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    this.user = user;
+                    const profile = await getDoc(doc(db, "profiles", user.uid));
+                    if (profile.exists()) {
+                        this.username = profile.data().username;
+                        this.showMain();
+                    } else {
+                        this.showUsernameSelection();
+                    }
+                } else {
+                    this.showAuth();
+                }
+            });
         },
 
-        login: async function() {
+        // AUTH TOIMINNOT
+        loginGoogle: () => signInWithPopup(auth, provider).catch(e => alert(e.message)),
+        
+        registerEmail: () => {
+            const email = document.getElementById('email-input').value;
+            const pass = document.getElementById('pass-input').value;
+            createUserWithEmailAndPassword(auth, email, pass).catch(e => alert(e.message));
+        },
+
+        loginEmail: () => {
+            const email = document.getElementById('email-input').value;
+            const pass = document.getElementById('pass-input').value;
+            signInWithEmailAndPassword(auth, email, pass).catch(e => alert(e.message));
+        },
+
+        logout: () => signOut(auth),
+
+        saveUsername: async function() {
             const name = document.getElementById('username-input').value.trim();
-            if (name.length < 2) return alert("Nimi liian lyhyt!");
-            this.currentUser = name;
-            localStorage.setItem('cs_user', name);
+            if (name.length < 3) return alert("Nimi liian lyhyt!");
             
-            // Luodaan käyttäjä Firestoreen jos ei löydy
-            const userRef = doc(db, "users", name);
-            const snap = await getDoc(userRef);
-            if (!snap.exists()) {
-                await setDoc(userRef, { points: 0, wins: 0, totalBets: 0 });
-            }
-            location.reload();
+            await setDoc(doc(db, "profiles", this.user.uid), { username: name });
+            await setDoc(doc(db, "users", name), { points: 0, wins: 0, totalBets: 0, uid: this.user.uid });
+            this.username = name;
+            this.showMain();
         },
 
-        logout: function() {
-            localStorage.removeItem('cs_user');
-            location.reload();
+        // NÄKYMÄT
+        showAuth: () => {
+            document.getElementById('auth-screen').style.display = 'flex';
+            document.getElementById('username-screen').style.display = 'none';
+            document.getElementById('main-content').style.display = 'none';
+        },
+        showUsernameSelection: () => {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('username-screen').style.display = 'flex';
+        },
+        showMain: async function() {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('username-screen').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+            document.getElementById('display-username').innerText = this.username;
+            this.listenToLeaderboard();
+            await this.getMatches();
+            await this.checkResults();
         },
 
+        // PELILOGIIKKA (Samat kuin aiemmin, mutta käyttää this.username)
         listenToLeaderboard: function() {
             const q = query(collection(db, "users"), orderBy("points", "desc"));
-            onSnapshot(q, (snapshot) => {
+            onSnapshot(q, (snap) => {
                 const tbody = document.getElementById('leaderboard-body');
                 tbody.innerHTML = '';
-                snapshot.docs.forEach((doc, i) => {
-                    const data = doc.data();
-                    tbody.innerHTML += `
-                        <tr class="${i===0?'rank-1':''}">
-                            <td>#${i+1}</td>
-                            <td>${doc.id} ${doc.id === this.currentUser ? '(Sinä)' : ''}</td>
-                            <td>${data.wins || 0}</td>
-                            <td>${(data.points || 0).toFixed(2)}</td>
-                        </tr>`;
-                    if (doc.id === this.currentUser) {
-                        document.getElementById('user-points').innerText = (data.points || 0).toFixed(2);
-                        document.getElementById('user-wins').innerText = data.wins || 0;
-                        const acc = data.totalBets > 0 ? Math.round((data.wins / data.totalBets) * 100) : 0;
-                        document.getElementById('user-acc').innerText = acc + "%";
+                snap.docs.forEach((doc, i) => {
+                    const d = doc.data();
+                    tbody.innerHTML += `<tr style="${doc.id===this.username?'color:#f39c12':''}"><td>#${i+1}</td><td>${doc.id}</td><td>${d.wins||0}</td><td>${(d.points||0).toFixed(2)}</td></tr>`;
+                    if (doc.id === this.username) {
+                        document.getElementById('user-points').innerText = (d.points || 0).toFixed(2);
+                        document.getElementById('user-wins').innerText = d.wins || 0;
+                        document.getElementById('user-acc').innerText = d.totalBets > 0 ? Math.round((d.wins/d.totalBets)*100)+"%" : "0%";
                     }
                 });
             });
@@ -213,26 +241,15 @@
                     const t2 = m.opponents[1]?.opponent || { name: "TBD" };
                     if (t1.name === "TBD" || t2.name === "TBD") return;
                     const odds = this.calcOdds(t1.name, t2.name, m.id);
-                    const date = new Date(m.begin_at).toLocaleString('fi-FI', { weekday: 'short', hour: '2-digit', minute: '2-digit' });
-                    html += `
-                        <div class="match-card">
-                            <div class="teams">
-                                <div class="team"><img src="${t1.image_url || LOGO_PLACEHOLDER}" onerror="this.src='${LOGO_PLACEHOLDER}'"><span>${t1.name}</span><span class="odds-badge">${odds[0]}</span></div>
-                                <div class="vs">VS</div>
-                                <div class="team"><img src="${t2.image_url || LOGO_PLACEHOLDER}" onerror="this.src='${LOGO_PLACEHOLDER}'"><span>${t2.name}</span><span class="odds-badge">${odds[1]}</span></div>
-                            </div>
-                            <div class="details"><span class="time">${date}</span><button class="btn btn-bet" onclick="app.openBetModal('${m.id}')">Veto</button></div>
-                        </div>`;
+                    html += `<div class="match-card"><div class="teams"><div class="team"><span>${t1.name}</span><span class="odds-badge">${odds[0]}</span></div><div style="color:#444">VS</div><div class="team"><span>${t2.name}</span><span class="odds-badge">${odds[1]}</span></div></div><div class="details"><button class="btn btn-bet" style="width:auto" onclick="app.openBetModal('${m.id}')">Veto</button></div></div>`;
                 });
                 container.innerHTML += html + '</div>';
             }
         },
 
-        calcOdds: function(n1, n2, id) {
-            const s1 = TIERS[n1] || 4, s2 = TIERS[n2] || 4;
+        calcOdds: (n1, n2, id) => {
             const seed = (parseInt(id.toString().slice(-3)) / 1000) * 0.1 - 0.05;
-            let p1 = (s1 / (s1 + s2)) + seed, p2 = 1 - p1;
-            return [(0.92/p1).toFixed(2), (0.92/p2).toFixed(2)];
+            return [(0.92/(0.5+seed)).toFixed(2), (0.92/(0.5-seed)).toFixed(2)];
         },
 
         openBetModal: function(id) {
@@ -240,24 +257,19 @@
             const t1 = m.opponents[0].opponent, t2 = m.opponents[1].opponent;
             const odds = this.calcOdds(t1.name, t2.name, id);
             document.getElementById('modalTeamsContainer').innerHTML = `
-                <div class="team-select-btn" onclick="app.placeBet('${id}', '${t1.name}', ${odds[0]}, '${t1.name} vs ${t2.name}')">
-                    <img src="${t1.image_url || LOGO_PLACEHOLDER}"><span>${t1.name}</span><strong>x${odds[0]}</strong>
-                </div>
-                <div class="team-select-btn" onclick="app.placeBet('${id}', '${t2.name}', ${odds[1]}, '${t1.name} vs ${t2.name}')">
-                    <img src="${t2.image_url || LOGO_PLACEHOLDER}"><span>${t2.name}</span><strong>x${odds[1]}</strong>
-                </div>`;
+                <div class="team-select-btn" onclick="app.placeBet('${id}', '${t1.name}', ${odds[0]}, '${t1.name} vs ${t2.name}')"><span>${t1.name}</span><strong>x${odds[0]}</strong></div>
+                <div class="team-select-btn" onclick="app.placeBet('${id}', '${t2.name}', ${odds[1]}, '${t1.name} vs ${t2.name}')"><span>${t2.name}</span><strong>x${odds[1]}</strong></div>`;
             document.getElementById('betModal').style.display = 'flex';
         },
 
         placeBet: async function(matchId, team, odds, matchName) {
-            const betRef = doc(db, "users", this.currentUser, "bets", matchId);
-            await setDoc(betRef, { team, odds, matchName, result: 'pending' });
+            await setDoc(doc(db, "users", this.username, "bets", matchId), { team, odds, matchName, result: 'pending' });
             this.closeModal();
             this.checkResults();
         },
 
         checkResults: async function() {
-            const betsSnap = await getDocs(collection(db, "users", this.currentUser, "bets"));
+            const betsSnap = await getDocs(collection(db, "users", this.username, "bets"));
             const r = await fetch(PROXY + 'https://api.pandascore.co/csgo/matches/past?per_page=50', {
                 headers: { 'Authorization': `Bearer ${PANDASCORE_TOKEN}` }
             });
@@ -274,24 +286,18 @@
 
                 if (match && match.winner && currentRes === 'pending') {
                     currentRes = (match.winner.name === b.team) ? 'win' : 'loss';
-                    await setDoc(doc(db, "users", this.currentUser, "bets", betDoc.id), { result: currentRes }, { merge: true });
+                    await setDoc(doc(db, "users", this.username, "bets", betDoc.id), { result: currentRes }, { merge: true });
                 }
 
                 if (currentRes === 'win') { wins++; pts += (10 * b.odds); finished++; }
                 else if (currentRes === 'loss') { finished++; }
 
-                list.innerHTML += `
-                    <div class="bet-card ${currentRes==='win'?'status-win':currentRes==='loss'?'status-loss':''}">
-                        <div><strong>${b.matchName}</strong><br>Veto: ${b.team} (${b.odds})</div>
-                        <div style="font-weight:bold">${currentRes==='win'?'+'+(10*b.odds).toFixed(1):currentRes==='loss'?'0':'...'}</div>
-                    </div>`;
+                list.innerHTML += `<div class="bet-card ${currentRes==='win'?'status-win':currentRes==='loss'?'status-loss':''}"><div><strong>${b.matchName}</strong><br>${b.team} (${b.odds})</div></div>`;
             }
-
-            // Päivitetään käyttäjän kokonaispisteet Firestoreen
-            await setDoc(doc(db, "users", this.currentUser), { points: pts, wins: wins, totalBets: finished }, { merge: true });
+            await setDoc(doc(db, "users", this.username), { points: pts, wins: wins, totalBets: finished }, { merge: true });
         },
 
-        closeModal: function() { document.getElementById('betModal').style.display = 'none'; }
+        closeModal: () => document.getElementById('betModal').style.display = 'none'
     };
 
     app.init();
