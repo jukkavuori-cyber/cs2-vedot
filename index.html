@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaOdds - Crypto CS2 Betting</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AlphaOdds - Crypto Esports</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -20,6 +20,8 @@
             --text-dim: #888;
         }
 
+        * { box-sizing: border-box; }
+
         body {
             font-family: 'Inter', sans-serif;
             background: radial-gradient(circle at 50% -20%, #1e2533, #07090d);
@@ -27,6 +29,7 @@
             margin: 0;
             padding-bottom: 140px;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         /* --- NAVBAR --- */
@@ -38,57 +41,104 @@
         .nav-left { display: flex; align-items: center; gap: 30px; }
         .nav-logo { font-size: 1.4rem; font-weight: 900; color: #fff; letter-spacing: -0.5px; cursor: pointer; }
         .nav-logo span { color: var(--primary); }
-        .nav-links { display: flex; gap: 20px; }
-        .nav-link { font-size: 0.8rem; font-weight: 700; color: var(--text-dim); text-decoration: none; text-transform: uppercase; cursor: pointer; }
-        .nav-link.active { color: #fff; }
+        .nav-links { display: flex; gap: 15px; }
+        .nav-link { 
+            font-size: 0.75rem; font-weight: 700; color: var(--text-dim); 
+            text-decoration: none; text-transform: uppercase; cursor: pointer; 
+            padding: 8px 12px; border-radius: 8px; transition: 0.2s;
+        }
+        .nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .nav-link.active { color: #fff; background: rgba(243, 156, 18, 0.15); border: 1px solid rgba(243, 156, 18, 0.3); }
 
         .nav-right { display: flex; align-items: center; gap: 10px; }
-
         .balance-pill {
             display: flex; align-items: center; background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border); padding: 5px 5px 5px 15px; border-radius: 12px; gap: 12px;
         }
         .eth-display { font-weight: 800; font-size: 0.85rem; color: #fff; }
         .eth-display span { color: var(--primary); margin-left: 4px; }
-        
         .deposit-btn { background: var(--primary); color: #000; border: none; padding: 8px 15px; border-radius: 10px; font-weight: 800; font-size: 0.75rem; cursor: pointer; }
         .btn-wallet { background: transparent; color: #fff; border: 1px solid var(--glass-border); padding: 8px 15px; border-radius: 10px; font-weight: 700; font-size: 0.75rem; cursor: pointer; }
 
-        /* --- MATCH CARDS --- */
-        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        /* --- CONTAINER & VIEWS --- */
+        .container { max-width: 1100px; margin: 20px auto; padding: 0 15px; width: 100%; }
+        .section-view { display: none; animation: fadeIn 0.3s ease; }
+        .section-view.active { display: block; }
+
+        /* --- BANNER --- */
+        .banner-container {
+            width: 100%; height: 250px; margin-bottom: 25px; border-radius: 24px; 
+            overflow: hidden; border: 1px solid var(--glass-border);
+        }
+        .banner-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- MATCH CARDS (ALIGNED) --- */
         .match-card {
-            background: var(--card-bg); margin-bottom: 15px; padding: 20px;
+            background: var(--card-bg); margin-bottom: 12px; padding: 15px 25px;
             border-radius: 20px; display: flex; justify-content: space-between;
             align-items: center; border: 1px solid var(--glass-border);
+            width: 100%;
         }
-        .teams { display: flex; align-items: center; gap: 30px; flex: 3; }
-        .team { display: flex; align-items: center; gap: 15px; flex: 1; }
-        .team img { width: 36px; height: 36px; object-fit: contain; }
+        .teams { display: flex; align-items: center; gap: 40px; flex: 3; }
+        
+        /* Grid-asettelu joka pakottaa kertoimet samaan linjaan */
+        .team { 
+            display: grid; 
+            grid-template-columns: 36px 1fr 80px; 
+            align-items: center; 
+            gap: 15px; 
+            flex: 1; 
+            min-width: 0; 
+        }
+        .team img { width: 36px; height: 36px; object-fit: contain; flex-shrink: 0; }
+        .team span { font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
         .odds-badge {
             background: rgba(255, 255, 255, 0.04); color: var(--primary);
-            padding: 10px 18px; border-radius: 12px; font-weight: 800;
-            border: 1px solid rgba(255, 255, 255, 0.06); cursor: pointer; margin-left: auto;
+            padding: 10px; border-radius: 12px; font-weight: 800;
+            border: 1px solid rgba(255, 255, 255, 0.06); cursor: pointer; 
+            width: 80px; text-align: center; flex-shrink: 0; transition: 0.2s;
         }
-        .odds-badge.selected { background: var(--primary) !important; color: #000 !important; }
-        .details { flex: 1; text-align: right; border-left: 1px solid var(--glass-border); padding-left: 25px; min-width: 100px; }
+        .odds-badge:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--primary); }
+        .odds-badge.selected { background: var(--primary) !important; color: #000 !important; border-color: #fff !important; }
         
-        /* --- MOBIILI --- */
-        @media (max-width: 768px) {
-            .navbar { padding: 0 15px; }
-            .nav-links, .eth-label { display: none; }
-            .match-card { flex-direction: column; align-items: flex-start; }
-            .teams { flex-direction: column; width: 100%; gap: 10px; padding: 0; margin-bottom: 15px; }
-            .details { border: none; padding: 0; text-align: left; }
+        .details { 
+            flex: 1; text-align: right; border-left: 1px solid var(--glass-border); 
+            padding-left: 25px; min-width: 110px; flex-shrink: 0;
+        }
+        .live-score-box { font-family: 'monospace'; color: var(--primary); font-weight: 900; font-size: 1.2rem; letter-spacing: 1px; }
+
+        /* --- MOBIILI-OPTIMOINTI --- */
+        @media (max-width: 900px) {
+            .navbar { height: auto; flex-direction: column; padding: 15px; gap: 10px; }
+            .nav-left { width: 100%; justify-content: space-between; }
+            .nav-links { order: 3; width: 100%; justify-content: center; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 12px; overflow-x: auto; }
+            
+            .banner-container { height: 140px; }
+            
+            .match-card { flex-direction: column; align-items: stretch; padding: 15px; }
+            .teams { flex-direction: column; gap: 10px; padding: 0; margin-bottom: 12px; width: 100%; }
+            
+            /* Mobiilin grid säilytetään siistinä */
+            .team { 
+                grid-template-columns: 36px 1fr 70px; 
+                gap: 12px;
+            }
+            .odds-badge { width: 70px; font-size: 0.85rem; }
+            .details { border: none; border-top: 1px solid var(--glass-border); padding: 10px 0 0 0; text-align: center; width: 100%; }
         }
 
+        /* --- PROFIILI JA CHAT --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); display: none; justify-content: center; align-items: center; z-index: 2000; }
-        .glass-card { background: rgba(26, 31, 41, 0.95); padding: 40px; border-radius: 32px; border: 1px solid var(--glass-border); text-align: center; width: 90%; max-width: 400px; }
+        .glass-card { background: rgba(26, 31, 41, 0.95); padding: 30px; border-radius: 24px; border: 1px solid var(--glass-border); text-align: center; width: 90%; max-width: 400px; }
         .google-btn { background: #fff !important; color: #1f1f1f !important; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; margin-bottom: 20px; border:none; }
         input { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: #fff; box-sizing: border-box; }
-        
-        #chat-sidebar { position: fixed; right: -350px; top: 70px; width: 320px; height: calc(100% - 70px); background: var(--nav-bg); z-index: 2000; transition: 0.3s ease; border-left: 1px solid var(--glass-border); display: flex; flex-direction: column; }
+        #chat-sidebar { position: fixed; right: -350px; top: 0; width: 320px; height: 100%; background: var(--nav-bg); z-index: 2000; transition: 0.3s ease; border-left: 1px solid var(--glass-border); display: flex; flex-direction: column; }
         #chat-sidebar.open { right: 0; }
+        .tournament-header { margin: 30px 0 15px 0; font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .tournament-header::after { content: ""; height: 1px; background: var(--glass-border); flex: 1; }
         #loading-global { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); display: flex; justify-content: center; align-items: center; z-index: 3000; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 
@@ -98,10 +148,11 @@
 
     <nav class="navbar">
         <div class="nav-left">
-            <div class="nav-logo" onclick="location.reload()">Alpha<span>Odds</span></div>
+            <div class="nav-logo" onclick="app.showSection('matches')">Alpha<span>Odds</span></div>
             <div class="nav-links">
-                <a class="nav-link active">Ottelut</a>
-                <a class="nav-link" onclick="app.toggleChat()">Yhteisö</a>
+                <div class="nav-link active" id="btn-matches" onclick="app.showSection('matches')">Ottelut</div>
+                <div class="nav-link" id="btn-profile" onclick="app.showSection('profile')">Profiili</div>
+                <div class="nav-link" onclick="app.toggleChat()">Yhteisö</div>
             </div>
         </div>
         <div class="nav-right" id="nav-auth-container">
@@ -111,13 +162,13 @@
 
     <div class="modal-overlay" id="auth-modal">
         <div class="glass-card">
-            <h2 style="color:var(--primary); margin-bottom:20px;">Kirjaudu</h2>
+            <h2 style="color:var(--primary); margin-bottom:15px;">Kirjaudu</h2>
             <button class="google-btn" onclick="app.loginGoogle()">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"> Jatka Googlella
             </button>
             <input type="email" id="login-email" placeholder="Sähköposti">
             <input type="password" id="login-pass" placeholder="Salasana">
-            <button class="deposit-btn" style="width:100%; margin-top:10px; padding:12px;" onclick="app.loginEmail()">KIRJAUDU</button>
+            <button class="deposit-btn" style="width:100%; margin-top:10px; padding:12px;" onclick="app.loginEmail()">SISÄÄN</button>
             <button style="background:none; border:none; color:var(--text-dim); margin-top:15px; cursor:pointer;" onclick="app.showRegister()">Luo uusi tili</button>
             <button style="background:none; border:none; color:var(--text-dim); margin-top:10px; cursor:pointer;" onclick="app.closeAuthModal()">Sulje</button>
         </div>
@@ -125,7 +176,7 @@
 
     <div class="modal-overlay" id="register-modal">
         <div class="glass-card">
-            <h2 style="color:var(--primary); margin-bottom:20px;">Luo tili</h2>
+            <h2 style="color:var(--primary); margin-bottom:15px;">Luo tili</h2>
             <input type="text" id="reg-username" placeholder="Käyttäjänimi">
             <input type="email" id="reg-email" placeholder="Sähköposti">
             <input type="password" id="reg-pass" placeholder="Salasana">
@@ -135,6 +186,10 @@
     </div>
 
     <div id="chat-sidebar">
+        <div style="padding: 20px; border-bottom: 1px solid var(--glass-border); font-weight: 900; color: var(--primary); display: flex; justify-content: space-between;">
+            <span>YHTEISÖ CHAT</span>
+            <span style="cursor:pointer" onclick="app.toggleChat()">✕</span>
+        </div>
         <div id="chat-messages" style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:12px;"></div>
         <div style="padding: 20px; border-top: 1px solid var(--glass-border); display: flex; gap: 10px;">
             <input type="text" id="chat-input" placeholder="Viesti..." style="margin:0;">
@@ -143,40 +198,51 @@
     </div>
 
     <div class="container">
-        <div style="width: 100%; height: 250px; margin-bottom: 40px; border-radius: 24px; overflow: hidden; border: 1px solid var(--glass-border);">
-            <img src="banner2.png" alt="Banner" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://images.alphacoders.com/133/1331713.png'">
+        <div id="matches-view" class="section-view active">
+            <div class="banner-container">
+                <img src="banner2.png" alt="Banner" onerror="this.src='https://images.alphacoders.com/133/1331713.png'">
+            </div>
+
+            <div class="nav-links" style="margin-bottom: 25px; justify-content: flex-start; overflow-x: auto; white-space: nowrap;">
+                <div class="nav-link active game-tab" onclick="app.setGame('csgo', this)">CS2</div>
+                <div class="nav-link game-tab" onclick="app.setGame('lol', this)">LoL</div>
+                <div class="nav-link game-tab" onclick="app.setGame('valorant', this)">Valorant</div>
+                <div class="nav-link game-tab" onclick="app.setGame('dota2', this)">Dota 2</div>
+            </div>
+            
+            <div id="live-container"></div>
+            <div id="match-container"></div>
         </div>
 
-        <div id="user-section" style="display: none; margin-bottom: 30px;">
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
-                <div style="background:var(--card-bg); padding:15px; border-radius:20px; text-align:center; border:1px solid var(--glass-border);">
-                    <div id="user-wins" style="font-size:1.4rem; font-weight:900; color:var(--success)">0</div>
-                    <div style="font-size:0.7rem; color:var(--text-dim); text-transform:uppercase;">Voitot</div>
+        <div id="profile-view" class="section-view">
+            <h2 style="color:var(--primary)">Oma Profiili</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
+                <div style="background:var(--card-bg); padding:20px; border-radius:20px; border:1px solid var(--glass-border);">
+                    <small style="color:var(--text-dim)">LOMPAKKO</small>
+                    <div id="prof-address" style="font-weight:800; margin-top:5px; font-size:0.8rem; word-break: break-all;">Ei yhdistetty</div>
                 </div>
-                <div style="background:var(--card-bg); padding:15px; border-radius:20px; text-align:center; border:1px solid var(--glass-border);">
-                    <div id="display-address" style="font-size:1.1rem; font-weight:900; color:#fff">Ei yhdistetty</div>
-                    <div style="font-size:0.7rem; color:var(--text-dim); text-transform:uppercase;">Lompakko</div>
+                <div style="background:var(--card-bg); padding:20px; border-radius:20px; border:1px solid var(--glass-border);">
+                    <small style="color:var(--text-dim)">SALDO</small>
+                    <div id="prof-balance" style="font-weight:800; color:var(--primary); margin-top:5px;">0.00 ETH</div>
                 </div>
             </div>
+            <h3>Vetohistoria</h3>
+            <div id="history-container"></div>
         </div>
-
-        <div id="live-container"></div>
-        <div id="match-container"></div>
     </div>
 
-    <div id="bet-bar" style="display:none; position:fixed; bottom:30px; left:50%; transform:translateX(-50%); width:90%; max-width:850px; background:rgba(11,14,20,0.95); backdrop-filter:blur(25px); border-radius:24px; padding:18px 30px; border:1px solid var(--primary); z-index:1500; justify-content:space-between; align-items:center;">
-        <div id="selected-chips" style="display:flex; gap:10px; overflow-x:auto;"></div>
-        <div style="display:flex; gap:15px; align-items:center;">
-            <div style="color:var(--text-dim); font-size:0.7rem; font-weight:800;">PANOS (ETH)</div>
+    <div id="bet-bar" style="display:none; position:fixed; bottom:30px; left:50%; transform:translateX(-50%); width:90%; max-width:850px; background:rgba(11,14,20,0.95); backdrop-filter:blur(25px); border-radius:24px; padding:18px 30px; border:1px solid var(--primary); z-index:1500; justify-content:space-between; align-items:center; box-shadow: 0 10px 40px rgba(0,0,0,0.6);">
+        <div id="selected-chips" style="display:flex; gap:10px; overflow-x:auto; margin-bottom: 5px;"></div>
+        <div style="display:flex; gap:15px; align-items:center; width: 100%; justify-content: space-between;">
             <input type="number" id="bet-amount" style="width:100px; background:rgba(0,0,0,0.3); border:1px solid #444; color:#fff; border-radius:10px; padding:10px;" value="0.01" step="0.001">
-            <button class="deposit-btn" onclick="app.submitAllBets()">VAHVISTA VETO</button>
+            <button class="deposit-btn" style="flex:1; margin-left:15px;" onclick="app.submitAllBets()">VAHVISTA VETO</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, query, orderBy, limit, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, query, orderBy, limit, onSnapshot, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { ethers } from "https://esm.sh/ethers@6.7.0";
 
         const firebaseConfig = {
@@ -193,16 +259,17 @@
         const db = getFirestore(fbApp);
         const googleProvider = new GoogleAuthProvider();
         const PROXY_URL = 'https://cs-api-proxy.jukka-vuori.workers.dev/';
-        const LOGO_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='50' height='50'%3E%3Cpath fill='%232a303c' d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'/%3E%3Cpath fill='%23555' d='M12 4L5 7v5c0 4.5 2.9 8.9 7 10.3 4.1-1.4 7-5.8 7-10.3V7l-7-3z'/%3E%3Ctext x='12' y='16' font-family='Arial, sans-serif' font-size='8' fill='%23aaa' text-anchor='middle'%3ECS%3C/text%3E%3C/svg%3E";
+        const LOGO_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='50' height='50'%3E%3Cpath fill='%232a303c' d='M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z'/%3E%3C/svg%3E";
 
         window.app = {
             user: null, username: null, selectedBets: {},
             walletAddress: null, walletBalance: "0.00",
+            selectedGame: 'csgo',
 
             init: function() {
                 this.updateMatches();
                 this.listenToChat();
-                setInterval(() => this.updateMatches(), 30000);
+                setInterval(() => this.updateMatches(), 45000);
 
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
@@ -210,7 +277,6 @@
                         const profile = await getDoc(doc(db, "profiles", user.uid));
                         this.username = profile.data()?.username || user.displayName || "Pelaaja";
                         this.renderNavbarLoggedIn();
-                        document.getElementById('user-section').style.display = 'block';
                         this.closeAuthModal();
                     } else {
                         this.user = null;
@@ -221,14 +287,29 @@
                 document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') this.sendChatMessage(); });
             },
 
+            showSection: function(section) {
+                document.querySelectorAll('.section-view').forEach(s => s.classList.remove('active'));
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                document.getElementById(section + '-view').classList.add('active');
+                document.getElementById('btn-' + section).classList.add('active');
+                if (section === 'profile') this.loadHistory();
+            },
+
+            setGame: function(game, element) {
+                this.selectedGame = game;
+                document.querySelectorAll('.game-tab').forEach(l => l.classList.remove('active'));
+                element.classList.add('active');
+                this.updateMatches();
+            },
+
             renderNavbarLoggedIn: function() {
                 const container = document.getElementById('nav-auth-container');
-                const walletLabel = this.walletAddress ? `${this.walletAddress.slice(0,6)}...` : "LIITÄ LOMPAKKO";
+                const walletLabel = this.walletAddress ? `${this.walletAddress.slice(0,6)}...` : "LOMPAKKO";
                 container.innerHTML = `
                     <button class="btn-wallet" onclick="app.connectWallet()">${walletLabel}</button>
                     <div class="balance-pill">
                         <div class="eth-display">${this.walletBalance} <span>ETH</span></div>
-                        <button class="deposit-btn" onclick="app.logout()">ULOS</button>
+                        <button class="deposit-btn" onclick="app.logout()">OUT</button>
                     </div>
                 `;
             },
@@ -245,61 +326,32 @@
                     this.walletAddress = accounts[0];
                     const balance = await provider.getBalance(this.walletAddress);
                     this.walletBalance = parseFloat(ethers.formatEther(balance)).toFixed(4);
-                    document.getElementById('display-address').innerText = this.walletAddress.slice(0,10) + "...";
+                    document.getElementById('prof-address').innerText = this.walletAddress;
+                    document.getElementById('prof-balance').innerText = this.walletBalance + " ETH";
                     if (this.user) this.renderNavbarLoggedIn();
                 } catch (e) { console.error(e); }
             },
 
-            loginGoogle: () => signInWithPopup(auth, googleProvider).catch(e => alert(e.message)),
-            openAuthModal: () => document.getElementById('auth-modal').style.display = 'flex',
-            closeAuthModal: () => { document.getElementById('auth-modal').style.display = 'none'; document.getElementById('register-modal').style.display = 'none'; },
-            showRegister: () => { document.getElementById('auth-modal').style.display = 'none'; document.getElementById('register-modal').style.display = 'flex'; },
-            showLogin: () => { document.getElementById('register-modal').style.display = 'none'; document.getElementById('auth-modal').style.display = 'flex'; },
-
-            loginEmail: async function() {
-                const e = document.getElementById('login-email').value;
-                const p = document.getElementById('login-pass').value;
-                try { await signInWithEmailAndPassword(auth, e, p); } catch (err) { alert(err.message); }
-            },
-
-            registerNewUser: async function() {
-                const u = document.getElementById('reg-username').value.trim();
-                const e = document.getElementById('reg-email').value;
-                const p = document.getElementById('reg-pass').value;
-                try {
-                    const res = await createUserWithEmailAndPassword(auth, e, p);
-                    await setDoc(doc(db, "profiles", res.user.uid), { username: u });
-                    await setDoc(doc(db, "users", u), { wins: 0 });
-                } catch (err) { alert(err.message); }
-            },
-
-            logout: () => signOut(auth).then(() => location.reload()),
-            toggleChat: () => document.getElementById('chat-sidebar').classList.toggle('open'),
-
-            listenToChat: function() {
-                const q = query(collection(db, "messages"), orderBy("createdAt", "desc"), limit(50));
-                onSnapshot(q, (snap) => {
-                    const container = document.getElementById('chat-messages');
-                    container.innerHTML = snap.docs.reverse().map(d => {
-                        const m = d.data();
-                        return `<div><span style="font-size:0.7rem; color:var(--primary); font-weight:800;">${m.username}</span><div style="background:rgba(255,255,255,0.03); padding:10px; border-radius:10px; font-size:0.85rem;">${m.text}</div></div>`;
-                    }).join('');
-                    container.scrollTop = container.scrollHeight;
-                });
-            },
-
-            sendChatMessage: async function() {
-                const input = document.getElementById('chat-input');
-                if (!input.value.trim() || !this.user) return;
-                await addDoc(collection(db, "messages"), { username: this.username, text: input.value, createdAt: serverTimestamp() });
-                input.value = '';
+            loadHistory: async function() {
+                if (!this.user) return;
+                const container = document.getElementById('history-container');
+                const snap = await getDocs(collection(db, "users", this.username, "bets"));
+                if (snap.empty) { container.innerHTML = '<div style="color:var(--text-dim)">Ei vetoja.</div>'; return; }
+                container.innerHTML = snap.docs.map(doc => {
+                    const b = doc.data();
+                    const status = b.result || 'pending';
+                    return `<div style="background:var(--card-bg); padding:15px; border-radius:15px; margin-bottom:10px; border-left:4px solid ${status === 'win' ? 'var(--success)' : status === 'loss' ? 'var(--danger)' : '#555'}">
+                        <div style="font-weight:700">${b.team} @${b.odds}</div>
+                        <div style="font-size:0.75rem; color:var(--text-dim)">${b.matchName}</div>
+                    </div>`;
+                }).join('');
             },
 
             updateMatches: async function() {
                 try {
                     const [liveRes, upcomingRes] = await Promise.all([
-                        fetch(`${PROXY_URL}?endpoint=${encodeURIComponent("/csgo/matches/running")}`),
-                        fetch(`${PROXY_URL}?endpoint=${encodeURIComponent("/csgo/matches/upcoming?per_page=15")}`)
+                        fetch(`${PROXY_URL}?endpoint=${encodeURIComponent("/" + this.selectedGame + "/matches/running")}`),
+                        fetch(`${PROXY_URL}?endpoint=${encodeURIComponent("/" + this.selectedGame + "/matches/upcoming?per_page=15")}`)
                     ]);
                     this.renderLive(await liveRes.json());
                     this.renderUpcoming(await upcomingRes.json());
@@ -308,38 +360,37 @@
 
             renderLive: function(matches) {
                 const container = document.getElementById('live-container');
-                if (!matches.length) { container.innerHTML = ''; return; }
-                container.innerHTML = '<div class="tournament-header">LIVE</div>' + 
-                    matches.map(m => `
-                        <div class="match-card" style="border-color:var(--danger)">
-                            <div class="teams">
-                                <div class="team"><img src="${m.opponents[0]?.opponent.image_url || LOGO_PLACEHOLDER}" onerror="this.src='${LOGO_PLACEHOLDER}'"><span>${m.opponents[0]?.opponent.name}</span></div>
-                                <div class="team"><img src="${m.opponents[1]?.opponent.image_url || LOGO_PLACEHOLDER}" onerror="this.src='${LOGO_PLACEHOLDER}'"><span>${m.opponents[1]?.opponent.name}</span></div>
-                            </div>
-                            <div class="details"><div class="live-score-box">${m.results[0].score} - ${m.results[1].score}</div></div>
-                        </div>`).join('');
+                if (!matches || !matches.length) { container.innerHTML = ''; return; }
+                container.innerHTML = '<div class="tournament-header"><span class="live-pulse"></span> LIVE</div>' + 
+                    matches.map(m => `<div class="match-card" style="border-color:var(--danger)">
+                        <div class="teams">
+                            <div class="team"><img src="${m.opponents[0]?.opponent.image_url || LOGO_PLACEHOLDER}" onerror="this.src='${LOGO_PLACEHOLDER}'"><span>${m.opponents[0]?.opponent.name}</span></div>
+                            <div class="team"><img src="${m.opponents[1]?.opponent.image_url || LOGO_PLACEHOLDER}" onerror="this.src='${LOGO_PLACEHOLDER}'"><span>${m.opponents[1]?.opponent.name}</span></div>
+                        </div>
+                        <div class="details"><div class="live-score-box">${m.results[0]?.score || 0} - ${m.results[1]?.score || 0}</div></div>
+                    </div>`).join('');
             },
 
             renderUpcoming: function(matches) {
                 const container = document.getElementById('match-container');
-                container.innerHTML = '<div class="tournament-header">Tulevat ottelut</div>' + 
+                if (!matches || !matches.length) { container.innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-dim);">Ei otteluita tässä lajissa.</div>'; return; }
+                container.innerHTML = '<div class="tournament-header">Tulevat</div>' + 
                     matches.map(m => {
                         const t1 = m.opponents[0]?.opponent; const t2 = m.opponents[1]?.opponent;
                         if (!t1 || !t2) return '';
                         const sel = this.selectedBets[m.id];
                         const date = new Date(m.begin_at).toLocaleString('fi-FI', { weekday: 'short', hour: '2-digit', minute: '2-digit' });
-                        return `
-                        <div class="match-card">
+                        return `<div class="match-card">
                             <div class="teams">
                                 <div class="team">
                                     <img src="${t1.image_url || LOGO_PLACEHOLDER}" onerror="this.src='${LOGO_PLACEHOLDER}'">
                                     <span>${t1.name}</span>
-                                    <div class="odds-badge ${sel?.team === t1.name ? 'selected' : ''}" onclick="app.toggleBet('${m.id}', '${t1.name}', 1.85)">1.85</div>
+                                    <div class="odds-badge ${sel?.team === t1.name ? 'selected' : ''}" onclick="app.toggleBet('${m.id}', '${t1.name}', 1.85, '${t1.name} vs ${t2.name}')">1.85</div>
                                 </div>
                                 <div class="team">
                                     <img src="${t2.image_url || LOGO_PLACEHOLDER}" onerror="this.src='${LOGO_PLACEHOLDER}'">
                                     <span>${t2.name}</span>
-                                    <div class="odds-badge ${sel?.team === t2.name ? 'selected' : ''}" onclick="app.toggleBet('${m.id}', '${t2.name}', 1.85)">1.85</div>
+                                    <div class="odds-badge ${sel?.team === t2.name ? 'selected' : ''}" onclick="app.toggleBet('${m.id}', '${t2.name}', 1.85, '${t1.name} vs ${t2.name}')">1.85</div>
                                 </div>
                             </div>
                             <div class="details"><span style="font-size:0.8rem; font-weight:800; color:var(--text-dim);">${date}</span></div>
@@ -347,10 +398,11 @@
                     }).join('');
             },
 
-            toggleBet: function(id, team, odds) {
+            toggleBet: function(id, team, odds, matchName) {
                 if (this.selectedBets[id]?.team === team) delete this.selectedBets[id];
-                else this.selectedBets[id] = { team, odds };
-                this.updateBetBar(); this.updateMatches();
+                else this.selectedBets[id] = { team, odds, matchName };
+                this.updateBetBar();
+                this.updateMatches();
             },
 
             updateBetBar: function() {
@@ -360,25 +412,47 @@
             },
 
             submitAllBets: async function() {
-                if (!this.walletAddress) return Swal.fire("Lompakko", "Yhdistä Ethereum-lompakkosi ensin!", "warning");
-                const amount = document.getElementById('bet-amount').value;
-                
-                // Tässä kohtaa tulevaisuudessa kutsutaan älysopimusta (Smart Contract)
-                Swal.fire({
-                    title: "Vahvista veto",
-                    text: `Haluatko asettaa vedon määrällä ${amount} ETH?`,
-                    icon: "question",
-                    showCancelButton: true,
-                    confirmButtonText: "Vahvista",
-                    cancelButtonText: "Peruuta"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        Swal.fire("Onnistui!", "Veto on lähetetty lohkoketjuun.", "success");
-                        this.selectedBets = {};
-                        this.updateBetBar();
-                        this.updateMatches();
-                    }
+                if (!this.walletAddress) return Swal.fire("Lompakko", "Yhdistä lompakko!", "warning");
+                const entries = Object.entries(this.selectedBets);
+                for (const [id, data] of entries) {
+                    await setDoc(doc(db, "users", this.username, "bets", id), { ...data, stake: document.getElementById('bet-amount').value, result: 'pending', timestamp: Date.now() });
+                }
+                Swal.fire("Vahvistettu!", "Veto asetettu onnistuneesti.", "success");
+                this.selectedBets = {}; this.updateBetBar(); this.updateMatches();
+            },
+
+            loginGoogle: () => signInWithPopup(auth, googleProvider),
+            openAuthModal: () => document.getElementById('auth-modal').style.display = 'flex',
+            closeAuthModal: () => { document.getElementById('auth-modal').style.display = 'none'; document.getElementById('register-modal').style.display = 'none'; },
+            showRegister: () => { document.getElementById('auth-modal').style.display = 'none'; document.getElementById('register-modal').style.display = 'flex'; },
+            showLogin: () => { document.getElementById('register-modal').style.display = 'none'; document.getElementById('auth-modal').style.display = 'flex'; },
+            loginEmail: async function() {
+                try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); } catch (e) { alert(e.message); }
+            },
+            registerNewUser: async function() {
+                try {
+                    const res = await createUserWithEmailAndPassword(auth, document.getElementById('reg-email').value, document.getElementById('reg-pass').value);
+                    await setDoc(doc(db, "profiles", res.user.uid), { username: document.getElementById('reg-username').value.trim() });
+                } catch (e) { alert(e.message); }
+            },
+            logout: () => signOut(auth).then(() => location.reload()),
+            toggleChat: () => document.getElementById('chat-sidebar').classList.toggle('open'),
+            listenToChat: function() {
+                const q = query(collection(db, "messages"), orderBy("createdAt", "desc"), limit(50));
+                onSnapshot(q, (snap) => {
+                    const container = document.getElementById('chat-messages');
+                    container.innerHTML = snap.docs.reverse().map(d => {
+                        const m = d.data();
+                        return `<div style="margin-bottom:10px;"><span style="font-size:0.7rem; color:var(--primary); font-weight:800; display:block;">${m.username}</span><div style="background:rgba(255,255,255,0.03); padding:10px; border-radius:10px; font-size:0.85rem;">${m.text}</div></div>`;
+                    }).join('');
+                    container.scrollTop = container.scrollHeight;
                 });
+            },
+            sendChatMessage: async function() {
+                const input = document.getElementById('chat-input');
+                if (!input.value.trim() || !this.user) return;
+                await addDoc(collection(db, "messages"), { username: this.username, text: input.value, createdAt: serverTimestamp() });
+                input.value = '';
             }
         };
         app.init();
