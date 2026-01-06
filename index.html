@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,431 +15,769 @@
             --text-dim: #888;
         }
 
-        body { 
-            font-family: 'Inter', -apple-system, system-ui, sans-serif; 
-            background: radial-gradient(circle at 50% -20%, #1e2533, #0b0e14); 
-            color: var(--text-main); margin: 0; padding-bottom: 140px; 
+        body {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background: radial-gradient(circle at 50% -20%, #1e2533, #0b0e14);
+            color: var(--text-main);
+            margin: 0;
+            padding-bottom: 140px;
             min-height: 100vh;
         }
 
         /* --- LATAUS-ANIMAATIO (LISÄTTY) --- */
         #loading-global {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-dark); display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 3000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
             transition: opacity 0.5s ease;
         }
+
         .spinner {
-            width: 50px; height: 50px;
+            width: 50px;
+            height: 50px;
             border: 3px solid rgba(243, 156, 18, 0.1);
             border-top: 3px solid var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
 
         /* NAVBAR */
         .navbar {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 40px; background: rgba(11, 14, 20, 0.8);
-            backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background: rgba(11, 14, 20, 0.8);
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
             border-bottom: 1px solid var(--glass-border);
         }
-        .nav-logo { font-size: 1.1rem; font-weight: 900; color: var(--primary); letter-spacing: 2px; }
 
-        .container { max-width: 1200px; margin: 30px auto; padding: 0 25px; }
-        
-        .banner-container { 
-            position: relative; width: 100%; height: 200px; margin-bottom: 40px; 
-            border-radius: 24px; overflow: hidden; border: 1px solid var(--glass-border);
+        .nav-logo {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--primary);
+            letter-spacing: 2px;
         }
-        .main-banner { width: 100%; height: 100%; object-fit: cover; }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 25px;
+        }
+
+        .banner-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            margin-bottom: 40px;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+
+        .main-banner {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         /* MODAALIT */
-        .modal-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px);
-            display: none; justify-content: center; align-items: center; z-index: 2000; 
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
         }
-        .glass-card { 
-            background: rgba(26, 31, 41, 0.95); padding: 40px; border-radius: 32px; 
-            border: 1px solid var(--glass-border); text-align: center; 
-            width: 90%; max-width: 420px; box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+
+        .glass-card {
+            background: rgba(26, 31, 41, 0.95);
+            padding: 40px;
+            border-radius: 32px;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
         }
 
         .google-btn {
-            background: #ffffff !important; color: #1f1f1f !important;
-            display: flex; align-items: center; justify-content: center;
-            gap: 12px; width: 100%; border: none; border-radius: 12px;
-            padding: 14px; font-weight: 600; cursor: pointer; transition: 0.2s;
+            background: #ffffff !important;
+            color: #1f1f1f !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
             margin-bottom: 20px;
         }
 
         /* OTTELUT & LEADERBOARD */
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
-        .stat-card { background: var(--card-bg); padding: 25px; border-radius: 20px; text-align: center; border: 1px solid var(--glass-border); }
-        .stat-value { display: block; font-size: 1.8rem; font-weight: 800; color: var(--primary); }
-        .leaderboard-section { background: var(--card-bg); padding: 20px; border-radius: 16px; margin-bottom: 30px; border: 1px solid var(--glass-border); }
-        .leaderboard-table { width: 100%; border-collapse: collapse; }
-        .leaderboard-table td { padding: 12px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-
-        .tournament-header { margin: 50px 0 20px 0; font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 3px; font-weight: bold; }
-        .match-card { 
-            background: var(--card-bg); margin-bottom: 15px; padding: 20px; 
-            border-radius: 20px; display: flex; justify-content: space-between; 
-            align-items: center; border: 1px solid var(--glass-border);
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
         }
-        
-        .teams { display: flex; align-items: center; gap: 30px; flex: 3; padding-right: 30px; }
-        .team { display: flex; flex-direction: row; align-items: center; gap: 15px; flex: 1; }
-        .team img { width: 36px; height: 36px; object-fit: contain; }
-        
-        .odds-badge { 
-            background: rgba(255, 255, 255, 0.04); color: var(--primary); font-size: 0.8rem; 
-            padding: 10px 18px; border-radius: 12px; font-weight: 800; border: 1px solid rgba(255, 255, 255, 0.06); 
-            cursor: pointer; transition: all 0.2s; margin-left: auto;
-        }
-        .odds-badge.selected { background: var(--primary) !important; color: #000 !important; border-color: #fff !important; }
 
-        .details { flex: 1; text-align: right; border-left: 1px solid var(--glass-border); padding-left: 25px; }
+        .stat-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .leaderboard-section {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .leaderboard-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .tournament-header {
+            margin: 50px 0 20px 0;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: bold;
+        }
+
+        .match-card {
+            background: var(--card-bg);
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--glass-border);
+        }
+
+        .teams {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex: 3;
+            padding-right: 30px;
+        }
+
+        .team {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .team img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+        }
+
+        .odds-badge {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--primary);
+            font-size: 0.8rem;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 800;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-left: auto;
+        }
+
+        .odds-badge.selected {
+            background: var(--primary) !important;
+            color: #000 !important;
+            border-color: #fff !important;
+        }
+
+        .details {
+            flex: 1;
+            text-align: right;
+            border-left: 1px solid var(--glass-border);
+            padding-left: 25px;
+        }
 
         /* PAINIKKEET & INPUTS */
-        .btn { border: none; padding: 12px 28px; border-radius: 14px; cursor: pointer; font-weight: 700; transition: 0.3s; width: 100%; margin-top: 10px; }
-        .btn-bet { background: var(--primary); color: #000; text-transform: uppercase; font-size: 0.8rem; }
-        .btn-outline { background: transparent; color: #fff; border: 1px solid rgba(255, 255, 255, 0.15); font-size: 0.75rem; width: auto; }
-
-        input { 
-            width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; 
-            border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0,0,0,0.3); 
-            color: white; box-sizing: border-box; outline: none;
+        .btn {
+            border: none;
+            padding: 12px 28px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.3s;
+            width: 100%;
+            margin-top: 10px;
         }
-        input:focus { border-color: var(--primary); }
+
+        .btn-bet {
+            background: var(--primary);
+            color: #000;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            font-size: 0.75rem;
+            width: auto;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 8px 0;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+        }
 
         /* KELLUVA VAHVISTUSPANNU */
         .floating-bet-bar {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 850px; background: rgba(11, 14, 20, 0.95); 
-            backdrop-filter: blur(25px); border-radius: 24px; padding: 18px 30px; 
-            display: none; justify-content: space-between; align-items: center; z-index: 1500;
-            border: 1px solid var(--primary); box-shadow: 0 15px 50px rgba(0,0,0,0.8);
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 850px;
+            background: rgba(11, 14, 20, 0.95);
+            backdrop-filter: blur(25px);
+            border-radius: 24px;
+            padding: 18px 30px;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1500;
+            border: 1px solid var(--primary);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
         }
 
-        #selected-chips-container { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
-        .bet-chip { background: rgba(243, 156, 18, 0.1); color: var(--primary); padding: 8px 14px; border-radius: 12px; font-size: 0.75rem; border: 1px solid rgba(243, 156, 18, 0.2); white-space: nowrap; }
+        #selected-chips-container {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .bet-chip {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--primary);
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            border: 1px solid rgba(243, 156, 18, 0.2);
+            white-space: nowrap;
+        }
 
         @media (max-width: 900px) {
-            .match-card { flex-direction: column; align-items: flex-start; }
-            .teams { flex-direction: column; width: 100%; margin-bottom: 15px; padding: 0; }
-            .details { border: none; padding: 0; }
-            .stats-grid { grid-template-columns: 1fr; }
+            .match-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .teams {
+                flex-direction: column;
+                width: 100%;
+                margin-bottom: 15px;
+                padding: 0;
+            }
+
+            .details {
+                border: none;
+                padding: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
 </head>
+
 <body>
 
-<div id="loading-global">
-    <div class="spinner"></div>
-    <p style="color: var(--primary); margin-top: 15px; font-size: 0.8rem; letter-spacing: 2px; font-weight: 800;">LADATAAN...</p>
-</div>
-
-<nav class="navbar">
-    <div class="nav-logo">CS2 VEDOT</div>
-    <div id="nav-auth">
-        <button class="btn btn-bet" style="width:auto" onclick="app.openAuthModal()">KIRJAUDU</button>
-    </div>
-</nav>
-
-<div class="container">
-    <div class="banner-container">
-        <img src="Banner2.png" alt="Banner" class="main-banner" onerror="this.src='https://images.alphacoders.com/133/1331713.png'">
+    <div id="loading-global">
+        <div class="spinner"></div>
+        <p style="color: var(--primary); margin-top: 15px; font-size: 0.8rem; letter-spacing: 2px; font-weight: 800;">
+            LADATAAN...</p>
     </div>
 
-    <div id="user-section" style="display: none;">
-        <div class="stats-grid">
-            <div class="stat-card"><span class="stat-value" id="user-points">0.00</span><span class="stat-label">Pisteet</span></div>
-            <div class="stat-card"><span class="stat-value" id="user-wins">0</span><span class="stat-label">Voitot</span></div>
-            <div class="stat-card"><span class="stat-value" id="user-acc">0%</span><span class="stat-label">Osumat</span></div>
+    <nav class="navbar">
+        <div class="nav-logo">CS2 VEDOT</div>
+        <div style="display:flex; gap:10px; align-items:center;">
+            <button id="wallet-btn" class="btn btn-outline" style="display:none;" onclick="app.connectWallet()">CONNECT
+                WALLET</button>
+            <div id="nav-auth">
+                <button class="btn btn-bet" style="width:auto" onclick="app.openAuthModal()">KIRJAUDU</button>
+            </div>
         </div>
-        <div class="leaderboard-section">
-            <table class="leaderboard-table"><tbody id="leaderboard-body"></tbody></table>
+    </nav>
+
+    <div class="container">
+        <div class="banner-container">
+            <img src="Banner2.png" alt="Banner" class="main-banner"
+                onerror="this.src='https://images.alphacoders.com/133/1331713.png'">
+        </div>
+
+        <div id="user-section" style="display: none;">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-value" id="user-points">0.00</span>
+                    <span class="stat-label">Pisteet</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="user-wins">0</span>
+                    <span class="stat-label">Voitot</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="wallet-balance">0.00 ETH</span>
+                    <span class="stat-label" id="wallet-addr-disp">Ei lompakkoa</span>
+                </div>
+            </div>
+            <div class="leaderboard-section">
+                <table class="leaderboard-table">
+                    <tbody id="leaderboard-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="match-container">
+            <div style="text-align:center; padding: 50px; color:#444;">Haetaan kohteita...</div>
+        </div>
+
+        <div id="my-bets-section" style="display: none;">
+            <div class="tournament-header">Omat asetetut vedot</div>
+            <div id="my-bets-list"></div>
         </div>
     </div>
-    
-    <div id="match-container"><div style="text-align:center; padding: 50px; color:#444;">Haetaan kohteita...</div></div>
-    
-    <div id="my-bets-section" style="display: none;">
-        <div class="tournament-header">Omat asetetut vedot</div>
-        <div id="my-bets-list"></div>
+
+    <div class="modal-overlay" id="auth-modal">
+        <div class="glass-card">
+            <h2 style="color:var(--primary); margin-bottom:10px;">Tervetuloa</h2>
+            <button class="google-btn" onclick="app.loginGoogle()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20" style="margin-right:10px;">
+                    <path fill="#EA4335"
+                        d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+                    <path fill="#4285F4"
+                        d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+                    <path fill="#FBBC05"
+                        d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.19z" />
+                    <path fill="#34A853"
+                        d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+                </svg>
+                Jatka Googlella
+            </button>
+            <div style="margin: 15px 0; color: #444; font-size:0.7rem; font-weight:800;">TAI SÄHKÖPOSTILLA</div>
+            <input type="email" id="login-email" placeholder="Sähköposti">
+            <input type="password" id="login-pass" placeholder="Salasana">
+            <button class="btn btn-bet" onclick="app.loginEmail()">Kirjaudu</button>
+            <button class="btn" style="background:transparent; color:var(--text-dim); font-size:0.8rem;"
+                onclick="app.showRegister()">Luo uusi tili</button>
+            <button class="btn" style="background:transparent; color:#444; margin-top:10px; font-size:0.7rem;"
+                onclick="app.closeAuthModal()">Sulje</button>
+        </div>
     </div>
-</div>
 
-<div class="modal-overlay" id="auth-modal">
-    <div class="glass-card">
-        <h2 style="color:var(--primary); margin-bottom:10px;">Tervetuloa</h2>
-        <button class="google-btn" onclick="app.loginGoogle()">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20" style="margin-right:10px;">
-                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-            </svg>
-            Jatka Googlella
-        </button>
-        <div style="margin: 15px 0; color: #444; font-size:0.7rem; font-weight:800;">TAI SÄHKÖPOSTILLA</div>
-        <input type="email" id="login-email" placeholder="Sähköposti">
-        <input type="password" id="login-pass" placeholder="Salasana">
-        <button class="btn btn-bet" onclick="app.loginEmail()">Kirjaudu</button>
-        <button class="btn" style="background:transparent; color:var(--text-dim); font-size:0.8rem;" onclick="app.showRegister()">Luo uusi tili</button>
-        <button class="btn" style="background:transparent; color:#444; margin-top:10px; font-size:0.7rem;" onclick="app.closeAuthModal()">Sulje</button>
+    <div class="modal-overlay" id="register-modal">
+        <div class="glass-card">
+            <h2 style="color:var(--primary); margin-bottom:10px;">Luo tili</h2>
+            <input type="text" id="reg-username" placeholder="Valitse käyttäjänimi (väh. 3 merkkiä)" maxlength="15">
+            <input type="email" id="reg-email" placeholder="Sähköposti">
+            <input type="password" id="reg-pass" placeholder="Salasana (väh. 6 merkkiä)">
+            <button class="btn btn-bet" onclick="app.registerNewUser()">Luo tili ja aloita</button>
+            <button class="btn" style="background:transparent; color:var(--text-dim); font-size:0.8rem;"
+                onclick="app.showLogin()">Takaisin kirjautumiseen</button>
+        </div>
     </div>
-</div>
 
-<div class="modal-overlay" id="register-modal">
-    <div class="glass-card">
-        <h2 style="color:var(--primary); margin-bottom:10px;">Luo tili</h2>
-        <input type="text" id="reg-username" placeholder="Valitse käyttäjänimi (väh. 3 merkkiä)" maxlength="15">
-        <input type="email" id="reg-email" placeholder="Sähköposti">
-        <input type="password" id="reg-pass" placeholder="Salasana (väh. 6 merkkiä)">
-        <button class="btn btn-bet" onclick="app.registerNewUser()">Luo tili ja aloita</button>
-        <button class="btn" style="background:transparent; color:var(--text-dim); font-size:0.8rem;" onclick="app.showLogin()">Takaisin kirjautumiseen</button>
+    <div class="modal-overlay" id="username-modal">
+        <div class="glass-card">
+            <h2 style="color:var(--primary);">Pelaajanimi</h2>
+            <p style="color:var(--text-dim); font-size:0.8rem; margin-bottom:15px;">Valitse nimi, joka näkyy muille
+                listalla.</p>
+            <input type="text" id="username-input" placeholder="Nimimerkki..." maxlength="15">
+            <button class="btn btn-bet" onclick="app.saveUsername()">Tallenna ja aloita</button>
+        </div>
     </div>
-</div>
 
-<div class="modal-overlay" id="username-modal">
-    <div class="glass-card">
-        <h2 style="color:var(--primary);">Pelaajanimi</h2>
-        <p style="color:var(--text-dim); font-size:0.8rem; margin-bottom:15px;">Valitse nimi, joka näkyy muille listalla.</p>
-        <input type="text" id="username-input" placeholder="Nimimerkki..." maxlength="15">
-        <button class="btn btn-bet" onclick="app.saveUsername()">Tallenna ja aloita</button>
+    <div class="floating-bet-bar" id="bet-bar">
+        <div id="selected-chips-container"></div>
+        <div style="display:flex; align-items:center; gap:20px;">
+            <button class="btn btn-bet" id="submit-bets-btn" onclick="app.submitAllBets()"
+                style="width:auto;">Vahvista</button>
+        </div>
     </div>
-</div>
 
-<div class="floating-bet-bar" id="bet-bar">
-    <div id="selected-chips-container"></div>
-    <div style="display:flex; align-items:center; gap:20px;">
-        <button class="btn btn-bet" id="submit-bets-btn" onclick="app.submitAllBets()" style="width:auto;">Vahvista</button>
-    </div>
-</div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyCyj2zKkNw8JP_gG0F6AjyHiIr_EUjbFMA",
+            authDomain: "cs2-leaderboard.firebaseapp.com",
+            projectId: "cs2-leaderboard",
+            storageBucket: "cs2-leaderboard.firebasestorage.app",
+            messagingSenderId: "596762153722",
+            appId: "1:596762153722:web:6d16722d0be705c21baf43"
+        };
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyCyj2zKkNw8JP_gG0F6AjyHiIr_EUjbFMA",
-        authDomain: "cs2-leaderboard.firebaseapp.com",
-        projectId: "cs2-leaderboard",
-        storageBucket: "cs2-leaderboard.firebasestorage.app",
-        messagingSenderId: "596762153722",
-        appId: "1:596762153722:web:6d16722d0be705c21baf43"
-    };
+        const fbApp = initializeApp(firebaseConfig);
+        const auth = getAuth(fbApp);
+        const db = getFirestore(fbApp);
+        const provider = new GoogleAuthProvider();
+        const PROXY_URL = 'https://cs-api-proxy.jukka-vuori.workers.dev/';
+        const LOGO_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='50' height='50'%3E%3Cpath fill='%232a303c' d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'/%3E%3Cpath fill='%23555' d='M12 4L5 7v5c0 4.5 2.9 8.9 7 10.3 4.1-1.4 7-5.8 7-10.3V7l-7-3z'/%3E%3Ctext x='12' y='16' font-family='Arial, sans-serif' font-size='8' fill='%23aaa' text-anchor='middle'%3ECS%3C/text%3E%3C/svg%3E";
 
-    const fbApp = initializeApp(firebaseConfig);
-    const auth = getAuth(fbApp);
-    const db = getFirestore(fbApp);
-    const provider = new GoogleAuthProvider();
-    const PROXY_URL = 'https://cs-api-proxy.jukka-vuori.workers.dev/'; 
-    const LOGO_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='50' height='50'%3E%3Cpath fill='%232a303c' d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'/%3E%3Cpath fill='%23555' d='M12 4L5 7v5c0 4.5 2.9 8.9 7 10.3 4.1-1.4 7-5.8 7-10.3V7l-7-3z'/%3E%3Ctext x='12' y='16' font-family='Arial, sans-serif' font-size='8' fill='%23aaa' text-anchor='middle'%3ECS%3C/text%3E%3C/svg%3E";
+        window.app = {
+            user: null, username: null, matches: [], selectedBets: {},
+            walletProvider: null, walletSigner: null, walletAddress: null,
 
-    window.app = {
-        user: null, username: null, matches: [], selectedBets: {},
+            connectWallet: async function () {
+                if (!window.ethereum) return alert("MetaMask ei ole asennettu!");
+                try {
+                    this.walletProvider = new ethers.BrowserProvider(window.ethereum);
+                    this.walletSigner = await this.walletProvider.getSigner();
+                    this.walletAddress = await this.walletSigner.getAddress();
 
-        // --- LATAUSLOGIIKKA (LISÄTTY) ---
-        showGlobalLoading: () => {
-            const el = document.getElementById('loading-global');
-            el.style.display = 'flex';
-            el.style.opacity = '1';
-        },
-        hideGlobalLoading: () => {
-            const el = document.getElementById('loading-global');
-            el.style.opacity = '0';
-            setTimeout(() => el.style.display = 'none', 500);
-        },
+                    document.getElementById('wallet-btn').innerText = this.walletAddress.substring(0, 6) + "..." + this.walletAddress.slice(-4);
+                    document.getElementById('wallet-addr-disp').innerText = "Yhdistetty";
+                    this.updateBalance();
 
-        init: function() {
-            this.getMatches();
-            onAuthStateChanged(auth, async (user) => {
-                const navAuth = document.getElementById('nav-auth');
-                if (user) {
-                    this.user = user;
-                    const profile = await getDoc(doc(db, "profiles", user.uid));
-                    if (profile.exists()) {
-                        this.username = profile.data().username;
-                        navAuth.innerHTML = `<span style="font-size:0.8rem; color:var(--text-dim); margin-right:15px;">${this.username}</span><button class="btn btn-outline" onclick="app.logout()">ULOS</button>`;
-                        document.getElementById('user-section').style.display = 'block';
-                        document.getElementById('my-bets-section').style.display = 'block';
-                        document.getElementById('username-modal').style.display = 'none';
-                        this.listenToLeaderboard();
-                        this.checkResults();
-                        this.closeAuthModal();
+                    // Kuunnellaan tilin vaihtoa
+                    window.ethereum.on('accountsChanged', (accounts) => {
+                        if (accounts.length === 0) {
+                            this.walletAddress = null;
+                            document.getElementById('wallet-btn').innerText = "CONNECT WALLET";
+                            document.getElementById('wallet-addr-disp').innerText = "Ei lompakkoa";
+                            document.getElementById('wallet-balance').innerText = "0.00 ETH";
+                        } else {
+                            // Päivitetään yhteys, jos tili vaihtuu
+                            this.connectWallet();
+                        }
+                    });
+
+                } catch (e) {
+                    console.error(e);
+                    alert("Virhe lompakon yhdistämisessä: " + e.message);
+                }
+            },
+
+            updateBalance: async function () {
+                if (!this.walletAddress || !this.walletProvider) return;
+                try {
+                    const bal = await this.walletProvider.getBalance(this.walletAddress);
+                    const eth = ethers.formatEther(bal);
+                    document.getElementById('wallet-balance').innerText = parseFloat(eth).toFixed(4) + " ETH";
+                } catch (e) {
+                    console.error("Balance error:", e);
+                }
+            },
+
+            // --- LATAUSLOGIIKKA (LISÄTTY) ---
+            showGlobalLoading: () => {
+                const el = document.getElementById('loading-global');
+                el.style.display = 'flex';
+                el.style.opacity = '1';
+            },
+            hideGlobalLoading: () => {
+                const el = document.getElementById('loading-global');
+                el.style.opacity = '0';
+                setTimeout(() => el.style.display = 'none', 500);
+            },
+
+            init: function () {
+                this.getMatches();
+                onAuthStateChanged(auth, async (user) => {
+                    const navAuth = document.getElementById('nav-auth');
+                    if (user) {
+                        this.user = user;
+                        const profile = await getDoc(doc(db, "profiles", user.uid));
+                        if (profile.exists()) {
+                            this.username = profile.data().username;
+                            navAuth.innerHTML = `<span style="font-size:0.8rem; color:var(--text-dim); margin-right:15px;">${this.username}</span><button class="btn btn-outline" onclick="app.logout()">ULOS</button>`;
+                            document.getElementById('user-section').style.display = 'block';
+                            document.getElementById('wallet-btn').style.display = 'block'; // Näytä lompakkonappi kirjautuneille
+                            document.getElementById('my-bets-section').style.display = 'block';
+                            document.getElementById('username-modal').style.display = 'none';
+                            this.listenToLeaderboard();
+                            this.checkResults();
+                            this.closeAuthModal();
+                        } else {
+                            document.getElementById('username-modal').style.display = 'flex';
+                        }
                     } else {
-                        document.getElementById('username-modal').style.display = 'flex';
+                        this.user = null;
+                        navAuth.innerHTML = `<button class="btn btn-bet" style="width:auto" onclick="app.openAuthModal()">KIRJAUDU</button>`;
+                        document.getElementById('user-section').style.display = 'none';
+                        document.getElementById('my-bets-section').style.display = 'none';
                     }
-                } else {
-                    this.user = null;
-                    navAuth.innerHTML = `<button class="btn btn-bet" style="width:auto" onclick="app.openAuthModal()">KIRJAUDU</button>`;
-                    document.getElementById('user-section').style.display = 'none';
-                    document.getElementById('my-bets-section').style.display = 'none';
-                }
-                this.renderMatches();
-                this.hideGlobalLoading(); // Piilotetaan, kun alkutila on selvillä
-            });
-        },
-
-        validateEmail: (email) => {
-            return String(email).toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-        },
-
-        openAuthModal: () => document.getElementById('auth-modal').style.display = 'flex',
-        closeAuthModal: () => { 
-            document.getElementById('auth-modal').style.display = 'none';
-            document.getElementById('register-modal').style.display = 'none';
-        },
-        showRegister: () => {
-            document.getElementById('auth-modal').style.display = 'none';
-            document.getElementById('register-modal').style.display = 'flex';
-        },
-        showLogin: () => {
-            document.getElementById('register-modal').style.display = 'none';
-            document.getElementById('auth-modal').style.display = 'flex';
-        },
-
-        loginGoogle: () => { app.showGlobalLoading(); signInWithPopup(auth, provider); },
-        loginEmail: () => {
-            const email = document.getElementById('login-email').value;
-            const pass = document.getElementById('login-pass').value;
-            signInWithEmailAndPassword(auth, email, pass).catch(e => alert("Virhe: " + e.message));
-        },
-        
-        registerNewUser: async function() {
-            const email = document.getElementById('reg-email').value;
-            const pass = document.getElementById('reg-pass').value;
-            const name = document.getElementById('reg-username').value.trim();
-            if (name.length < 3) return alert("Nimimerkki liian lyhyt!");
-            if (!this.validateEmail(email)) return alert("Sähköposti virheellinen!");
-            if (pass.length < 6) return alert("Salasana liian lyhyt!");
-            
-            app.showGlobalLoading();
-            try {
-                const cred = await createUserWithEmailAndPassword(auth, email, pass);
-                await setDoc(doc(db, "profiles", cred.user.uid), { username: name });
-                await setDoc(doc(db, "users", name), { points: 0, wins: 0, totalBets: 0 });
-                location.reload();
-            } catch (e) { alert(e.message); app.hideGlobalLoading(); }
-        },
-
-        saveUsername: async function() {
-            const name = document.getElementById('username-input').value.trim();
-            if (name.length < 3) return alert("Nimi liian lyhyt!");
-            app.showGlobalLoading();
-            try {
-                await setDoc(doc(db, "profiles", this.user.uid), { username: name });
-                await setDoc(doc(db, "users", name), { points: 0, wins: 0, totalBets: 0 });
-                location.reload(); 
-            } catch (e) { alert(e.message); app.hideGlobalLoading(); }
-        },
-
-        logout: () => signOut(auth).then(() => location.reload()),
-
-        getMatches: async function() {
-            try {
-                const r = await fetch(`${PROXY_URL}?endpoint=${encodeURIComponent("/csgo/matches/upcoming?per_page=50&sort=begin_at")}`);
-                this.matches = await r.json();
-                this.renderMatches();
-            } catch (e) { console.error(e); }
-        },
-
-        renderMatches: function() {
-            const container = document.getElementById('match-container');
-            if (this.matches.length === 0) return;
-            container.innerHTML = '';
-            const grouped = this.matches.reduce((acc, m) => {
-                if (!acc[m.league.name]) acc[m.league.name] = [];
-                acc[m.league.name].push(m); return acc;
-            }, {});
-
-            for (const [league, ms] of Object.entries(grouped)) {
-                let html = `<div class="tournament-section"><div class="tournament-header">${league}</div>`;
-                ms.forEach(m => {
-                    const t1 = m.opponents[0]?.opponent || { name: "TBD" };
-                    const t2 = m.opponents[1]?.opponent || { name: "TBD" };
-                    if (t1.name === "TBD" || t2.name === "TBD") return;
-                    const odds = this.calcOdds(t1.name, t2.name, m.id);
-                    const sel = this.selectedBets[m.id];
-                    html += `<div class="match-card"><div class="teams"><div class="team"><img src="${t1.image_url || LOGO_PLACEHOLDER}" onerror="this.src='${LOGO_PLACEHOLDER}'"><span>${t1.name}</span><span class="odds-badge ${sel?.team === t1.name ? 'selected' : ''}" onclick="app.toggleSelection('${m.id}', '${t1.name}', ${odds[0]}, '${t1.name} vs ${t2.name}')">${odds[0]}</span></div><div class="team"><img src="${t2.image_url || LOGO_PLACEHOLDER}" onerror="this.src='${LOGO_PLACEHOLDER}'"><span>${t2.name}</span><span class="odds-badge ${sel?.team === t2.name ? 'selected' : ''}" onclick="app.toggleSelection('${m.id}', '${t2.name}', ${odds[1]}, '${t1.name} vs ${t2.name}')">${odds[1]}</span></div></div><div class="details"><span class="time">${new Date(m.begin_at).toLocaleString('fi-FI', { weekday: 'short', hour: '2-digit', minute: '2-digit' })}</span></div></div>`;
+                    this.renderMatches();
+                    this.hideGlobalLoading(); // Piilotetaan, kun alkutila on selvillä
                 });
-                container.innerHTML += html + '</div>';
-            }
-        },
+            },
 
-        calcOdds: (n1, n2, id) => {
-            const seed = (parseInt(id.toString().slice(-3)) / 1000) * 0.1 - 0.05;
-            return [(0.92/(0.5+seed)).toFixed(2), (0.92/(0.5-seed)).toFixed(2)];
-        },
+            validateEmail: (email) => {
+                return String(email).toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+            },
 
-        toggleSelection: function(matchId, team, odds, matchName) {
-            if (!this.user) { this.openAuthModal(); return; }
-            if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(50);
-            if (this.selectedBets[matchId] && this.selectedBets[matchId].team === team) { delete this.selectedBets[matchId]; }
-            else { this.selectedBets[matchId] = { team, odds, matchName }; }
-            this.renderMatches(); this.updateBetBar();
-        },
+            openAuthModal: () => document.getElementById('auth-modal').style.display = 'flex',
+            closeAuthModal: () => {
+                document.getElementById('auth-modal').style.display = 'none';
+                document.getElementById('register-modal').style.display = 'none';
+            },
+            showRegister: () => {
+                document.getElementById('auth-modal').style.display = 'none';
+                document.getElementById('register-modal').style.display = 'flex';
+            },
+            showLogin: () => {
+                document.getElementById('register-modal').style.display = 'none';
+                document.getElementById('auth-modal').style.display = 'flex';
+            },
 
-        updateBetBar: function() {
-            const keys = Object.keys(this.selectedBets);
-            const bar = document.getElementById('bet-bar');
-            const container = document.getElementById('selected-chips-container');
-            if (keys.length > 0) {
-                bar.style.display = 'flex'; container.innerHTML = '';
-                keys.forEach(id => { const b = this.selectedBets[id]; container.innerHTML += `<div class="bet-chip">${b.team} (${b.odds})</div>`; });
-            } else { bar.style.display = 'none'; }
-        },
+            loginGoogle: () => { app.showGlobalLoading(); signInWithPopup(auth, provider); },
+            loginEmail: () => {
+                const email = document.getElementById('login-email').value;
+                const pass = document.getElementById('login-pass').value;
+                signInWithEmailAndPassword(auth, email, pass).catch(e => alert("Virhe: " + e.message));
+            },
 
-        submitAllBets: async function() {
-            const promises = Object.entries(this.selectedBets).map(([id, data]) => setDoc(doc(db, "users", this.username, "bets", id), { ...data, result: 'pending' }));
-            await Promise.all(promises);
-            this.selectedBets = {}; this.updateBetBar(); this.renderMatches(); this.checkResults();
-            alert("Vedot asetetu!");
-        },
+            registerNewUser: async function () {
+                const email = document.getElementById('reg-email').value;
+                const pass = document.getElementById('reg-pass').value;
+                const name = document.getElementById('reg-username').value.trim();
+                if (name.length < 3) return alert("Nimimerkki liian lyhyt!");
+                if (!this.validateEmail(email)) return alert("Sähköposti virheellinen!");
+                if (pass.length < 6) return alert("Salasana liian lyhyt!");
 
-        listenToLeaderboard: function() {
-            onSnapshot(query(collection(db, "users"), orderBy("points", "desc")), (snap) => {
-                const tbody = document.getElementById('leaderboard-body');
-                tbody.innerHTML = '';
-                snap.docs.forEach((doc, i) => {
-                    const d = doc.data();
-                    tbody.innerHTML += `<tr><td style="color:#444; width:30px;">#${i+1}</td><td>${doc.id}</td><td style="text-align:right; font-weight:800; color:var(--primary)">${(d.points||0).toFixed(2)}</td></tr>`;
-                    if (doc.id === this.username) {
-                        document.getElementById('user-points').innerText = (d.points || 0).toFixed(2);
-                        document.getElementById('user-wins').innerText = d.wins || 0;
-                        document.getElementById('user-acc').innerText = d.totalBets > 0 ? Math.round((d.wins/d.totalBets)*100)+"%" : "0%";
+                app.showGlobalLoading();
+                try {
+                    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                    await setDoc(doc(db, "profiles", cred.user.uid), { username: name });
+                    await setDoc(doc(db, "users", name), { points: 0, wins: 0, totalBets: 0 });
+                    location.reload();
+                } catch (e) { alert(e.message); app.hideGlobalLoading(); }
+            },
+
+            saveUsername: async function () {
+                const name = document.getElementById('username-input').value.trim();
+                if (name.length < 3) return alert("Nimi liian lyhyt!");
+                app.showGlobalLoading();
+                try {
+                    await setDoc(doc(db, "profiles", this.user.uid), { username: name });
+                    await setDoc(doc(db, "users", name), { points: 0, wins: 0, totalBets: 0 });
+                    location.reload();
+                } catch (e) { alert(e.message); app.hideGlobalLoading(); }
+            },
+
+            logout: () => signOut(auth).then(() => location.reload()),
+
+            getMatches: async function () {
+                try {
+                    const r = await fetch(`${PROXY_URL}?endpoint=${encodeURIComponent("/csgo/matches/upcoming?per_page=50&sort=begin_at")}`);
+                    this.matches = await r.json();
+                    this.renderMatches();
+                } catch (e) { console.error(e); }
+            },
+
+            renderMatches: function () {
+                const container = document.getElementById('match-container');
+                if (this.matches.length === 0) return;
+                container.innerHTML = '';
+                const grouped = this.matches.reduce((acc, m) => {
+                    if (!acc[m.league.name]) acc[m.league.name] = [];
+                    acc[m.league.name].push(m); return acc;
+                }, {});
+
+                for (const [league, ms] of Object.entries(grouped)) {
+                    let html = `<div class="tournament-section"><div class="tournament-header">${league}</div>`;
+                    ms.forEach(m => {
+                        const t1 = m.opponents[0]?.opponent || { name: "TBD" };
+                        const t2 = m.opponents[1]?.opponent || { name: "TBD" };
+                        if (t1.name === "TBD" || t2.name === "TBD") return;
+                        const odds = this.calcOdds(t1.name, t2.name, m.id);
+                        const sel = this.selectedBets[m.id];
+                        html += `<div class="match-card"><div class="teams"><div class="team"><img src="${t1.image_url || LOGO_PLACEHOLDER}" onerror="this.src='${LOGO_PLACEHOLDER}'"><span>${t1.name}</span><span class="odds-badge ${sel?.team === t1.name ? 'selected' : ''}" onclick="app.toggleSelection('${m.id}', '${t1.name}', ${odds[0]}, '${t1.name} vs ${t2.name}')">${odds[0]}</span></div><div class="team"><img src="${t2.image_url || LOGO_PLACEHOLDER}" onerror="this.src='${LOGO_PLACEHOLDER}'"><span>${t2.name}</span><span class="odds-badge ${sel?.team === t2.name ? 'selected' : ''}" onclick="app.toggleSelection('${m.id}', '${t2.name}', ${odds[1]}, '${t1.name} vs ${t2.name}')">${odds[1]}</span></div></div><div class="details"><span class="time">${new Date(m.begin_at).toLocaleString('fi-FI', { weekday: 'short', hour: '2-digit', minute: '2-digit' })}</span></div></div>`;
+                    });
+                    container.innerHTML += html + '</div>';
+                }
+            },
+
+            calcOdds: (n1, n2, id) => {
+                const seed = (parseInt(id.toString().slice(-3)) / 1000) * 0.1 - 0.05;
+                return [(0.92 / (0.5 + seed)).toFixed(2), (0.92 / (0.5 - seed)).toFixed(2)];
+            },
+
+            toggleSelection: function (matchId, team, odds, matchName) {
+                if (!this.user) { this.openAuthModal(); return; }
+                if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(50);
+                if (this.selectedBets[matchId] && this.selectedBets[matchId].team === team) { delete this.selectedBets[matchId]; }
+                else { this.selectedBets[matchId] = { team, odds, matchName }; }
+                this.renderMatches(); this.updateBetBar();
+            },
+
+            updateBetBar: function () {
+                const keys = Object.keys(this.selectedBets);
+                const bar = document.getElementById('bet-bar');
+                const container = document.getElementById('selected-chips-container');
+                if (keys.length > 0) {
+                    bar.style.display = 'flex'; container.innerHTML = '';
+                    keys.forEach(id => { const b = this.selectedBets[id]; container.innerHTML += `<div class="bet-chip">${b.team} (${b.odds})</div>`; });
+                } else { bar.style.display = 'none'; }
+            },
+
+            submitAllBets: async function () {
+                if (!this.walletSigner) {
+                    alert("Yhdistä lompakko (Connect Wallet) ennen vetojen asettamista!");
+                    return;
+                }
+
+                const betEntries = Object.entries(this.selectedBets);
+                if (betEntries.length === 0) return alert("Ei valittuja vetoja!");
+
+                // Create a message summary for signing
+                let message = "Vahvista vedot / Confirm Bets:\n";
+                betEntries.forEach(([id, data]) => {
+                    message += `- ${data.matchName}: ${data.team} (${data.odds})\n`;
+                });
+                message += `\nTimestamp: ${Date.now()}`;
+
+                app.showGlobalLoading();
+                try {
+                    // Request signature
+                    const signature = await this.walletSigner.signMessage(message);
+                    console.log("Bets signed:", signature);
+
+                    const promises = betEntries.map(([id, data]) =>
+                        setDoc(doc(db, "users", this.username, "bets", id), {
+                            ...data,
+                            result: 'pending',
+                            signature: signature,
+                            wallet: this.walletAddress
+                        })
+                    );
+
+                    await Promise.all(promises);
+                    this.selectedBets = {};
+                    this.updateBetBar();
+                    this.renderMatches();
+                    this.checkResults();
+                    app.hideGlobalLoading();
+                    alert("Vedot vahvistettu ja allekirjoitettu lohkoketjussa!");
+                } catch (e) {
+                    console.error(e);
+                    app.hideGlobalLoading();
+                    alert("Virhe tai peruutus: " + e.message);
+                }
+            },
+
+            listenToLeaderboard: function () {
+                onSnapshot(query(collection(db, "users"), orderBy("points", "desc")), (snap) => {
+                    const tbody = document.getElementById('leaderboard-body');
+                    tbody.innerHTML = '';
+                    snap.docs.forEach((doc, i) => {
+                        const d = doc.data();
+                        tbody.innerHTML += `<tr><td style="color:#444; width:30px;">#${i + 1}</td><td>${doc.id}</td><td style="text-align:right; font-weight:800; color:var(--primary)">${(d.points || 0).toFixed(2)}</td></tr>`;
+                        if (doc.id === this.username) {
+                            document.getElementById('user-points').innerText = (d.points || 0).toFixed(2);
+                            document.getElementById('user-wins').innerText = d.wins || 0;
+                            document.getElementById('user-acc').innerText = d.totalBets > 0 ? Math.round((d.wins / d.totalBets) * 100) + "%" : "0%";
+                        }
+                    });
+                });
+            },
+
+            checkResults: async function () {
+                const betsSnap = await getDocs(collection(db, "users", this.username, "bets"));
+                const r = await fetch(`${PROXY_URL}?endpoint=${encodeURIComponent("/csgo/matches/past?per_page=50")}`);
+                const past = await r.json();
+                const list = document.getElementById('my-bets-list'); list.innerHTML = '';
+                let pts = 0, wins = 0, finished = 0;
+                for (const betDoc of betsSnap.docs) {
+                    const b = betDoc.data();
+                    const match = past.find(x => x.id == betDoc.id);
+                    let res = b.result;
+                    if (match && match.winner && res === 'pending') {
+                        res = (match.winner.name === b.team) ? 'win' : 'loss';
+                        await setDoc(doc(db, "users", this.username, "bets", betDoc.id), { result: res }, { merge: true });
                     }
-                });
-            });
-        },
-
-        checkResults: async function() {
-            const betsSnap = await getDocs(collection(db, "users", this.username, "bets"));
-            const r = await fetch(`${PROXY_URL}?endpoint=${encodeURIComponent("/csgo/matches/past?per_page=50")}`);
-            const past = await r.json();
-            const list = document.getElementById('my-bets-list'); list.innerHTML = '';
-            let pts = 0, wins = 0, finished = 0;
-            for (const betDoc of betsSnap.docs) {
-                const b = betDoc.data();
-                const match = past.find(x => x.id == betDoc.id);
-                let res = b.result;
-                if (match && match.winner && res === 'pending') {
-                    res = (match.winner.name === b.team) ? 'win' : 'loss';
-                    await setDoc(doc(db, "users", this.username, "bets", betDoc.id), { result: res }, { merge: true });
-                }
-                if (res === 'win') { wins++; pts += (10 * b.odds); finished++; } else if (res === 'loss') { finished++; }
-                list.innerHTML += `<div style="background:var(--card-bg); padding:15px; border-radius:16px; margin-bottom:10px; border-left:4px solid ${res==='win'?'#2ecc71':res==='loss'?'#e74c3c':'#333'}">
+                    if (res === 'win') { wins++; pts += (10 * b.odds); finished++; } else if (res === 'loss') { finished++; }
+                    list.innerHTML += `<div style="background:var(--card-bg); padding:15px; border-radius:16px; margin-bottom:10px; border-left:4px solid ${res === 'win' ? '#2ecc71' : res === 'loss' ? '#e74c3c' : '#333'}">
                     <div style="font-size:0.75rem; color:var(--text-dim)">${b.matchName}</div>
                     <div style="font-weight:700">${b.team} (${b.odds})</div>
                 </div>`;
+                }
+                await setDoc(doc(db, "users", this.username), { points: pts, wins: wins, totalBets: finished }, { merge: true });
             }
-            await setDoc(doc(db, "users", this.username), { points: pts, wins: wins, totalBets: finished }, { merge: true });
-        }
-    };
-    app.init();
-</script>
+        };
+        app.init();
+    </script>
 </body>
+
 </html>
