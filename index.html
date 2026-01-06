@@ -41,16 +41,22 @@
         .nav-links { display: flex; gap: 20px; }
         .nav-link { font-size: 0.8rem; font-weight: 700; color: var(--text-dim); text-decoration: none; text-transform: uppercase; cursor: pointer; }
         .nav-link.active { color: #fff; }
+
         .nav-right { display: flex; align-items: center; gap: 15px; }
 
+        /* Duel-tyyliset pillerit */
         .balance-pill {
             display: flex; align-items: center; background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border); padding: 2px 2px 2px 15px; border-radius: 12px; gap: 12px;
         }
-        .balance-value { font-weight: 800; font-size: 0.9rem; color: var(--primary); }
-        .deposit-btn { background: var(--primary); color: #000; border: none; padding: 8px 15px; border-radius: 10px; font-weight: 800; font-size: 0.75rem; cursor: pointer; }
+        .balance-value { font-weight: 800; font-size: 0.8rem; color: var(--primary); white-space: nowrap; }
+        .eth-value { font-weight: 800; font-size: 0.8rem; color: #fff; border-left: 1px solid var(--glass-border); padding-left: 12px; margin-left: 5px; }
+        
+        .deposit-btn { background: var(--primary); color: #000; border: none; padding: 8px 15px; border-radius: 10px; font-weight: 800; font-size: 0.75rem; cursor: pointer; transition: 0.2s; }
+        .deposit-btn:hover { opacity: 0.8; }
+        .btn-wallet { background: transparent; color: #fff; border: 1px solid var(--glass-border); padding: 8px 15px; border-radius: 10px; font-weight: 700; font-size: 0.75rem; cursor: pointer; }
 
-        /* --- MODALS (ORIGINAL STYLE) --- */
+        /* --- MODALS --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px);
@@ -60,13 +66,18 @@
             background: rgba(26, 31, 41, 0.95); padding: 40px; border-radius: 32px;
             border: 1px solid var(--glass-border); text-align: center; width: 90%; max-width: 400px;
         }
+        .google-btn {
+            background: #ffffff !important; color: #1f1f1f !important; display: flex; align-items: center;
+            justify-content: center; gap: 12px; width: 100%; border: none; border-radius: 12px;
+            padding: 12px; font-weight: 600; cursor: pointer; margin-bottom: 20px; transition: 0.2s;
+        }
         input {
             width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0, 0, 0, 0.3);
             color: white; box-sizing: border-box; outline: none;
         }
 
-        /* --- MATCH CARDS (ORIGINAL ASSETTELU) --- */
+        /* --- MATCH CARDS --- */
         .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
         .match-card {
             background: var(--card-bg); margin-bottom: 15px; padding: 20px;
@@ -76,7 +87,6 @@
         .teams { display: flex; align-items: center; gap: 30px; flex: 3; padding-right: 30px; }
         .team { display: flex; align-items: center; gap: 15px; flex: 1; }
         .team img { width: 36px; height: 36px; object-fit: contain; }
-        .team span { font-weight: 700; }
         .odds-badge {
             background: rgba(255, 255, 255, 0.04); color: var(--primary);
             padding: 10px 18px; border-radius: 12px; font-weight: 800;
@@ -85,11 +95,10 @@
         .odds-badge.selected { background: var(--primary) !important; color: #000 !important; }
         .details { flex: 1; text-align: right; border-left: 1px solid var(--glass-border); padding-left: 25px; min-width: 100px; }
         
-        .live-score-box { font-family: 'monospace'; color: var(--primary); font-weight: 900; font-size: 1.2rem; letter-spacing: 2px; }
+        /* --- UI ELEMENTS --- */
         .tournament-header { margin: 40px 0 15px 0; font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
         .tournament-header::after { content: ""; height: 1px; background: var(--glass-border); flex: 1; }
-
-        /* --- CHAT --- */
+        
         #chat-sidebar {
             position: fixed; right: -350px; top: 70px; width: 320px; height: calc(100% - 70px);
             background: var(--nav-bg); z-index: 2000; transition: 0.3s ease;
@@ -124,7 +133,17 @@
 
     <div class="modal-overlay" id="auth-modal">
         <div class="glass-card">
-            <h2 style="color:var(--primary); margin-bottom:10px;">Kirjaudu</h2>
+            <h2 style="color:var(--primary); margin-bottom:20px;">Kirjaudu</h2>
+            <button class="google-btn" onclick="app.loginGoogle()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20">
+                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.19z" />
+                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+                </svg>
+                Jatka Googlella
+            </button>
+            <div style="color:var(--text-dim); font-size:0.7rem; margin-bottom:15px; font-weight:800;">TAI SÄHKÖPOSTILLA</div>
             <input type="email" id="login-email" placeholder="Sähköposti">
             <input type="password" id="login-pass" placeholder="Salasana">
             <button class="deposit-btn" style="width:100%; margin-top:10px; padding:12px;" onclick="app.loginEmail()">KIRJAUDU SISÄÄN</button>
@@ -135,7 +154,7 @@
 
     <div class="modal-overlay" id="register-modal">
         <div class="glass-card">
-            <h2 style="color:var(--primary); margin-bottom:10px;">Luo tili</h2>
+            <h2 style="color:var(--primary); margin-bottom:20px;">Luo tili</h2>
             <input type="text" id="reg-username" placeholder="Käyttäjänimi">
             <input type="email" id="reg-email" placeholder="Sähköposti">
             <input type="password" id="reg-pass" placeholder="Salasana">
@@ -147,7 +166,7 @@
     <div id="chat-sidebar">
         <div id="chat-messages"></div>
         <div style="padding: 20px; border-top: 1px solid var(--glass-border); display: flex; gap: 10px;">
-            <input type="text" id="chat-input" placeholder="Viesti...">
+            <input type="text" id="chat-input" style="flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); color:#fff; padding:10px; border-radius:10px; outline:none;" placeholder="Viesti...">
             <button class="deposit-btn" onclick="app.sendChatMessage()">➜</button>
         </div>
     </div>
@@ -158,21 +177,7 @@
         </div>
 
         <div id="user-section" style="display: none;">
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px;">
-                <div style="background:var(--card-bg); padding:15px; border-radius:20px; text-align:center; border:1px solid var(--glass-border);">
-                    <div id="user-points" style="font-size:1.4rem; font-weight:900; color:var(--primary)">0.00</div>
-                    <div style="font-size:0.7rem; color:var(--text-dim); text-transform:uppercase;">Pisteet</div>
-                </div>
-                <div style="background:var(--card-bg); padding:15px; border-radius:20px; text-align:center; border:1px solid var(--glass-border);">
-                    <div id="user-wins" style="font-size:1.4rem; font-weight:900; color:var(--success)">0</div>
-                    <div style="font-size:0.7rem; color:var(--text-dim); text-transform:uppercase;">Voitot</div>
-                </div>
-                <div style="background:var(--card-bg); padding:15px; border-radius:20px; text-align:center; border:1px solid var(--glass-border);">
-                    <div id="wallet-balance" style="font-size:1.4rem; font-weight:900; color:#fff">0.00 ETH</div>
-                    <div style="font-size:0.7rem; color:var(--text-dim); text-transform:uppercase;">Lompakko</div>
-                </div>
             </div>
-        </div>
 
         <div id="live-container"></div>
         <div id="match-container"></div>
@@ -188,8 +193,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, collection, query, orderBy, limit, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { ethers } from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCyj2zKkNw8JP_gG0F6AjyHiIr_EUjbFMA",
@@ -203,11 +209,13 @@
         const fbApp = initializeApp(firebaseConfig);
         const auth = getAuth(fbApp);
         const db = getFirestore(fbApp);
+        const provider = new GoogleAuthProvider();
         const PROXY_URL = 'https://cs-api-proxy.jukka-vuori.workers.dev/';
         const LOGO_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='50' height='50'%3E%3Cpath fill='%232a303c' d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'/%3E%3Cpath fill='%23555' d='M12 4L5 7v5c0 4.5 2.9 8.9 7 10.3 4.1-1.4 7-5.8 7-10.3V7l-7-3z'/%3E%3Ctext x='12' y='16' font-family='Arial, sans-serif' font-size='8' fill='%23aaa' text-anchor='middle'%3ECS%3C/text%3E%3C/svg%3E";
 
         window.app = {
             user: null, username: null, selectedBets: {},
+            walletAddress: null, walletBalance: "0.00",
 
             init: function() {
                 this.updateMatches();
@@ -219,17 +227,57 @@
                     if (user) {
                         this.user = user;
                         const profile = await getDoc(doc(db, "profiles", user.uid));
-                        this.username = profile.data()?.username || "Pelaaja";
-                        authContainer.innerHTML = `<button class="btn-chat-toggle" onclick="app.toggleChat()">CHAT</button><div class="balance-pill"><span class="balance-value">0.00 PTS</span><button class="deposit-btn" onclick="app.logout()">ULOS</button></div>`;
-                        document.getElementById('user-section').style.display = 'block';
+                        this.username = profile.data()?.username || user.displayName || "Pelaaja";
+                        
+                        this.renderNavbarLoggedIn();
                         this.closeAuthModal();
+                    } else {
+                        this.user = null;
+                        this.renderNavbarLoggedOut();
                     }
                     document.getElementById('loading-global').style.display = 'none';
                 });
                 document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') this.sendChatMessage(); });
             },
 
-            // AUTH FUNCTIONS (ORIGINAL)
+            renderNavbarLoggedIn: function() {
+                const container = document.getElementById('nav-auth-container');
+                const walletLabel = this.walletAddress ? `${this.walletAddress.slice(0,6)}...` : "LIITÄ LOMPAKKO";
+                container.innerHTML = `
+                    <button class="btn-chat-toggle" onclick="app.toggleChat()">CHAT</button>
+                    <button class="btn-wallet" id="wallet-btn" onclick="app.connectWallet()">${walletLabel}</button>
+                    <div class="balance-pill">
+                        <span class="balance-value">0.00 PTS</span>
+                        <span class="eth-value" id="nav-eth-bal">${this.walletBalance} ETH</span>
+                        <button class="deposit-btn" onclick="app.logout()">ULOS</button>
+                    </div>
+                `;
+            },
+
+            renderNavbarLoggedOut: function() {
+                document.getElementById('nav-auth-container').innerHTML = `
+                    <button class="btn-chat-toggle" onclick="app.toggleChat()">CHAT</button>
+                    <button class="deposit-btn" onclick="app.openAuthModal()">KIRJAUDU</button>
+                `;
+            },
+
+            // WALLET FUNCTIONS
+            connectWallet: async function() {
+                if (!window.ethereum) return alert("Asenna MetaMask!");
+                try {
+                    const provider = new ethers.BrowserProvider(window.ethereum);
+                    const accounts = await provider.send("eth_requestAccounts", []);
+                    this.walletAddress = accounts[0];
+                    
+                    const balance = await provider.getBalance(this.walletAddress);
+                    this.walletBalance = parseFloat(ethers.formatEther(balance)).toFixed(4);
+                    
+                    if (this.user) this.renderNavbarLoggedIn();
+                } catch (e) { console.error(e); }
+            },
+
+            // AUTH FUNCTIONS
+            loginGoogle: () => signInWithPopup(auth, provider).catch(e => alert(e.message)),
             openAuthModal: () => document.getElementById('auth-modal').style.display = 'flex',
             closeAuthModal: () => {
                 document.getElementById('auth-modal').style.display = 'none';
@@ -258,7 +306,6 @@
                 try {
                     const res = await createUserWithEmailAndPassword(auth, e, p);
                     await setDoc(doc(db, "profiles", res.user.uid), { username: u });
-                    await setDoc(doc(db, "users", u), { points: 0, wins: 0 });
                 } catch (err) { alert(err.message); }
             },
 
@@ -339,4 +386,5 @@
         app.init();
     </script>
 </body>
+
 </html>
