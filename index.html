@@ -27,7 +27,7 @@
             background: radial-gradient(circle at 50% -20%, #1e2533, #07090d);
             color: var(--text-main);
             margin: 0;
-            padding-bottom: 140px;
+            padding-bottom: 200px;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -47,93 +47,107 @@
             text-decoration: none; text-transform: uppercase; cursor: pointer; 
             padding: 8px 12px; border-radius: 8px; transition: 0.2s;
         }
-        .nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
         .nav-link.active { color: #fff; background: rgba(243, 156, 18, 0.15); border: 1px solid rgba(243, 156, 18, 0.3); }
 
         .nav-right { display: flex; align-items: center; gap: 10px; }
         .balance-pill {
             display: flex; align-items: center; background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border); padding: 5px 5px 5px 15px; border-radius: 12px; gap: 12px;
+            border: 1px solid var(--glass-border); padding: 2px 2px 2px 15px; border-radius: 12px; gap: 12px;
         }
-        .eth-display { font-weight: 800; font-size: 0.85rem; color: #fff; }
-        .eth-display span { color: var(--primary); margin-left: 4px; }
+        .eth-display { font-weight: 800; font-size: 0.8rem; color: #fff; }
+        .eth-display span { color: var(--primary); }
         .deposit-btn { background: var(--primary); color: #000; border: none; padding: 8px 15px; border-radius: 10px; font-weight: 800; font-size: 0.75rem; cursor: pointer; }
         .btn-wallet { background: transparent; color: #fff; border: 1px solid var(--glass-border); padding: 8px 15px; border-radius: 10px; font-weight: 700; font-size: 0.75rem; cursor: pointer; }
 
-        /* --- CONTAINER & VIEWS --- */
+        /* --- MODALS (ORIGINAL GLASS STYLE) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
+        }
+        .glass-card {
+            background: rgba(26, 31, 41, 0.95); padding: 40px; border-radius: 32px;
+            border: 1px solid var(--glass-border); text-align: center; width: 90%; max-width: 400px;
+        }
+        .google-btn {
+            background: #ffffff !important; color: #1f1f1f !important; display: flex; align-items: center;
+            justify-content: center; gap: 12px; width: 100%; border: none; border-radius: 12px;
+            padding: 12px; font-weight: 600; cursor: pointer; margin-bottom: 20px;
+        }
+        .modal-input {
+            width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0, 0, 0, 0.3);
+            color: white; box-sizing: border-box; outline: none;
+        }
+
+        /* --- CONTAINER & BANNER --- */
         .container { max-width: 1100px; margin: 20px auto; padding: 0 15px; width: 100%; }
         .section-view { display: none; animation: fadeIn 0.3s ease; }
         .section-view.active { display: block; }
-
-        /* --- BANNER --- */
-        .banner-container {
-            width: 100%; height: 250px; margin-bottom: 25px; border-radius: 24px; 
-            overflow: hidden; border: 1px solid var(--glass-border);
-        }
+        .banner-container { width: 100%; height: 250px; margin-bottom: 25px; border-radius: 24px; overflow: hidden; border: 1px solid var(--glass-border); }
         .banner-container img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- MATCH CARDS (ALIGNED) --- */
+        /* --- MATCH CARDS (PERFECT ALIGNMENT) --- */
         .match-card {
             background: var(--card-bg); margin-bottom: 12px; padding: 15px 25px;
             border-radius: 20px; display: flex; justify-content: space-between;
-            align-items: center; border: 1px solid var(--glass-border);
-            width: 100%;
+            align-items: center; border: 1px solid var(--glass-border); width: 100%;
         }
         .teams { display: flex; align-items: center; gap: 40px; flex: 3; }
-        
-        /* Grid-asettelu joka pakottaa kertoimet samaan linjaan */
         .team { 
-            display: grid; 
-            grid-template-columns: 36px 1fr 80px; 
-            align-items: center; 
-            gap: 15px; 
-            flex: 1; 
-            min-width: 0; 
+            display: grid; grid-template-columns: 36px 1fr 80px; 
+            align-items: center; gap: 15px; flex: 1; min-width: 0; 
         }
         .team img { width: 36px; height: 36px; object-fit: contain; flex-shrink: 0; }
-        .team span { font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .team span { font-weight: 700; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .odds-badge {
             background: rgba(255, 255, 255, 0.04); color: var(--primary);
             padding: 10px; border-radius: 12px; font-weight: 800;
             border: 1px solid rgba(255, 255, 255, 0.06); cursor: pointer; 
-            width: 80px; text-align: center; flex-shrink: 0; transition: 0.2s;
+            width: 80px; text-align: center; flex-shrink: 0; transition: 0.15s;
         }
-        .odds-badge:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--primary); }
         .odds-badge.selected { background: var(--primary) !important; color: #000 !important; border-color: #fff !important; }
-        
-        .details { 
-            flex: 1; text-align: right; border-left: 1px solid var(--glass-border); 
-            padding-left: 25px; min-width: 110px; flex-shrink: 0;
-        }
-        .live-score-box { font-family: 'monospace'; color: var(--primary); font-weight: 900; font-size: 1.2rem; letter-spacing: 1px; }
+        .details { flex: 1; text-align: right; border-left: 1px solid var(--glass-border); padding-left: 25px; min-width: 100px; }
 
-        /* --- MOBIILI-OPTIMOINTI --- */
-        @media (max-width: 900px) {
-            .navbar { height: auto; flex-direction: column; padding: 15px; gap: 10px; }
+        /* --- MOBIILI (STRICT GRID) --- */
+        @media (max-width: 768px) {
+            .navbar { height: auto; flex-direction: column; padding: 10px; gap: 10px; }
             .nav-left { width: 100%; justify-content: space-between; }
             .nav-links { order: 3; width: 100%; justify-content: center; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 12px; overflow-x: auto; }
-            
             .banner-container { height: 140px; }
-            
             .match-card { flex-direction: column; align-items: stretch; padding: 15px; }
-            .teams { flex-direction: column; gap: 10px; padding: 0; margin-bottom: 12px; width: 100%; }
-            
-            /* Mobiilin grid säilytetään siistinä */
-            .team { 
-                grid-template-columns: 36px 1fr 70px; 
-                gap: 12px;
-            }
-            .odds-badge { width: 70px; font-size: 0.85rem; }
+            .teams { flex-direction: column; gap: 10px; margin-bottom: 12px; width: 100%; }
+            .team { grid-template-columns: 36px 1fr 70px; gap: 12px; width: 100%; }
+            .odds-badge { width: 70px; font-size: 0.8rem; }
             .details { border: none; border-top: 1px solid var(--glass-border); padding: 10px 0 0 0; text-align: center; width: 100%; }
         }
 
-        /* --- PROFIILI JA CHAT --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); display: none; justify-content: center; align-items: center; z-index: 2000; }
-        .glass-card { background: rgba(26, 31, 41, 0.95); padding: 30px; border-radius: 24px; border: 1px solid var(--glass-border); text-align: center; width: 90%; max-width: 400px; }
-        .google-btn { background: #fff !important; color: #1f1f1f !important; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; margin-bottom: 20px; border:none; }
-        input { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: #fff; box-sizing: border-box; }
-        #chat-sidebar { position: fixed; right: -350px; top: 0; width: 320px; height: 100%; background: var(--nav-bg); z-index: 2000; transition: 0.3s ease; border-left: 1px solid var(--glass-border); display: flex; flex-direction: column; }
+        /* --- FIXED BET BAR --- */
+        .floating-bet-bar {
+            display: none; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 850px; background: rgba(11, 14, 20, 0.98);
+            backdrop-filter: blur(25px); border-radius: 24px; padding: 20px 30px;
+            border: 1px solid var(--primary); z-index: 1500; flex-direction: column;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8); gap: 15px;
+        }
+        .bet-bar-top { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .bet-bar-bottom { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 20px; }
+        
+        .btn-clear {
+            background: rgba(231, 76, 60, 0.1); color: var(--danger);
+            border: 1px solid rgba(231, 76, 60, 0.2); padding: 6px 12px;
+            border-radius: 8px; font-size: 0.65rem; font-weight: 800;
+            cursor: pointer; text-transform: uppercase;
+        }
+        .btn-clear:hover { background: var(--danger); color: #fff; }
+
+        .stat-group { display: flex; gap: 20px; }
+        .stat-item { text-align: center; }
+        .stat-item small { display: block; font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 2px; }
+        .stat-item div { font-weight: 900; font-size: 1rem; color: #fff; }
+
+        #chat-sidebar { position: fixed; right: -320px; top: 0; width: 320px; height: 100%; background: var(--nav-bg); z-index: 2000; transition: 0.3s ease; border-left: 1px solid var(--glass-border); display: flex; flex-direction: column; }
         #chat-sidebar.open { right: 0; }
         .tournament-header { margin: 30px 0 15px 0; font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
         .tournament-header::after { content: ""; height: 1px; background: var(--glass-border); flex: 1; }
@@ -162,54 +176,50 @@
 
     <div class="modal-overlay" id="auth-modal">
         <div class="glass-card">
-            <h2 style="color:var(--primary); margin-bottom:15px;">Kirjaudu</h2>
+            <h2 style="color:var(--primary); margin-bottom:20px; font-weight:900;">ALPHA ODDS</h2>
             <button class="google-btn" onclick="app.loginGoogle()">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"> Jatka Googlella
             </button>
-            <input type="email" id="login-email" placeholder="Sähköposti">
-            <input type="password" id="login-pass" placeholder="Salasana">
-            <button class="deposit-btn" style="width:100%; margin-top:10px; padding:12px;" onclick="app.loginEmail()">SISÄÄN</button>
-            <button style="background:none; border:none; color:var(--text-dim); margin-top:15px; cursor:pointer;" onclick="app.showRegister()">Luo uusi tili</button>
+            <div style="color:var(--text-dim); font-size:0.7rem; margin-bottom:15px; font-weight:800;">TAI SÄHKÖPOSTILLA</div>
+            <input type="email" id="login-email" class="modal-input" placeholder="Sähköposti">
+            <input type="password" id="login-pass" class="modal-input" placeholder="Salasana">
+            <button class="deposit-btn" style="width:100%; margin-top:10px; padding:14px;" onclick="app.loginEmail()">KIRJAUDU SISÄÄN</button>
+            <button style="background:none; border:none; color:var(--text-dim); margin-top:20px; cursor:pointer; font-size:0.8rem;" onclick="app.showRegister()">Luo uusi tili</button>
             <button style="background:none; border:none; color:var(--text-dim); margin-top:10px; cursor:pointer;" onclick="app.closeAuthModal()">Sulje</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="register-modal">
         <div class="glass-card">
-            <h2 style="color:var(--primary); margin-bottom:15px;">Luo tili</h2>
-            <input type="text" id="reg-username" placeholder="Käyttäjänimi">
-            <input type="email" id="reg-email" placeholder="Sähköposti">
-            <input type="password" id="reg-pass" placeholder="Salasana">
-            <button class="deposit-btn" style="width:100%; margin-top:10px; padding:12px;" onclick="app.registerNewUser()">REKISTERÖIDY</button>
-            <button style="background:none; border:none; color:var(--text-dim); margin-top:15px; cursor:pointer;" onclick="app.showLogin()">Takaisin</button>
+            <h2 style="color:var(--primary); margin-bottom:20px;">Luo uusi tili</h2>
+            <input type="text" id="reg-username" class="modal-input" placeholder="Käyttäjänimi">
+            <input type="email" id="reg-email" class="modal-input" placeholder="Sähköposti">
+            <input type="password" id="reg-pass" class="modal-input" placeholder="Salasana">
+            <button class="deposit-btn" style="width:100%; margin-top:10px; padding:14px;" onclick="app.registerNewUser()">LUO TILI</button>
+            <button style="background:none; border:none; color:var(--text-dim); margin-top:20px; cursor:pointer;" onclick="app.showLogin()">Takaisin</button>
         </div>
     </div>
 
     <div id="chat-sidebar">
         <div style="padding: 20px; border-bottom: 1px solid var(--glass-border); font-weight: 900; color: var(--primary); display: flex; justify-content: space-between;">
-            <span>YHTEISÖ CHAT</span>
-            <span style="cursor:pointer" onclick="app.toggleChat()">✕</span>
+            <span>ALPHA CHAT</span><span style="cursor:pointer" onclick="app.toggleChat()">✕</span>
         </div>
         <div id="chat-messages" style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:12px;"></div>
         <div style="padding: 20px; border-top: 1px solid var(--glass-border); display: flex; gap: 10px;">
-            <input type="text" id="chat-input" placeholder="Viesti..." style="margin:0;">
+            <input type="text" id="chat-input" placeholder="Viesti..." style="flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); color:#fff; padding:10px; border-radius:10px; outline:none;">
             <button class="deposit-btn" onclick="app.sendChatMessage()">➜</button>
         </div>
     </div>
 
     <div class="container">
         <div id="matches-view" class="section-view active">
-            <div class="banner-container">
-                <img src="banner2.png" alt="Banner" onerror="this.src='https://images.alphacoders.com/133/1331713.png'">
-            </div>
-
-            <div class="nav-links" style="margin-bottom: 25px; justify-content: flex-start; overflow-x: auto; white-space: nowrap;">
+            <div class="banner-container"><img src="banner2.png" alt="Banner" onerror="this.src='https://images.alphacoders.com/133/1331713.png'"></div>
+            <div class="nav-links" style="margin-bottom: 25px; justify-content: flex-start; overflow-x: auto;">
                 <div class="nav-link active game-tab" onclick="app.setGame('csgo', this)">CS2</div>
                 <div class="nav-link game-tab" onclick="app.setGame('lol', this)">LoL</div>
                 <div class="nav-link game-tab" onclick="app.setGame('valorant', this)">Valorant</div>
                 <div class="nav-link game-tab" onclick="app.setGame('dota2', this)">Dota 2</div>
             </div>
-            
             <div id="live-container"></div>
             <div id="match-container"></div>
         </div>
@@ -231,11 +241,20 @@
         </div>
     </div>
 
-    <div id="bet-bar" style="display:none; position:fixed; bottom:30px; left:50%; transform:translateX(-50%); width:90%; max-width:850px; background:rgba(11,14,20,0.95); backdrop-filter:blur(25px); border-radius:24px; padding:18px 30px; border:1px solid var(--primary); z-index:1500; justify-content:space-between; align-items:center; box-shadow: 0 10px 40px rgba(0,0,0,0.6);">
-        <div id="selected-chips" style="display:flex; gap:10px; overflow-x:auto; margin-bottom: 5px;"></div>
-        <div style="display:flex; gap:15px; align-items:center; width: 100%; justify-content: space-between;">
-            <input type="number" id="bet-amount" style="width:100px; background:rgba(0,0,0,0.3); border:1px solid #444; color:#fff; border-radius:10px; padding:10px;" value="0.01" step="0.001">
-            <button class="deposit-btn" style="flex:1; margin-left:15px;" onclick="app.submitAllBets()">VAHVISTA VETO</button>
+    <div id="bet-bar" class="floating-bet-bar">
+        <div class="bet-bar-top">
+            <div id="selected-chips" style="display:flex; gap:8px; overflow-x:auto; flex:1;"></div>
+            <button class="btn-clear" onclick="app.clearBets()">Tyhjennä</button>
+        </div>
+        <div class="bet-bar-bottom">
+            <div class="stat-group">
+                <div class="stat-item"><small>KERROIN</small><div id="display-total-odds">1.00</div></div>
+                <div class="stat-item"><small>VOITTO</small><div id="display-potential-win" style="color:var(--success)">0.00</div></div>
+            </div>
+            <div style="display:flex; gap:10px; flex:1; justify-content:flex-end;">
+                <input type="number" id="bet-amount" oninput="app.updateBetBar()" style="width:90px; background:rgba(0,0,0,0.3); border:1px solid #444; color:#fff; border-radius:10px; padding:12px; font-weight:800;" value="0.01" step="0.001">
+                <button id="submit-bet-btn" class="deposit-btn" style="padding:12px 20px;" onclick="app.submitAllBets()">VAHVISTA VETO</button>
+            </div>
         </div>
     </div>
 
@@ -245,15 +264,7 @@
         import { getFirestore, doc, getDoc, setDoc, collection, query, orderBy, limit, onSnapshot, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { ethers } from "https://esm.sh/ethers@6.7.0";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCyj2zKkNw8JP_gG0F6AjyHiIr_EUjbFMA",
-            authDomain: "cs2-leaderboard.firebaseapp.com",
-            projectId: "cs2-leaderboard",
-            storageBucket: "cs2-leaderboard.firebasestorage.app",
-            messagingSenderId: "596762153722",
-            appId: "1:596762153722:web:6d16722d0be705c21baf43"
-        };
-
+        const firebaseConfig = { apiKey: "AIzaSyCyj2zKkNw8JP_gG0F6AjyHiIr_EUjbFMA", authDomain: "cs2-leaderboard.firebaseapp.com", projectId: "cs2-leaderboard", storageBucket: "cs2-leaderboard.firebasestorage.app", messagingSenderId: "596762153722", appId: "1:596762153722:web:6d16722d0be705c21baf43" };
         const fbApp = initializeApp(firebaseConfig);
         const auth = getAuth(fbApp);
         const db = getFirestore(fbApp);
@@ -262,26 +273,17 @@
         const LOGO_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='50' height='50'%3E%3Cpath fill='%232a303c' d='M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z'/%3E%3C/svg%3E";
 
         window.app = {
-            user: null, username: null, selectedBets: {},
-            walletAddress: null, walletBalance: "0.00",
-            selectedGame: 'csgo',
+            user: null, username: null, selectedBets: {}, walletAddress: null, walletBalance: "0.00", selectedGame: 'csgo',
 
             init: function() {
-                this.updateMatches();
-                this.listenToChat();
-                setInterval(() => this.updateMatches(), 45000);
-
+                this.updateMatches(); this.listenToChat(); setInterval(() => this.updateMatches(), 45000);
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
                         this.user = user;
                         const profile = await getDoc(doc(db, "profiles", user.uid));
                         this.username = profile.data()?.username || user.displayName || "Pelaaja";
-                        this.renderNavbarLoggedIn();
-                        this.closeAuthModal();
-                    } else {
-                        this.user = null;
-                        this.renderNavbarLoggedOut();
-                    }
+                        this.renderNavbarLoggedIn(); this.closeAuthModal();
+                    } else { this.user = null; this.renderNavbarLoggedOut(); }
                     document.getElementById('loading-global').style.display = 'none';
                 });
                 document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') this.sendChatMessage(); });
@@ -298,20 +300,14 @@
             setGame: function(game, element) {
                 this.selectedGame = game;
                 document.querySelectorAll('.game-tab').forEach(l => l.classList.remove('active'));
-                element.classList.add('active');
-                this.updateMatches();
+                element.classList.add('active'); this.updateMatches();
             },
 
             renderNavbarLoggedIn: function() {
-                const container = document.getElementById('nav-auth-container');
                 const walletLabel = this.walletAddress ? `${this.walletAddress.slice(0,6)}...` : "LOMPAKKO";
-                container.innerHTML = `
+                document.getElementById('nav-auth-container').innerHTML = `
                     <button class="btn-wallet" onclick="app.connectWallet()">${walletLabel}</button>
-                    <div class="balance-pill">
-                        <div class="eth-display">${this.walletBalance} <span>ETH</span></div>
-                        <button class="deposit-btn" onclick="app.logout()">OUT</button>
-                    </div>
-                `;
+                    <div class="balance-pill"><div class="eth-display">${this.walletBalance} <span>ETH</span></div><button class="deposit-btn" onclick="app.logout()">OUT</button></div>`;
             },
 
             renderNavbarLoggedOut: function() {
@@ -325,24 +321,57 @@
                     const accounts = await provider.send("eth_requestAccounts", []);
                     this.walletAddress = accounts[0];
                     const balance = await provider.getBalance(this.walletAddress);
-                    this.walletBalance = parseFloat(ethers.formatEther(balance)).toFixed(4);
-                    document.getElementById('prof-address').innerText = this.walletAddress;
-                    document.getElementById('prof-balance').innerText = this.walletBalance + " ETH";
+                    this.walletBalance = parseFloat(ethers.formatEther(balance)).toFixed(3);
                     if (this.user) this.renderNavbarLoggedIn();
                 } catch (e) { console.error(e); }
             },
 
+            toggleBet: function(id, team, odds, matchName) {
+                if (this.selectedBets[id]?.team === team) delete this.selectedBets[id];
+                else this.selectedBets[id] = { team, odds, matchName };
+                this.updateBetBar(); this.updateMatches();
+            },
+
+            clearBets: function() {
+                this.selectedBets = {}; this.updateBetBar(); this.updateMatches();
+            },
+
+            updateBetBar: function() {
+                const bar = document.getElementById('bet-bar');
+                const keys = Object.keys(this.selectedBets);
+                if (keys.length === 0) { bar.style.display = 'none'; return; }
+                bar.style.display = 'flex';
+                
+                const btn = document.getElementById('submit-bet-btn');
+                btn.innerText = keys.length > 1 ? "VAHVISTA YHDISTELMÄ" : "VAHVISTA VETO";
+
+                document.getElementById('selected-chips').innerHTML = keys.map(k => `<span style="background:var(--primary); color:#000; padding:4px 10px; border-radius:8px; font-size:0.7rem; font-weight:900; white-space:nowrap;">${this.selectedBets[k].team}</span>`).join('');
+                const totalOdds = Object.values(this.selectedBets).reduce((acc, b) => acc * b.odds, 1).toFixed(2);
+                const stake = parseFloat(document.getElementById('bet-amount').value) || 0;
+                document.getElementById('display-total-odds').innerText = totalOdds;
+                document.getElementById('display-potential-win').innerText = (totalOdds * stake).toFixed(4);
+            },
+
+            submitAllBets: async function() {
+                if (!this.user) return this.openAuthModal();
+                if (!this.walletAddress) return Swal.fire("Lompakko", "Yhdistä lompakko!", "warning");
+                const comboBet = { type: 'combo', selections: Object.values(this.selectedBets), totalOdds: document.getElementById('display-total-odds').innerText, stake: document.getElementById('bet-amount').value, timestamp: Date.now(), result: 'pending' };
+                await addDoc(collection(db, "users", this.username, "bets"), comboBet);
+                Swal.fire("Vahvistettu!", "Veto on lähetetty.", "success");
+                this.selectedBets = {}; this.updateBetBar(); this.updateMatches();
+            },
+
             loadHistory: async function() {
-                if (!this.user) return;
                 const container = document.getElementById('history-container');
                 const snap = await getDocs(collection(db, "users", this.username, "bets"));
                 if (snap.empty) { container.innerHTML = '<div style="color:var(--text-dim)">Ei vetoja.</div>'; return; }
                 container.innerHTML = snap.docs.map(doc => {
-                    const b = doc.data();
-                    const status = b.result || 'pending';
+                    const b = doc.data(); const status = b.result || 'pending';
+                    const selections = b.selections ? b.selections.map(s => `• ${s.team} (${s.odds})`).join('<br>') : `${b.team} (@${b.odds})`;
                     return `<div style="background:var(--card-bg); padding:15px; border-radius:15px; margin-bottom:10px; border-left:4px solid ${status === 'win' ? 'var(--success)' : status === 'loss' ? 'var(--danger)' : '#555'}">
-                        <div style="font-weight:700">${b.team} @${b.odds}</div>
-                        <div style="font-size:0.75rem; color:var(--text-dim)">${b.matchName}</div>
+                        <div style="font-size:0.8rem; font-weight:800; color:var(--primary); margin-bottom:5px;">${b.type?.toUpperCase() || 'VETO'}</div>
+                        <div style="font-size:0.85rem;">${selections}</div>
+                        <div style="margin-top:10px; font-weight:800;">${b.stake} ETH (Kerroin: ${b.totalOdds || b.odds})</div>
                     </div>`;
                 }).join('');
             },
@@ -353,16 +382,15 @@
                         fetch(`${PROXY_URL}?endpoint=${encodeURIComponent("/" + this.selectedGame + "/matches/running")}`),
                         fetch(`${PROXY_URL}?endpoint=${encodeURIComponent("/" + this.selectedGame + "/matches/upcoming?per_page=15")}`)
                     ]);
-                    this.renderLive(await liveRes.json());
-                    this.renderUpcoming(await upcomingRes.json());
+                    this.renderLive(await liveRes.json()); this.renderUpcoming(await upcomingRes.json());
                 } catch (e) { console.error(e); }
             },
 
             renderLive: function(matches) {
                 const container = document.getElementById('live-container');
-                if (!matches || !matches.length) { container.innerHTML = ''; return; }
-                container.innerHTML = '<div class="tournament-header"><span class="live-pulse"></span> LIVE</div>' + 
-                    matches.map(m => `<div class="match-card" style="border-color:var(--danger)">
+                if (!matches.length) { container.innerHTML = ''; return; }
+                container.innerHTML = '<div class="tournament-header">LIVE</div>' + matches.map(m => `
+                    <div class="match-card" style="border-color:var(--danger)">
                         <div class="teams">
                             <div class="team"><img src="${m.opponents[0]?.opponent.image_url || LOGO_PLACEHOLDER}" onerror="this.src='${LOGO_PLACEHOLDER}'"><span>${m.opponents[0]?.opponent.name}</span></div>
                             <div class="team"><img src="${m.opponents[1]?.opponent.image_url || LOGO_PLACEHOLDER}" onerror="this.src='${LOGO_PLACEHOLDER}'"><span>${m.opponents[1]?.opponent.name}</span></div>
@@ -373,52 +401,19 @@
 
             renderUpcoming: function(matches) {
                 const container = document.getElementById('match-container');
-                if (!matches || !matches.length) { container.innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-dim);">Ei otteluita tässä lajissa.</div>'; return; }
-                container.innerHTML = '<div class="tournament-header">Tulevat</div>' + 
-                    matches.map(m => {
-                        const t1 = m.opponents[0]?.opponent; const t2 = m.opponents[1]?.opponent;
-                        if (!t1 || !t2) return '';
-                        const sel = this.selectedBets[m.id];
-                        const date = new Date(m.begin_at).toLocaleString('fi-FI', { weekday: 'short', hour: '2-digit', minute: '2-digit' });
-                        return `<div class="match-card">
-                            <div class="teams">
-                                <div class="team">
-                                    <img src="${t1.image_url || LOGO_PLACEHOLDER}" onerror="this.src='${LOGO_PLACEHOLDER}'">
-                                    <span>${t1.name}</span>
-                                    <div class="odds-badge ${sel?.team === t1.name ? 'selected' : ''}" onclick="app.toggleBet('${m.id}', '${t1.name}', 1.85, '${t1.name} vs ${t2.name}')">1.85</div>
-                                </div>
-                                <div class="team">
-                                    <img src="${t2.image_url || LOGO_PLACEHOLDER}" onerror="this.src='${LOGO_PLACEHOLDER}'">
-                                    <span>${t2.name}</span>
-                                    <div class="odds-badge ${sel?.team === t2.name ? 'selected' : ''}" onclick="app.toggleBet('${m.id}', '${t2.name}', 1.85, '${t1.name} vs ${t2.name}')">1.85</div>
-                                </div>
-                            </div>
-                            <div class="details"><span style="font-size:0.8rem; font-weight:800; color:var(--text-dim);">${date}</span></div>
-                        </div>`;
-                    }).join('');
-            },
-
-            toggleBet: function(id, team, odds, matchName) {
-                if (this.selectedBets[id]?.team === team) delete this.selectedBets[id];
-                else this.selectedBets[id] = { team, odds, matchName };
-                this.updateBetBar();
-                this.updateMatches();
-            },
-
-            updateBetBar: function() {
-                const bar = document.getElementById('bet-bar'); const keys = Object.keys(this.selectedBets);
-                bar.style.display = keys.length ? 'flex' : 'none';
-                document.getElementById('selected-chips').innerHTML = keys.map(k => `<span style="background:var(--primary); color:#000; padding:4px 10px; border-radius:8px; font-size:0.7rem; font-weight:900;">${this.selectedBets[k].team}</span>`).join('');
-            },
-
-            submitAllBets: async function() {
-                if (!this.walletAddress) return Swal.fire("Lompakko", "Yhdistä lompakko!", "warning");
-                const entries = Object.entries(this.selectedBets);
-                for (const [id, data] of entries) {
-                    await setDoc(doc(db, "users", this.username, "bets", id), { ...data, stake: document.getElementById('bet-amount').value, result: 'pending', timestamp: Date.now() });
-                }
-                Swal.fire("Vahvistettu!", "Veto asetettu onnistuneesti.", "success");
-                this.selectedBets = {}; this.updateBetBar(); this.updateMatches();
+                if (!matches.length) { container.innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-dim);">Ei otteluita.</div>'; return; }
+                container.innerHTML = '<div class="tournament-header">TULEVAT</div>' + matches.map(m => {
+                    const t1 = m.opponents[0]?.opponent; const t2 = m.opponents[1]?.opponent;
+                    if (!t1 || !t2) return ''; const sel = this.selectedBets[m.id];
+                    const date = new Date(m.begin_at).toLocaleString('fi-FI', { weekday: 'short', hour: '2-digit', minute: '2-digit' });
+                    return `<div class="match-card">
+                        <div class="teams">
+                            <div class="team"><img src="${t1.image_url || LOGO_PLACEHOLDER}" onerror="this.src='${LOGO_PLACEHOLDER}'"><span>${t1.name}</span><div class="odds-badge ${sel?.team === t1.name ? 'selected' : ''}" onclick="app.toggleBet('${m.id}', '${t1.name}', 1.85, '${t1.name} vs ${t2.name}')">1.85</div></div>
+                            <div class="team"><img src="${t2.image_url || LOGO_PLACEHOLDER}" onerror="this.src='${LOGO_PLACEHOLDER}'"><span>${t2.name}</span><div class="odds-badge ${sel?.team === t2.name ? 'selected' : ''}" onclick="app.toggleBet('${m.id}', '${t2.name}', 1.85, '${t1.name} vs ${t2.name}')">1.85</div></div>
+                        </div>
+                        <div class="details"><span style="font-size:0.8rem; font-weight:800; color:var(--text-dim);">${date}</span></div>
+                    </div>`;
+                }).join('');
             },
 
             loginGoogle: () => signInWithPopup(auth, googleProvider),
@@ -443,7 +438,7 @@
                     const container = document.getElementById('chat-messages');
                     container.innerHTML = snap.docs.reverse().map(d => {
                         const m = d.data();
-                        return `<div style="margin-bottom:10px;"><span style="font-size:0.7rem; color:var(--primary); font-weight:800; display:block;">${m.username}</span><div style="background:rgba(255,255,255,0.03); padding:10px; border-radius:10px; font-size:0.85rem;">${m.text}</div></div>`;
+                        return `<div style="margin-bottom:10px;"><span style="font-size:0.7rem; color:var(--primary); font-weight:800; display:block;">${m.username}</span><div style="background:rgba(255,255,255,0.03); padding:10px; border-radius:10px; font-size:0.8rem;">${m.text}</div></div>`;
                     }).join('');
                     container.scrollTop = container.scrollHeight;
                 });
