@@ -51,7 +51,7 @@
         .banner-container img { width: 100%; height: 100%; object-fit: cover; }
         .card-panel { background: var(--card-bg); padding: 30px; border-radius: 24px; border: 1px solid var(--glass-border); margin-bottom: 30px; }
 
-        /* --- SLOTS STYLES (UUSI) --- */
+        /* --- SLOTS STYLES --- */
         .slots-machine { background: #0b0e14; border: 4px solid var(--glass-border); border-radius: 24px; padding: 30px; text-align: center; max-width: 600px; margin: 0 auto; box-shadow: 0 0 50px rgba(0,0,0,0.5); position: relative; }
         .slots-window { display: flex; gap: 10px; background: #000; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 2px solid var(--primary); box-shadow: inset 0 0 20px rgba(0,0,0,0.8); overflow: hidden; height: 160px; align-items: center; }
         .reel { flex: 1; height: 120px; background: linear-gradient(180deg, #111 0%, #222 50%, #111 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 4rem; border: 1px solid #333; position: relative; overflow: hidden; }
@@ -101,6 +101,17 @@
         .roll-pill.win { border-color: var(--success); color: var(--success); background: rgba(46, 204, 113, 0.1); }
         .roll-pill.loss { border-color: var(--text-dim); color: var(--text-dim); opacity: 0.7; }
         .roll-user { color: #fff; font-size: 0.7rem; opacity: 0.8; margin-right: 5px; }
+
+        /* --- GAME HEADER & TABS (NEW) --- */
+        .game-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .game-mode-tabs { display: flex; background: rgba(0,0,0,0.4); padding: 4px; border-radius: 10px; border: 1px solid var(--glass-border); margin: 0 auto 20px auto; width: fit-content; }
+        .mode-tab { padding: 6px 15px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; color: var(--text-dim); cursor: pointer; transition: 0.2s; }
+        .mode-tab.active { background: rgba(255,255,255,0.1); color: #fff; }
+        
+        .input-group { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 12px; border: 1px solid var(--glass-border); }
+        .input-group label { font-size: 0.7rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; flex: 1; text-align:left; }
+        .game-input { background: transparent; border: none; color: #fff; font-weight: 800; text-align: right; width: 100px; outline: none; }
+        .stop-btn { background: var(--danger) !important; color: #fff !important; }
 
         /* --- MATCH CARDS --- */
         .match-card { background: var(--card-bg); margin-bottom: 12px; padding: 15px 25px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--glass-border); width: 100%; cursor: pointer; transition: 0.2s; }
@@ -213,6 +224,9 @@
 
 <body>
 
+    <div id="game-flash-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:1500;"></div>
+    <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; } }</style>
+
     <div id="loading-global"><div style="width: 30px; height: 30px; border: 2px solid rgba(243, 156, 18, 0.1); border-top: 2px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div></div>
 
     <nav class="navbar">
@@ -265,6 +279,11 @@
         <div id="dice-view" class="section-view">
             <h2 style="color:var(--primary)">Dice - Roll Over</h2>
             <div class="dice-container">
+                <div class="game-mode-tabs">
+                    <div class="mode-tab active" onclick="app.setDiceMode('manual', this)">MANUAL</div>
+                    <div class="mode-tab" onclick="app.setDiceMode('auto', this)">AUTO</div>
+                </div>
+
                 <div id="dice-result">50.00</div>
                 <div class="dice-slider-box">
                     <div id="dice-track"></div>
@@ -274,11 +293,18 @@
                     <div class="dice-stat"><small>KERROIN</small><div id="dice-mult">1.96x</div></div>
                     <div class="dice-stat"><small>VOITTOMAHDOLLISUUS</small><div id="dice-chance">48.00%</div></div>
                 </div>
+                
                 <div style="text-align:left; margin-bottom:20px;">
                     <small style="color:var(--text-dim); font-weight:800;">PANOS (ETH)</small>
                     <input type="number" id="dice-stake" style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); border-radius:12px; color:#fff; outline:none;" value="0.01" step="0.001">
                 </div>
-                <button class="deposit-btn" style="width:100%; padding:20px; font-size:1.1rem;" onclick="app.playDice()">HEITÄ NOPPAA</button>
+
+                <div id="dice-auto-controls" style="display:none; margin-bottom:20px; text-align:left;">
+                    <small style="color:var(--text-dim); font-weight:800;">KIERROKSET</small>
+                    <input type="number" id="dice-auto-count" style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); border-radius:12px; color:#fff; outline:none;" value="10">
+                </div>
+
+                <button id="dice-btn" class="deposit-btn" style="width:100%; padding:20px; font-size:1.1rem;" onclick="app.handleDiceClick()">HEITÄ NOPPAA</button>
             </div>
             <div class="dice-history-bar" id="dice-history-container"></div>
         </div>
@@ -286,17 +312,29 @@
         <div id="slots-view" class="section-view">
             <h2 style="color:var(--primary)">Cyber Slots</h2>
             <div class="slots-machine">
+                <div class="game-mode-tabs" style="margin-bottom:20px;">
+                    <div class="mode-tab active" onclick="app.setSlotsMode('manual', this)">MANUAL</div>
+                    <div class="mode-tab" onclick="app.setSlotsMode('auto', this)">AUTO</div>
+                </div>
+
                 <div class="slots-window">
                     <div class="reel" id="reel1"><div class="reel-symbol">7️⃣</div></div>
                     <div class="reel" id="reel2"><div class="reel-symbol">7️⃣</div></div>
                     <div class="reel" id="reel3"><div class="reel-symbol">7️⃣</div></div>
                 </div>
+
                 <div class="slots-controls">
                     <div style="text-align:left;">
                         <small style="color:#888; font-size:0.7rem;">PANOS</small>
                         <input type="number" id="slots-stake" value="0.01" step="0.001" style="width:80px; padding:10px; background:rgba(0,0,0,0.3); border:1px solid #444; border-radius:8px; color:#fff;">
                     </div>
-                    <button class="deposit-btn" style="padding:15px 40px; font-size:1.2rem;" onclick="app.spinSlots()">SPIN</button>
+                    
+                    <div id="slots-auto-controls" style="display:none; text-align:left;">
+                        <small style="color:#888; font-size:0.7rem;">KIERROKSET</small>
+                        <input type="number" id="slots-auto-count" value="10" style="width:80px; padding:10px; background:rgba(0,0,0,0.3); border:1px solid #444; border-radius:8px; color:#fff;">
+                    </div>
+
+                    <button id="slots-btn" class="deposit-btn" style="padding:15px 40px; font-size:1.2rem;" onclick="app.handleSlotsClick()">SPIN</button>
                 </div>
                 <div class="slots-info">
                     3x Sama = Voitto | 💎💎💎 = 50x | 7️⃣7️⃣7️⃣ = 20x
@@ -452,6 +490,7 @@
 
         window.app = {
             user: null, username: null, siteBalance: 0, selectedGame: 'csgo', selectedBets: {}, 
+            diceMode: 'manual', slotsMode: 'manual', autoDiceActive: false, autoSlotsActive: false,
             matchCache: { live: [], upcoming: [] },
 
             init: async function() {
@@ -482,10 +521,6 @@
                         this.user = null;
                         this.renderNavbarLoggedOut();
                         this.updateNavVisibility(false);
-                        const activeSection = document.querySelector('.section-view.active').id;
-                        if (['history-view', 'wallet-view', 'profile-view'].includes(activeSection)) {
-                            this.showSection('matches');
-                        }
                     }
                     document.getElementById('loading-global').style.display = 'none';
                 });
@@ -503,8 +538,8 @@
                 if (!this.user) return;
                 const b = this.siteBalance.toFixed(3) + " ETH";
                 document.getElementById('nav-auth-container').innerHTML = `<div class="balance-pill"><div class="eth-display">${b}</div><button class="deposit-btn" onclick="app.logout()">OUT</button></div>`;
-                if (document.getElementById('prof-site-balance')) document.getElementById('prof-site-balance').innerText = b;
-                if (document.getElementById('edit-username')) document.getElementById('edit-username').value = this.username || "";
+                if(document.getElementById('prof-site-balance')) document.getElementById('prof-site-balance').innerText = b;
+                if(document.getElementById('edit-username')) document.getElementById('edit-username').value = this.username || "";
             },
 
             renderNavbarLoggedOut: function() {
@@ -519,10 +554,7 @@
             showLogin: () => { document.getElementById('register-modal').style.display = 'none'; document.getElementById('auth-modal').style.display = 'flex'; },
 
             showSection: function(s) {
-                if (!this.user && ['history', 'wallet', 'profile'].includes(s)) {
-                    this.openAuthModal();
-                    return;
-                }
+                if (!this.user && ['history', 'wallet', 'profile'].includes(s)) { this.openAuthModal(); return; }
                 document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
                 document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
                 document.getElementById(s + '-view').classList.add('active');
@@ -532,301 +564,159 @@
                 if(s === 'profile') this.loadProfileData();
             },
 
-            setGame: function(g, el) { 
-                this.selectedGame = g; 
-                el.parentElement.querySelectorAll('.game-btn').forEach(b => b.classList.remove('active'));
-                el.classList.add('active'); 
-                this.updateMatches(); 
-            },
-
-            /* --- SLOTS --- */
-            spinSlots: async function() {
-                if (!this.user) return this.openAuthModal();
-                const stake = parseFloat(document.getElementById('slots-stake').value);
-                if (stake > this.siteBalance) return Swal.fire("Hups", "Saldo ei riitä!", "warning");
-
-                // Vähennä panos
-                await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(-stake) });
-
-                // Animaatio päälle
-                document.querySelectorAll('.reel').forEach(r => r.classList.add('spinning'));
-                const symbols = ["🍒", "🍋", "🍇", "💎", "7️⃣"];
-                
-                // Arvo tulos
-                const r1 = symbols[Math.floor(Math.random() * symbols.length)];
-                const r2 = symbols[Math.floor(Math.random() * symbols.length)];
-                const r3 = symbols[Math.floor(Math.random() * symbols.length)];
-
-                // Pysäytä rullat viiveellä
-                setTimeout(() => { document.getElementById('reel1').classList.remove('spinning'); document.getElementById('reel1').innerHTML = `<div class="reel-symbol">${r1}</div>`; }, 1000);
-                setTimeout(() => { document.getElementById('reel2').classList.remove('spinning'); document.getElementById('reel2').innerHTML = `<div class="reel-symbol">${r2}</div>`; }, 1500);
-                
-                setTimeout(async () => {
-                    document.getElementById('reel3').classList.remove('spinning'); 
-                    document.getElementById('reel3').innerHTML = `<div class="reel-symbol">${r3}</div>`;
-                    
-                    // Tarkista voitto
-                    let winMult = 0;
-                    if (r1 === r2 && r2 === r3) {
-                        if (r1 === "💎") winMult = 50;
-                        else if (r1 === "7️⃣") winMult = 20;
-                        else winMult = 5; // Hedelmät
-                    }
-
-                    if (winMult > 0) {
-                        const winAmount = stake * winMult;
-                        Swal.fire(`VOITTO!`, `${winAmount.toFixed(3)} ETH`, 'success');
-                        document.querySelectorAll('.reel').forEach(r => r.classList.add('win-glow'));
-                        setTimeout(() => document.querySelectorAll('.reel').forEach(r => r.classList.remove('win-glow')), 2000);
-                        
-                        await updateDoc(doc(db, "profiles", this.user.uid), { 
-                            balance: increment(winAmount),
-                            totalProfit: increment(winAmount - stake)
-                        });
-                    } else {
-                        await updateDoc(doc(db, "profiles", this.user.uid), { totalProfit: increment(-stake) });
-                    }
-
-                }, 2000);
-            },
-
-            simulateDeposit: async function(currency) {
-                const { value: amount } = await Swal.fire({ title: `Talleta ${currency}`, input: 'number', inputLabel: 'Määrä', showCancelButton: true });
-                if (!amount) return;
-
-                const modal = document.getElementById('deposit-modal');
-                document.getElementById('dep-crypto-name').innerText = currency;
-                const addr = currency === 'BTC' ? 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh' : (currency === 'ETH' ? '0x71C7656EC7ab88b098defB751B7401B5f6d8976F' : '7xKXtg2CN8798kksYGW76WKG83eW671192');
-                document.getElementById('dep-address').innerText = addr;
-                document.getElementById('dep-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${addr}`;
-                
-                document.getElementById('step-1').className = 'step-row active';
-                document.getElementById('step-2').className = 'step-row';
-                document.getElementById('step-3').className = 'step-row';
-                
-                modal.style.display = 'flex';
-
-                setTimeout(() => {
-                    document.getElementById('step-1').className = 'step-row completed';
-                    document.getElementById('step-2').className = 'step-row active';
-                }, 3000);
-
-                setTimeout(async () => {
-                    document.getElementById('step-2').className = 'step-row completed';
-                    document.getElementById('step-3').className = 'step-row completed active';
-                    
-                    const val = parseFloat(amount);
-                    try {
-                        await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(val) });
-                        await addDoc(collection(db, "transactions"), { uid: this.user.uid, type: 'deposit', amount: val, status: 'completed', timestamp: serverTimestamp() });
-                        setTimeout(() => { modal.style.display = 'none'; Swal.fire('Talletus saapui!', '', 'success'); }, 1000);
-                    } catch(e) {
-                        console.error(e);
-                        alert("Virhe talletuksessa. Tarkista oikeudet.");
-                        modal.style.display = 'none';
-                    }
-                }, 6000);
-            },
-
-            uiWithdraw: async function() {
-                const { value: amount } = await Swal.fire({ title: 'Nosta ETH', input: 'number', inputLabel: 'Määrä', showCancelButton: true });
-                if (amount) {
-                    const val = parseFloat(amount);
-                    if(val <= this.siteBalance) {
-                        try {
-                            await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(-val) });
-                            await addDoc(collection(db, "transactions"), { uid: this.user.uid, type: 'withdraw', amount: val, status: 'pending', username: this.username, timestamp: serverTimestamp() });
-                            Swal.fire('Nostopyyntö lähetetty!', 'Ylläpito käsittelee sen pian.', 'info');
-                        } catch(e) { console.error(e); alert("Virhe nostossa."); }
-                    } else {
-                        Swal.fire('Virhe', 'Saldo ei riitä.', 'error');
-                    }
-                }
-            },
-
-            /* --- ADMIN PANEL --- */
-            openAdminMenu: function() { document.getElementById('admin-modal').style.display = 'flex'; },
-            
-            loadPendingWithdrawals: function() {
-                // YKSINKERTAISTETTU KYSELY (EI orderBy)
-                const q = query(collection(db, "transactions"), where("type", "==", "withdraw"), where("status", "==", "pending"));
-                onSnapshot(q, (snap) => {
-                    const container = document.getElementById('admin-content');
-                    if (snap.empty) { container.innerHTML = 'Ei odottavia nostoja.'; return; }
-                    container.innerHTML = snap.docs.map(doc => {
-                        const d = doc.data();
-                        return `<div class="admin-tx-row">
-                            <div><b>${d.username}</b><br><small>${d.amount} ETH</small></div>
-                            <div class="admin-tx-actions">
-                                <button class="btn-approve" onclick="app.approveTx('${doc.id}')">✔</button>
-                                <button class="btn-reject" onclick="app.rejectTx('${doc.id}', '${d.uid}', ${d.amount})">✕</button>
-                            </div>
-                        </div>`;
-                    }).join('');
-                });
-            },
-
-            approveTx: async function(txId) {
-                await updateDoc(doc(db, "transactions", txId), { status: 'completed' });
-            },
-
-            rejectTx: async function(txId, uid, amount) {
-                await updateDoc(doc(db, "profiles", uid), { balance: increment(amount) });
-                await updateDoc(doc(db, "transactions", txId), { status: 'rejected' });
-            },
-
-            loadProfileData: function() {
-                if (!this.user) return;
-                document.getElementById('prof-username-display').innerText = this.username;
-                document.getElementById('prof-email-display').innerText = this.user.email;
-                document.getElementById('prof-avatar').innerText = this.username.charAt(0).toUpperCase();
-                document.getElementById('prof-stat-balance').innerText = this.siteBalance.toFixed(3) + " ETH";
-                getDoc(doc(db, "profiles", this.user.uid)).then(snap => {
-                    if(snap.exists()) document.getElementById('prof-stat-profit').innerText = (snap.data().totalProfit || 0).toFixed(3) + " ETH";
-                });
-                this.loadTransactions();
-                this.loadProfileBets();
-            },
-
-            showProfileTab: function(tabName, el) {
-                document.querySelectorAll('.prof-tab-content').forEach(c => c.style.display = 'none');
-                document.getElementById('prof-content-' + tabName).style.display = 'block';
-                document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+            /* --- AUTO MODE LOGIC (UPDATED) --- */
+            setDiceMode: function(mode, el) {
+                this.diceMode = mode;
+                el.parentElement.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
                 el.classList.add('active');
+                document.getElementById('dice-auto-controls').style.display = mode === 'auto' ? 'block' : 'none';
+                document.getElementById('dice-btn').innerText = mode === 'auto' ? 'START AUTO' : 'HEITÄ NOPPAA';
             },
-
-            loadTransactions: function() {
-                // POISTETTU orderBy KORJAAMAAN INDEKSIONGELMA
-                const q = query(collection(db, "transactions"), where("uid", "==", this.user.uid), limit(20));
-                onSnapshot(q, (snap) => {
-                    const container = document.getElementById('tx-list');
-                    if (snap.empty) { container.innerHTML = '<div style="padding:20px;">Ei tapahtumia.</div>'; return; }
-                    
-                    // JARJESTETAAN JS:SSA
-                    const sortedDocs = snap.docs.sort((a, b) => {
-                        const tA = a.data().timestamp ? a.data().timestamp.toMillis() : Date.now();
-                        const tB = b.data().timestamp ? b.data().timestamp.toMillis() : Date.now();
-                        return tB - tA;
-                    });
-
-                    container.innerHTML = sortedDocs.map(doc => {
-                        const t = doc.data();
-                        let typeClass = t.type;
-                        if(t.status === 'pending') typeClass = 'pending';
-                        const typeLabel = t.type === 'deposit' ? 'TALLETUS' : (t.status === 'pending' ? 'NOSTO (ODOTTAA)' : 'NOSTO');
-                        const date = t.timestamp ? t.timestamp.toDate().toLocaleDateString() : '-';
-                        return `<div class="tx-row"><div><div class="tx-type ${typeClass}">${typeLabel}</div><div class="tx-date">${date}</div></div><div class="tx-amount">${t.amount} ETH</div></div>`;
-                    }).join('');
-                });
+            setSlotsMode: function(mode, el) {
+                this.slotsMode = mode;
+                el.parentElement.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+                el.classList.add('active');
+                document.getElementById('slots-auto-controls').style.display = mode === 'auto' ? 'block' : 'none';
+                document.getElementById('slots-btn').innerText = mode === 'auto' ? 'START AUTO' : 'SPIN';
             },
-
-            loadProfileBets: function() {
-                // POISTETTU orderBy KORJAAMAAN INDEKSIONGELMA
-                const q = query(collection(db, "bets"), where("uid", "==", this.user.uid), limit(10));
-                onSnapshot(q, (snap) => {
-                    const container = document.getElementById('prof-bets-list');
-                    if (snap.empty) { container.innerHTML = '<div style="padding:20px; color:#888;">Ei vetoja.</div>'; return; }
-                    
-                    // JARJESTETAAN JS:SSA
-                    const sortedDocs = snap.docs.sort((a, b) => {
-                        const tA = a.data().timestamp ? a.data().timestamp.toMillis() : Date.now();
-                        const tB = b.data().timestamp ? b.data().timestamp.toMillis() : Date.now();
-                        return tB - tA;
-                    });
-
-                    container.innerHTML = sortedDocs.map(doc => {
-                        const b = doc.data();
-                        const selections = b.selections || [];
-                        const teamText = selections.length > 0 ? selections.map(s => s.team).join(', ') : 'Veto';
-                        return `<div class="history-ticket ${b.status || 'pending'}" style="margin-bottom:10px; padding:10px;"><div class="ticket-selection" style="font-size:0.8rem;">${teamText}</div><div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-top:5px;"><span>${b.stake} ETH</span><span style="font-weight:bold;">${b.status ? b.status.toUpperCase() : 'PENDING'}</span></div></div>`;
-                    }).join('');
-                });
-            },
-
-            resolveBets: async function() {
-                if(!confirm("RATKAISE VEDOT?")) return;
-                const pendingBets = await getDocs(query(collection(db, "bets"), where("status", "==", "pending")));
-                let resolvedCount = 0;
-                for (const betDoc of pendingBets.docs) {
-                    const bet = betDoc.data();
-                    if (!bet.selections || !bet.selections[0].matchId) continue;
-                    try {
-                        const res = await fetch(`${PROXY_URL}?endpoint=/matches/${bet.selections[0].matchId}`);
-                        const matchData = await res.json();
-                        if (matchData.status === 'finished') {
-                            const winnerName = matchData.winner?.name;
-                            const userSelection = bet.selections[0].team;
-                            let isWin = false;
-                            if (userSelection === winnerName) isWin = true;
-                            
-                            const profit = bet.potentialWin || (bet.stake * bet.totalOdds);
-                            if (isWin) {
-                                await updateDoc(doc(db, "bets", betDoc.id), { status: 'win' });
-                                await updateDoc(doc(db, "profiles", bet.uid), { balance: increment(profit), totalProfit: increment(profit - bet.stake) });
-                            } else {
-                                await updateDoc(doc(db, "bets", betDoc.id), { status: 'loss' });
-                                await updateDoc(doc(db, "profiles", bet.uid), { totalProfit: increment(-bet.stake) });
-                            }
-                            resolvedCount++;
-                        }
-                    } catch (e) { console.error(e); }
-                }
-                Swal.fire(`Valmis! ${resolvedCount} vetoa ratkaistu.`);
-                this.loadHistory();
-            },
-
-            updateDiceUI: function() {
-                const val = document.getElementById('dice-input').value;
-                const chance = 100 - val;
-                document.getElementById('dice-track').style.width = chance + "%";
-                document.getElementById('dice-mult').innerText = (98 / chance).toFixed(2) + "x";
-                document.getElementById('dice-chance').innerText = chance.toFixed(2) + "%";
-            },
-
-            playDice: async function() {
+            
+            handleDiceClick: function() {
                 if (!this.user) return this.openAuthModal();
+                if (this.diceMode === 'manual') return this.playDice();
+                
+                if (this.autoDiceActive) {
+                    this.autoDiceActive = false;
+                    document.getElementById('dice-btn').innerText = "START AUTO";
+                    document.getElementById('dice-btn').classList.remove('stop-btn');
+                } else {
+                    this.autoDiceActive = true;
+                    document.getElementById('dice-btn').innerText = "STOP";
+                    document.getElementById('dice-btn').classList.add('stop-btn');
+                    this.runAutoDice();
+                }
+            },
+
+            runAutoDice: async function() {
+                let rounds = parseInt(document.getElementById('dice-auto-count').value);
+                while (this.autoDiceActive && rounds > 0 && this.siteBalance >= parseFloat(document.getElementById('dice-stake').value)) {
+                    await this.playDice();
+                    rounds--;
+                    document.getElementById('dice-auto-count').value = rounds;
+                    await new Promise(r => setTimeout(r, 800));
+                }
+                this.autoDiceActive = false;
+                document.getElementById('dice-btn').innerText = "START AUTO";
+                document.getElementById('dice-btn').classList.remove('stop-btn');
+            },
+
+            handleSlotsClick: function() {
+                if (!this.user) return this.openAuthModal();
+                if (this.slotsMode === 'manual') return this.spinSlots();
+
+                if (this.autoSlotsActive) {
+                    this.autoSlotsActive = false;
+                    document.getElementById('slots-btn').innerText = "START AUTO";
+                    document.getElementById('slots-btn').classList.remove('stop-btn');
+                } else {
+                    this.autoSlotsActive = true;
+                    document.getElementById('slots-btn').innerText = "STOP";
+                    document.getElementById('slots-btn').classList.add('stop-btn');
+                    this.runAutoSlots();
+                }
+            },
+
+            runAutoSlots: async function() {
+                let rounds = parseInt(document.getElementById('slots-auto-count').value);
+                while (this.autoSlotsActive && rounds > 0 && this.siteBalance >= parseFloat(document.getElementById('slots-stake').value)) {
+                    await this.spinSlots();
+                    rounds--;
+                    document.getElementById('slots-auto-count').value = rounds;
+                    await new Promise(r => setTimeout(r, 1000));
+                }
+                this.autoSlotsActive = false;
+                document.getElementById('slots-btn').innerText = "START AUTO";
+                document.getElementById('slots-btn').classList.remove('stop-btn');
+            },
+
+            flashScreen: function() {
+                const overlay = document.getElementById('game-flash-overlay');
+                overlay.classList.add('win-flash');
+                setTimeout(() => overlay.classList.remove('win-flash'), 500);
+            },
+
+            /* --- GAMES --- */
+            playDice: async function() {
                 const stake = parseFloat(document.getElementById('dice-stake').value);
                 const target = parseInt(document.getElementById('dice-input').value);
-                const resultEl = document.getElementById('dice-result');
                 if (stake > this.siteBalance) return Swal.fire("Hups", "Saldo ei riitä!", "warning");
-
-                const btn = document.querySelector('#dice-view .deposit-btn');
-                btn.disabled = true; btn.style.opacity = "0.5";
+                
+                const btn = document.getElementById('dice-btn');
+                if(this.diceMode === 'manual') { btn.disabled = true; btn.style.opacity = "0.5"; }
 
                 const roll = (Math.random() * 100);
                 const isWin = roll > target;
                 const profit = isWin ? (stake * (98 / (100 - target))) - stake : -stake;
 
-                let counter = 0;
-                const interval = setInterval(async () => {
-                    resultEl.innerText = (Math.random() * 100).toFixed(2);
-                    resultEl.style.color = '#fff';
-                    counter++;
-                    if (counter >= 20) {
-                        clearInterval(interval);
-                        resultEl.innerText = roll.toFixed(2);
-                        resultEl.style.color = isWin ? 'var(--success)' : 'var(--danger)';
-                        
-                        try {
-                            const updates = { balance: increment(profit) };
-                            if (isWin) updates.totalProfit = increment(profit);
-                            await updateDoc(doc(db, "profiles", this.user.uid), updates);
-                            await addDoc(collection(db, "dice_rolls"), { username: this.username, result: parseFloat(roll.toFixed(2)), isWin: isWin, profit: parseFloat(profit.toFixed(4)), timestamp: serverTimestamp() });
-                        } catch(e) { console.error(e); }
-                        finally { btn.disabled = false; btn.style.opacity = "1"; }
-                    }
-                }, 50);
+                const el = document.getElementById('dice-result');
+                for(let i=0; i<10; i++) { el.innerText = (Math.random()*100).toFixed(2); await new Promise(r=>setTimeout(r,30)); }
+                el.innerText = roll.toFixed(2);
+                el.style.color = isWin ? 'var(--success)' : 'var(--danger)';
+                if(isWin) this.flashScreen();
+
+                try {
+                    const updates = { balance: increment(profit) };
+                    if (isWin) updates.totalProfit = increment(profit);
+                    await updateDoc(doc(db, "profiles", this.user.uid), updates);
+                    await addDoc(collection(db, "dice_rolls"), { username: this.username, result: parseFloat(roll.toFixed(2)), isWin, profit: parseFloat(profit.toFixed(4)), timestamp: serverTimestamp() });
+                } catch(e) { console.error(e); }
+                
+                if(this.diceMode === 'manual') { btn.disabled = false; btn.style.opacity = "1"; }
             },
 
-            listenDiceHistory: function() {
-                const q = query(collection(db, "dice_rolls"), orderBy("timestamp", "desc"), limit(15));
-                onSnapshot(q, (snap) => {
-                    document.getElementById('dice-history-container').innerHTML = snap.docs.map(doc => {
-                        const d = doc.data();
-                        const resultClass = d.isWin ? 'win' : 'loss';
-                        return `<div class="roll-pill ${resultClass}"><span class="roll-user">${d.username}</span><span>${d.result}</span></div>`;
-                    }).join('');
-                });
+            spinSlots: async function() {
+                const stake = parseFloat(document.getElementById('slots-stake').value);
+                if (stake > this.siteBalance) return Swal.fire("Hups", "Saldo ei riitä!", "warning");
+
+                const btn = document.getElementById('slots-btn');
+                if(this.slotsMode === 'manual') { btn.disabled = true; btn.style.opacity = "0.5"; }
+
+                await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(-stake) });
+
+                document.querySelectorAll('.reel').forEach(r => r.classList.add('spinning'));
+                const symbols = ["🍒", "🍋", "🍇", "💎", "7️⃣"];
+                const r1 = symbols[Math.floor(Math.random() * symbols.length)];
+                const r2 = symbols[Math.floor(Math.random() * symbols.length)];
+                const r3 = symbols[Math.floor(Math.random() * symbols.length)];
+
+                await new Promise(r => setTimeout(r, 800));
+                document.getElementById('reel1').classList.remove('spinning'); document.getElementById('reel1').innerHTML = `<div class="reel-symbol">${r1}</div>`;
+                await new Promise(r => setTimeout(r, 400));
+                document.getElementById('reel2').classList.remove('spinning'); document.getElementById('reel2').innerHTML = `<div class="reel-symbol">${r2}</div>`;
+                await new Promise(r => setTimeout(r, 400));
+                document.getElementById('reel3').classList.remove('spinning'); document.getElementById('reel3').innerHTML = `<div class="reel-symbol">${r3}</div>`;
+
+                let winMult = 0;
+                if (r1 === r2 && r2 === r3) {
+                    if (r1 === "💎") winMult = 50; else if (r1 === "7️⃣") winMult = 20; else winMult = 5;
+                }
+
+                if (winMult > 0) {
+                    const winAmount = stake * winMult;
+                    this.flashScreen();
+                    await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(winAmount), totalProfit: increment(winAmount - stake) });
+                    Swal.fire({ title: 'WIN!', text: `${winAmount.toFixed(3)} ETH`, icon: 'success', timer: 1000, showConfirmButton: false });
+                } else {
+                    await updateDoc(doc(db, "profiles", this.user.uid), { totalProfit: increment(-stake) });
+                }
+                
+                if(this.slotsMode === 'manual') { btn.disabled = false; btn.style.opacity = "1"; }
+            },
+
+            setGame: function(g, el) { 
+                this.selectedGame = g; 
+                el.parentElement.querySelectorAll('.game-btn').forEach(b => b.classList.remove('active'));
+                el.classList.add('active'); 
+                this.updateMatches(); 
             },
 
             updateMatches: async function() {
@@ -887,22 +777,6 @@
                             <div class="market-btn ${this.isBetSelected(match.id, 'match_winner', t2.name) ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'match_winner', '${t2.name}', 1.85, 'Voittaja')"><span class="market-name">${t2.name}</span><span class="market-odd">1.85</span></div>
                         </div>
                     </div>
-                    <div class="market-group">
-                        <div class="market-title">Map 1 Voittaja</div>
-                        <div class="market-options">
-                            <div class="market-btn ${this.isBetSelected(match.id, 'map1_winner', t1.name) ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'map1_winner', '${t1.name}', 1.80, 'Map 1')"><span class="market-name">${t1.name}</span><span class="market-odd">1.80</span></div>
-                            <div class="market-btn ${this.isBetSelected(match.id, 'map1_winner', t2.name) ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'map1_winner', '${t2.name}', 1.90, 'Map 1')"><span class="market-name">${t2.name}</span><span class="market-odd">1.90</span></div>
-                        </div>
-                    </div>
-                    <div class="market-group">
-                        <div class="market-title">Tulosveto (BO3)</div>
-                        <div class="market-options">
-                            <div class="market-btn ${this.isBetSelected(match.id, 'score_2_0', t1.name + ' 2-0') ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'score_2_0', '${t1.name} 2-0', 3.50, 'Tulos')"><span class="market-name">2 - 0</span><span class="market-odd">3.50</span></div>
-                            <div class="market-btn ${this.isBetSelected(match.id, 'score_0_2', t2.name + ' 2-0') ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'score_0_2', '${t2.name} 2-0', 3.80, 'Tulos')"><span class="market-name">0 - 2</span><span class="market-odd">3.80</span></div>
-                            <div class="market-btn ${this.isBetSelected(match.id, 'score_2_1', t1.name + ' 2-1') ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'score_2_1', '${t1.name} 2-1', 2.90, 'Tulos')"><span class="market-name">2 - 1</span><span class="market-odd">2.90</span></div>
-                            <div class="market-btn ${this.isBetSelected(match.id, 'score_1_2', t2.name + ' 2-1') ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'score_1_2', '${t2.name} 2-1', 3.10, 'Tulos')"><span class="market-name">1 - 2</span><span class="market-odd">3.10</span></div>
-                        </div>
-                    </div>
                 `;
                 modal.style.display = 'flex';
             },
@@ -958,30 +832,19 @@
 
             loadHistory: function() {
                 if (!this.user) return;
-                // POISTETTU orderBy
                 const q = query(collection(db, "bets"), where("uid", "==", this.user.uid), limit(20));
                 onSnapshot(q, (snap) => {
                     const container = document.getElementById('history-list');
                     if (snap.empty) { container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-dim);">Ei vielä vetoja.</div>'; return; }
-                    
-                    // JARJESTETAAN JS:SSA
-                    const sortedDocs = snap.docs.sort((a, b) => {
-                        const tA = a.data().timestamp ? a.data().timestamp.toMillis() : Date.now();
-                        const tB = b.data().timestamp ? b.data().timestamp.toMillis() : Date.now();
-                        return tB - tA;
-                    });
-
+                    const sortedDocs = snap.docs.sort((a, b) => { const tA = a.data().timestamp ? a.data().timestamp.toMillis() : Date.now(); const tB = b.data().timestamp ? b.data().timestamp.toMillis() : Date.now(); return tB - tA; });
                     container.innerHTML = sortedDocs.map(doc => {
                         const b = doc.data();
                         const status = b.status || 'pending'; 
                         let statusText = "ODOTTAA", statusColor = "var(--primary)";
                         if (status === 'win') { statusText = "VOITTO"; statusColor = "var(--success)"; }
                         if (status === 'loss') { statusText = "HÄVIÖ"; statusColor = "var(--danger)"; }
-                        
                         const date = b.timestamp ? b.timestamp.toDate().toLocaleDateString() : 'Nyt';
-                        const selections = b.selections || [];
-                        const teams = selections.length > 0 ? selections.map(s => `${s.team} (${s.marketLabel || 'Voittaja'})`).join('<br>') : 'Virhe';
-
+                        const teams = b.selections.map(s => `${s.team} (${s.marketLabel || 'Voittaja'})`).join('<br>');
                         return `<div class="history-ticket ${status}"><div class="ticket-header"><span>${date}</span><span>${b.type === 'combo' ? 'YHDISTELMÄ' : 'SINGLE'}</span></div><div class="ticket-selection" style="font-size:0.9rem;">${teams}</div><div style="display:flex; gap:10px; align-items:center;"><span class="ticket-odds">${parseFloat(b.totalOdds).toFixed(2)}</span><span style="font-size:0.8rem; color:#888;">kerroin</span></div><div class="ticket-footer"><div><div style="font-size:0.7rem; color:#888;">PANOS</div><div style="font-weight:bold;">${b.stake} ETH</div></div><div class="status-badge" style="background:${statusColor}">${statusText}</div></div></div>`;
                     }).join('');
                 });
@@ -992,7 +855,11 @@
                 onSnapshot(q, (snap) => {
                     const container = document.getElementById('leaderboard-list');
                     if(snap.empty) { container.innerHTML = '<div style="text-align:center;">Ei vielä voittoja.</div>'; return; }
-                    container.innerHTML = snap.docs.map((doc, index) => {
+                    
+                    // Korjattu JS-sorttaus
+                    const sortedDocs = snap.docs.sort((a, b) => (b.data().totalProfit || 0) - (a.data().totalProfit || 0));
+
+                    container.innerHTML = sortedDocs.map((doc, index) => {
                         const rank = index + 1;
                         const data = doc.data();
                         const profit = data.totalProfit || 0;
@@ -1001,6 +868,7 @@
                 });
             },
 
+            /* --- MUUT --- */
             toggleChat: () => document.getElementById('chat-sidebar').classList.toggle('open'),
             listenToChat: function() {
                 const q = query(collection(db, "messages"), orderBy("createdAt", "desc"), limit(50));
@@ -1030,14 +898,23 @@
                 if (newName && this.user) await updateDoc(doc(db, "profiles", this.user.uid), { username: newName });
                 Swal.fire("Nimi päivitetty!", "", "success");
             },
-            connectWallet: async function() {
-                if (!window.ethereum) return;
-                const provider = new ethers.BrowserProvider(window.ethereum);
-                const accounts = await provider.send("eth_requestAccounts", []);
-                document.getElementById('prof-address').innerText = accounts[0];
-            },
             loginEmail: async function() { try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); } catch(e){alert(e.message)} },
-            registerNewUser: async function() { try { const res = await createUserWithEmailAndPassword(auth, document.getElementById('reg-email').value, document.getElementById('reg-pass').value); await setDoc(doc(db, "profiles", res.user.uid), { username: document.getElementById('reg-username').value.trim(), balance: 0, totalProfit: 0 }); } catch(e){alert(e.message)} }
+            registerNewUser: async function() { try { const res = await createUserWithEmailAndPassword(auth, document.getElementById('reg-email').value, document.getElementById('reg-pass').value); await setDoc(doc(db, "profiles", res.user.uid), { username: document.getElementById('reg-username').value.trim(), balance: 0, totalProfit: 0 }); } catch(e){alert(e.message)} },
+            openAdminMenu: function() { document.getElementById('admin-modal').style.display = 'flex'; },
+            loadPendingWithdrawals: function() { const q = query(collection(db, "transactions"), where("type", "==", "withdraw"), where("status", "==", "pending")); onSnapshot(q, (snap) => { const container = document.getElementById('admin-content'); if (snap.empty) { container.innerHTML = 'Ei odottavia nostoja.'; return; } container.innerHTML = snap.docs.map(doc => { const d = doc.data(); return `<div class="admin-tx-row"><div><b>${d.username}</b><br><small>${d.amount} ETH</small></div><div class="admin-tx-actions"><button class="btn-approve" onclick="app.approveTx('${doc.id}')">✔</button><button class="btn-reject" onclick="app.rejectTx('${doc.id}', '${d.uid}', ${d.amount})">✕</button></div></div>`; }).join(''); }); },
+            approveTx: async function(txId) { await updateDoc(doc(db, "transactions", txId), { status: 'completed' }); },
+            rejectTx: async function(txId, uid, amount) { await updateDoc(doc(db, "profiles", uid), { balance: increment(amount) }); await updateDoc(doc(db, "transactions", txId), { status: 'rejected' }); },
+            loadProfileData: function() { if (!this.user) return; document.getElementById('prof-username-display').innerText = this.username; document.getElementById('prof-email-display').innerText = this.user.email; document.getElementById('prof-avatar').innerText = this.username.charAt(0).toUpperCase(); document.getElementById('prof-stat-balance').innerText = this.siteBalance.toFixed(3) + " ETH"; getDoc(doc(db, "profiles", this.user.uid)).then(snap => { if(snap.exists()) document.getElementById('prof-stat-profit').innerText = (snap.data().totalProfit || 0).toFixed(3) + " ETH"; }); this.loadTransactions(); this.loadProfileBets(); },
+            showProfileTab: function(tabName, el) { document.querySelectorAll('.prof-tab-content').forEach(c => c.style.display = 'none'); document.getElementById('prof-content-' + tabName).style.display = 'block'; document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); },
+            loadTransactions: function() { const q = query(collection(db, "transactions"), where("uid", "==", this.user.uid), limit(20)); onSnapshot(q, (snap) => { const container = document.getElementById('tx-list'); if (snap.empty) { container.innerHTML = '<div style="padding:20px;">Ei tapahtumia.</div>'; return; } const sortedDocs = snap.docs.sort((a, b) => { const tA = a.data().timestamp ? a.data().timestamp.toMillis() : Date.now(); const tB = b.data().timestamp ? b.data().timestamp.toMillis() : Date.now(); return tB - tA; }); container.innerHTML = sortedDocs.map(doc => { const t = doc.data(); let typeClass = t.type; if(t.status === 'pending') typeClass = 'pending'; const typeLabel = t.type === 'deposit' ? 'TALLETUS' : (t.status === 'pending' ? 'NOSTO (ODOTTAA)' : 'NOSTO'); const date = t.timestamp ? t.timestamp.toDate().toLocaleDateString() : '-'; return `<div class="tx-row"><div><div class="tx-type ${typeClass}">${typeLabel}</div><div class="tx-date">${date}</div></div><div class="tx-amount">${t.amount} ETH</div></div>`; }).join(''); }); },
+            loadProfileBets: function() { const q = query(collection(db, "bets"), where("uid", "==", this.user.uid), limit(10)); onSnapshot(q, (snap) => { const container = document.getElementById('prof-bets-list'); if (snap.empty) { container.innerHTML = '<div style="padding:20px; color:#888;">Ei vetoja.</div>'; return; } const sortedDocs = snap.docs.sort((a, b) => { const tA = a.data().timestamp ? a.data().timestamp.toMillis() : Date.now(); const tB = b.data().timestamp ? b.data().timestamp.toMillis() : Date.now(); return tB - tA; }); container.innerHTML = sortedDocs.map(doc => { const b = doc.data(); return `<div class="history-ticket ${b.status || 'pending'}" style="margin-bottom:10px; padding:10px;"><div class="ticket-selection" style="font-size:0.8rem;">${b.selections.map(s => s.team).join(', ')}</div><div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-top:5px;"><span>${b.stake} ETH</span><span style="font-weight:bold;">${b.status ? b.status.toUpperCase() : 'PENDING'}</span></div></div>`; }).join(''); }); },
+            resolveBets: async function() { if(!confirm("RATKAISE VEDOT?")) return; const pendingBets = await getDocs(query(collection(db, "bets"), where("status", "==", "pending"))); let resolvedCount = 0; for (const betDoc of pendingBets.docs) { const bet = betDoc.data(); if (!bet.selections || !bet.selections[0].matchId) continue; try { const res = await fetch(`${PROXY_URL}?endpoint=/matches/${bet.selections[0].matchId}`); const matchData = await res.json(); if (matchData.status === 'finished') { const winnerName = matchData.winner?.name; const userSelection = bet.selections[0].team; let isWin = false; if (userSelection === winnerName) isWin = true; const profit = bet.potentialWin || (bet.stake * bet.totalOdds); if (isWin) { await updateDoc(doc(db, "bets", betDoc.id), { status: 'win' }); await updateDoc(doc(db, "profiles", bet.uid), { balance: increment(profit), totalProfit: increment(profit - bet.stake) }); } else { await updateDoc(doc(db, "bets", betDoc.id), { status: 'loss' }); await updateDoc(doc(db, "profiles", bet.uid), { totalProfit: increment(-bet.stake) }); } resolvedCount++; } } catch (e) { console.error(e); } } Swal.fire(`Valmis! ${resolvedCount} vetoa ratkaistu.`); this.loadHistory(); },
+            listenDiceHistory: function() { const q = query(collection(db, "dice_rolls"), orderBy("timestamp", "desc"), limit(15)); onSnapshot(q, (snap) => { document.getElementById('dice-history-container').innerHTML = snap.docs.map(doc => { const d = doc.data(); const resultClass = d.isWin ? 'win' : 'loss'; return `<div class="roll-pill ${resultClass}"><span class="roll-user">${d.username}</span><span>${d.result}</span></div>`; }).join(''); }); },
+            updateDiceUI: function() { const val = document.getElementById('dice-input').value; const chance = 100 - val; document.getElementById('dice-track').style.width = chance + "%"; document.getElementById('dice-mult').innerText = (98 / chance).toFixed(2) + "x"; document.getElementById('dice-chance').innerText = chance.toFixed(2) + "%"; },
+            simulateDeposit: async function(c) { const { value: amount } = await Swal.fire({ title: `Talleta ${c}`, input: 'number', inputLabel: 'Määrä', showCancelButton: true }); if (!amount) return; const modal = document.getElementById('deposit-modal'); document.getElementById('dep-crypto-name').innerText = c; const addr = c === 'BTC' ? 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh' : (c === 'ETH' ? '0x71C7656EC7ab88b098defB751B7401B5f6d8976F' : '7xKXtg2CN8798kksYGW76WKG83eW671192'); document.getElementById('dep-address').innerText = addr; document.getElementById('dep-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${addr}`; document.getElementById('step-1').className = 'step-row active'; document.getElementById('step-2').className = 'step-row'; document.getElementById('step-3').className = 'step-row'; modal.style.display = 'flex'; setTimeout(() => { document.getElementById('step-1').className = 'step-row completed'; document.getElementById('step-2').className = 'step-row active'; }, 3000); setTimeout(async () => { document.getElementById('step-2').className = 'step-row completed'; document.getElementById('step-3').className = 'step-row completed active'; const val = parseFloat(amount); try { await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(val) }); await addDoc(collection(db, "transactions"), { uid: this.user.uid, type: 'deposit', amount: val, status: 'completed', timestamp: serverTimestamp() }); setTimeout(() => { modal.style.display = 'none'; Swal.fire('Talletus saapui!', '', 'success'); }, 1000); } catch(e) { console.error(e); alert("Virhe talletuksessa."); modal.style.display = 'none'; } }, 6000); },
+            uiWithdraw: async function() { const { value: amount } = await Swal.fire({ title: 'Nosta ETH', input: 'number', inputLabel: 'Määrä', showCancelButton: true }); if (amount) { const val = parseFloat(amount); if(val <= this.siteBalance) { try { await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(-val) }); await addDoc(collection(db, "transactions"), { uid: this.user.uid, type: 'withdraw', amount: val, status: 'pending', username: this.username, timestamp: serverTimestamp() }); Swal.fire('Nostopyyntö lähetetty!', 'Ylläpito käsittelee sen pian.', 'info'); } catch(e) { console.error(e); alert("Virhe nostossa."); } } else { Swal.fire('Virhe', 'Saldo ei riitä.', 'error'); } } }
         };
         app.init();
     </script>
+</body>
+</html>
