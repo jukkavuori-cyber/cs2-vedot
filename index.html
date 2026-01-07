@@ -65,7 +65,19 @@
         .crypto-option img { width: 32px; height: 32px; }
         .crypto-option span { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; }
 
-        /* --- CHAT (DUEL STYLE) --- */
+        /* --- DICE STYLES --- */
+        .dice-container { max-width: 600px; margin: 0 auto; background: #0b0e14; padding: 40px; border-radius: 24px; border: 1px solid var(--glass-border); text-align: center; }
+        #dice-result { font-size: 4rem; font-weight: 900; color: var(--primary); margin-bottom: 20px; }
+        .dice-slider-box { position: relative; height: 40px; background: var(--danger); border-radius: 20px; margin: 30px 0; overflow: hidden; border: 4px solid #000; }
+        #dice-track { position: absolute; right: 0; top: 0; height: 100%; background: var(--success); transition: 0.1s; }
+        .dice-slider { -webkit-appearance: none; width: 100%; height: 100%; background: transparent; position: relative; z-index: 2; cursor: pointer; outline: none; }
+        .dice-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 30px; background: #fff; border-radius: 8px; border: 3px solid var(--primary); }
+        .dice-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .dice-stat { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; }
+        .dice-stat small { display: block; font-size: 0.6rem; color: var(--text-dim); margin-bottom: 5px; }
+        .dice-stat div { font-weight: 900; font-size: 1.2rem; }
+
+        /* --- CHAT --- */
         #chat-toggle-btn { position: fixed; bottom: 30px; left: 30px; width: 55px; height: 55px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1600; box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3); border: none; transition: 0.3s; }
         #chat-sidebar { position: fixed; left: -350px; top: 0; width: 320px; height: 100%; background: var(--nav-bg); z-index: 2000; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-right: 1px solid var(--glass-border); display: flex; flex-direction: column; }
         #chat-sidebar.open { left: 0; }
@@ -82,7 +94,6 @@
             .deposit-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
-        /* --- MODALS --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); display: none; justify-content: center; align-items: center; z-index: 2000; }
         .glass-card { background: rgba(26, 31, 41, 0.95); padding: 40px; border-radius: 32px; border: 1px solid var(--glass-border); text-align: center; width: 90%; max-width: 400px; }
         .google-btn { background: #ffffff !important; color: #1f1f1f !important; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; border: none; border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; margin-bottom: 20px; }
@@ -103,6 +114,7 @@
             <div class="nav-logo" onclick="app.showSection('matches')">Alpha<span>Odds</span></div>
             <div class="nav-links">
                 <div class="nav-link active" id="btn-matches" onclick="app.showSection('matches')">Ottelut</div>
+                <div class="nav-link" id="btn-dice" onclick="app.showSection('dice')">Dice</div>
                 <div class="nav-link" id="btn-wallet" onclick="app.showSection('wallet')">Lompakko</div>
                 <div class="nav-link" id="btn-profile" onclick="app.showSection('profile')">Profiili</div>
             </div>
@@ -130,14 +142,28 @@
     <div class="container">
         <div id="matches-view" class="section-view active">
             <div class="banner-container"><img src="banner2.png" alt="Banner" onerror="this.src='https://images.alphacoders.com/133/1331713.png'"></div>
-            <div class="nav-links" style="margin-bottom: 25px; justify-content: flex-start; overflow-x: auto;">
-                <div class="nav-link active game-tab" onclick="app.setGame('csgo', this)">CS2</div>
-                <div class="nav-link game-tab" onclick="app.setGame('lol', this)">LoL</div>
-                <div class="nav-link game-tab" onclick="app.setGame('valorant', this)">Valorant</div>
-                <div class="nav-link game-tab" onclick="app.setGame('dota2', this)">Dota 2</div>
-            </div>
             <div id="live-container"></div>
             <div id="match-container"></div>
+        </div>
+
+        <div id="dice-view" class="section-view">
+            <h2 style="color:var(--primary)">Dice - Roll Over</h2>
+            <div class="dice-container">
+                <div id="dice-result">50.00</div>
+                <div class="dice-slider-box">
+                    <div id="dice-track"></div>
+                    <input type="range" class="dice-slider" id="dice-input" min="2" max="98" value="50" oninput="app.updateDiceUI()">
+                </div>
+                <div class="dice-stats">
+                    <div class="dice-stat"><small>KERROIN</small><div id="dice-mult">1.96x</div></div>
+                    <div class="dice-stat"><small>VOITTOMAHDOLLISUUS</small><div id="dice-chance">48.00%</div></div>
+                </div>
+                <div style="text-align:left; margin-bottom:20px;">
+                    <small style="color:var(--text-dim); font-weight:800;">PANOS (ETH)</small>
+                    <input type="number" id="dice-stake" class="modal-input" style="margin:5px 0 0 0; width:100%;" value="0.01" step="0.001">
+                </div>
+                <button class="deposit-btn" style="width:100%; padding:20px; font-size:1.1rem;" onclick="app.playDice()">HEITÄ NOPPAA</button>
+            </div>
         </div>
 
         <div id="wallet-view" class="section-view">
@@ -160,8 +186,6 @@
                 </div>
                 <button class="deposit-btn" style="width:100%; margin-top:25px; background:var(--danger); color:#fff; padding:18px;" onclick="app.uiWithdraw()">NOSTA VAROJA</button>
             </div>
-            <h3>Tapahtumahistoria</h3>
-            <div id="history-container"></div>
         </div>
 
         <div id="profile-view" class="section-view">
@@ -241,13 +265,13 @@
             matchCache: { live: [], upcoming: [] },
 
             init: function() {
-                this.updateMatches(); this.listenToChat();
+                this.updateMatches(); this.listenToChat(); this.updateDiceUI();
                 getRedirectResult(auth).catch(e => console.error(e));
 
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
                         this.user = user;
-                        this.updateBalanceUI(); // Välitön päivitys käyttöliittymään
+                        this.updateBalanceUI();
                         const userDoc = await getDoc(doc(db, "profiles", user.uid));
                         if (!userDoc.exists()) await setDoc(doc(db, "profiles", user.uid), { username: user.displayName || "Pelaaja", balance: 0 });
                         
@@ -266,6 +290,33 @@
                     document.getElementById('loading-global').style.display = 'none';
                 });
                 document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') this.sendChatMessage(); });
+            },
+
+            /* --- DICE LOGIC --- */
+            updateDiceUI: function() {
+                const val = document.getElementById('dice-input').value;
+                const chance = 100 - val;
+                const multiplier = (98 / chance).toFixed(2);
+                document.getElementById('dice-track').style.width = chance + "%";
+                document.getElementById('dice-mult').innerText = multiplier + "x";
+                document.getElementById('dice-chance').innerText = chance.toFixed(2) + "%";
+            },
+
+            playDice: async function() {
+                if (!this.user) return this.openAuthModal();
+                const stake = parseFloat(document.getElementById('dice-stake').value);
+                const target = parseInt(document.getElementById('dice-input').value);
+                if (stake > this.siteBalance) return Swal.fire("Hups", "Saldo ei riitä!", "warning");
+                
+                const roll = (Math.random() * 100);
+                const win = roll > target;
+                const mult = 98 / (100 - target);
+                const profit = win ? (stake * mult) - stake : -stake;
+
+                document.getElementById('dice-result').innerText = roll.toFixed(2);
+                document.getElementById('dice-result').style.color = win ? 'var(--success)' : 'var(--danger)';
+
+                await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(profit) });
             },
 
             updateBalanceUI: function() {
