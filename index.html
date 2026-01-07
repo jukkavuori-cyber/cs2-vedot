@@ -68,6 +68,14 @@
         .dice-stat small { display: block; font-size: 0.6rem; color: var(--text-dim); margin-bottom: 5px; }
         .dice-stat div { font-weight: 900; font-size: 1.2rem; }
 
+        /* --- DICE HISTORY TAPE --- */
+        .dice-history-bar { margin-top: 25px; display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); scrollbar-width: none; }
+        .dice-history-bar::-webkit-scrollbar { display: none; }
+        .roll-pill { background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; white-space: nowrap; border: 1px solid var(--glass-border); display: flex; gap: 8px; align-items: center; transition: 0.3s; animation: fadeIn 0.5s ease; }
+        .roll-pill.win { border-color: var(--success); color: var(--success); background: rgba(46, 204, 113, 0.1); }
+        .roll-pill.loss { border-color: var(--text-dim); color: var(--text-dim); opacity: 0.7; }
+        .roll-user { color: #fff; font-size: 0.7rem; opacity: 0.8; margin-right: 5px; }
+
         /* --- MATCH CARDS --- */
         .match-card { background: var(--card-bg); margin-bottom: 12px; padding: 15px 25px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--glass-border); width: 100%; cursor: pointer; transition: 0.2s; }
         .match-card:hover { border-color: rgba(255,255,255,0.2); background: rgba(30, 36, 48, 0.9); }
@@ -119,6 +127,25 @@
         .ticket-odds { color: var(--primary); font-family: monospace; font-size: 1.1rem; }
         .ticket-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px; }
         .status-badge { padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 900; text-transform: uppercase; color: #000; }
+
+        /* --- PROFILE --- */
+        .profile-header { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
+        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #e67e22); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; color: #000; box-shadow: 0 0 20px var(--primary-glow); }
+        .profile-info h1 { margin: 0; font-size: 1.5rem; color: #fff; }
+        .profile-info span { color: var(--text-dim); font-size: 0.8rem; }
+        .profile-stats-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 30px; }
+        .stat-box { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); padding: 15px; border-radius: 16px; text-align: center; }
+        .stat-box small { color: var(--text-dim); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
+        .stat-box div { font-size: 1.3rem; font-weight: 900; color: var(--primary); margin-top: 5px; }
+        .profile-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; }
+        .profile-tab { background: none; border: none; color: var(--text-dim); font-weight: 700; cursor: pointer; padding: 5px 10px; font-size: 0.9rem; }
+        .profile-tab.active { color: #fff; border-bottom: 2px solid var(--primary); }
+        .tx-row { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); align-items: center; }
+        .tx-type { font-weight: 800; font-size: 0.8rem; }
+        .tx-type.deposit { color: var(--success); }
+        .tx-type.withdraw { color: var(--danger); }
+        .tx-amount { font-family: monospace; font-weight: 900; }
+        .tx-date { font-size: 0.7rem; color: var(--text-dim); }
 
         /* --- DEPOSIT GRID --- */
         .deposit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
@@ -229,6 +256,8 @@
                 </div>
                 <button class="deposit-btn" style="width:100%; padding:20px; font-size:1.1rem;" onclick="app.playDice()">HEITÄ NOPPAA</button>
             </div>
+            
+            <div class="dice-history-bar" id="dice-history-container"></div>
         </div>
 
         <div id="leaderboard-view" class="section-view">
@@ -261,11 +290,45 @@
         </div>
 
         <div id="profile-view" class="section-view">
-            <h2 style="color:var(--primary)">Profiili</h2>
             <div class="card-panel">
-                <label style="display:block; color:var(--text-dim); font-size:0.7rem; font-weight:800; margin-bottom:8px; text-transform:uppercase;">Käyttäjänimi</label>
-                <input type="text" id="edit-username" style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); border-radius:12px; color:#fff; outline:none; margin-bottom:20px;">
-                <button class="deposit-btn" style="width:100%" onclick="app.updateUsername()">PÄIVITÄ NIMI</button>
+                <div class="profile-header">
+                    <div class="profile-avatar" id="prof-avatar">?</div>
+                    <div class="profile-info">
+                        <h1 id="prof-username-display">Ladataan...</h1>
+                        <span id="prof-email-display"></span>
+                    </div>
+                </div>
+
+                <div class="profile-stats-row">
+                    <div class="stat-box">
+                        <small>SALDO</small>
+                        <div id="prof-stat-balance">0.000</div>
+                    </div>
+                    <div class="stat-box">
+                        <small>VOITOT</small>
+                        <div id="prof-stat-profit" style="color:var(--success)">0.000</div>
+                    </div>
+                </div>
+
+                <div class="profile-tabs">
+                    <button class="profile-tab active" onclick="app.showProfileTab('settings', this)">Asetukset</button>
+                    <button class="profile-tab" onclick="app.showProfileTab('tx', this)">Rahansiirrot</button>
+                    <button class="profile-tab" onclick="app.showProfileTab('bets', this)">Viimeiset Vedot</button>
+                </div>
+
+                <div id="prof-content-settings" class="prof-tab-content">
+                    <label style="display:block; color:var(--text-dim); font-size:0.7rem; font-weight:800; margin-bottom:8px; text-transform:uppercase;">Vaihda Käyttäjänimi</label>
+                    <input type="text" id="edit-username" style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); border-radius:12px; color:#fff; outline:none; margin-bottom:20px;">
+                    <button class="deposit-btn" style="width:100%" onclick="app.updateUsername()">PÄIVITÄ NIMI</button>
+                </div>
+
+                <div id="prof-content-tx" class="prof-tab-content" style="display:none;">
+                    <div id="tx-list" style="color:var(--text-dim); text-align:center; font-size:0.8rem;">Ladataan siirtoja...</div>
+                </div>
+
+                <div id="prof-content-bets" class="prof-tab-content" style="display:none;">
+                    <div id="prof-bets-list"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -322,7 +385,7 @@
         import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, onSnapshot, addDoc, increment, query, orderBy, limit, serverTimestamp, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyCyj2zKkNw8JP_gG0F6AjyHiIr_EUjbFMA", authDomain: "cs2-leaderboard.firebaseapp.com", projectId: "cs2-leaderboard", storageBucket: "cs2-leaderboard.firebasestorage.app", messagingSenderId: "596762153722", appId: "1:596762153722:web:6d16722d0be705c21baf43" };
+        const firebaseConfig = { apiKey: "AIzaSyCpaEupnUhPv9SnF9inIyhQTHewvhZD_-I", authDomain: "cs2-leaderboard.firebaseapp.com", projectId: "cs2-leaderboard", storageBucket: "cs2-leaderboard.firebasestorage.app", messagingSenderId: "596762153722", appId: "1:596762153722:web:6d16722d0be705c21baf43" };
         const fbApp = initializeApp(firebaseConfig);
         const auth = getAuth(fbApp);
         const db = getFirestore(fbApp);
@@ -336,7 +399,7 @@
 
             init: async function() {
                 await setPersistence(auth, browserLocalPersistence);
-                this.updateMatches(); this.listenToChat(); this.updateDiceUI();
+                this.updateMatches(); this.listenToChat(); this.updateDiceUI(); this.listenDiceHistory();
                 
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
@@ -350,10 +413,10 @@
                                 this.siteBalance = snap.data().balance || 0;
                                 this.username = snap.data().username;
                                 this.updateBalanceUI();
-                                // ADMIN CHECK
                                 if (this.username === 'Admin' || user.email === 'jukka.vuori@example.com') {
                                     document.getElementById('admin-btn').style.display = 'flex';
                                 }
+                                this.loadProfileData();
                             }
                         });
                         this.closeAuthModal();
@@ -392,6 +455,7 @@
                 if(document.getElementById('btn-'+s)) document.getElementById('btn-'+s).classList.add('active');
                 if(s === 'history') this.loadHistory();
                 if(s === 'leaderboard') this.loadLeaderboard();
+                if(s === 'profile') this.loadProfileData();
             },
 
             setGame: function(g, el) { 
@@ -401,8 +465,76 @@
                 this.updateMatches(); 
             },
 
+            /* --- PROFILE LOGIC --- */
+            loadProfileData: function() {
+                if (!this.user) return;
+                document.getElementById('prof-username-display').innerText = this.username;
+                document.getElementById('prof-email-display').innerText = this.user.email;
+                document.getElementById('prof-avatar').innerText = this.username.charAt(0).toUpperCase();
+                document.getElementById('prof-stat-balance').innerText = this.siteBalance.toFixed(3) + " ETH";
+                getDoc(doc(db, "profiles", this.user.uid)).then(snap => {
+                    if(snap.exists()) document.getElementById('prof-stat-profit').innerText = (snap.data().totalProfit || 0).toFixed(3) + " ETH";
+                });
+                this.loadTransactions();
+                this.loadProfileBets();
+            },
+
+            showProfileTab: function(tabName, el) {
+                document.querySelectorAll('.prof-tab-content').forEach(c => c.style.display = 'none');
+                document.getElementById('prof-content-' + tabName).style.display = 'block';
+                document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+                el.classList.add('active');
+            },
+
+            loadTransactions: function() {
+                const q = query(collection(db, "transactions"), where("uid", "==", this.user.uid), orderBy("timestamp", "desc"), limit(10));
+                onSnapshot(q, (snap) => {
+                    const container = document.getElementById('tx-list');
+                    if (snap.empty) { container.innerHTML = '<div style="padding:20px;">Ei tapahtumia.</div>'; return; }
+                    container.innerHTML = snap.docs.map(doc => {
+                        const t = doc.data();
+                        const typeClass = t.type === 'deposit' ? 'deposit' : 'withdraw';
+                        const typeLabel = t.type === 'deposit' ? 'TALLETUS' : 'NOSTO';
+                        const date = t.timestamp ? t.timestamp.toDate().toLocaleDateString() : '-';
+                        return `<div class="tx-row"><div><div class="tx-type ${typeClass}">${typeLabel}</div><div class="tx-date">${date}</div></div><div class="tx-amount">${t.amount} ETH</div></div>`;
+                    }).join('');
+                });
+            },
+
+            loadProfileBets: function() {
+                const q = query(collection(db, "bets"), where("uid", "==", this.user.uid), orderBy("timestamp", "desc"), limit(5));
+                onSnapshot(q, (snap) => {
+                    const container = document.getElementById('prof-bets-list');
+                    if (snap.empty) { container.innerHTML = '<div style="padding:20px; color:#888;">Ei vetoja.</div>'; return; }
+                    container.innerHTML = snap.docs.map(doc => {
+                        const b = doc.data();
+                        return `<div class="history-ticket ${b.status || 'pending'}" style="margin-bottom:10px; padding:10px;"><div class="ticket-selection" style="font-size:0.8rem;">${b.selections.map(s => s.team).join(', ')}</div><div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-top:5px;"><span>${b.stake} ETH</span><span style="font-weight:bold;">${b.status ? b.status.toUpperCase() : 'PENDING'}</span></div></div>`;
+                    }).join('');
+                });
+            },
+
+            depositCurrency: async function(c, i) {
+                const { value: amount } = await Swal.fire({ title: `Talleta ${c}`, input: 'number', imageUrl: i, imageWidth: 40, showCancelButton: true });
+                if (amount) {
+                    const val = parseFloat(amount);
+                    await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(val) });
+                    await addDoc(collection(db, "transactions"), { uid: this.user.uid, type: 'deposit', amount: val, timestamp: serverTimestamp() });
+                }
+            },
+            uiWithdraw: async function() {
+                const { value: amount } = await Swal.fire({ title: 'Nosta ETH', input: 'number', showCancelButton: true });
+                if (amount) {
+                    const val = parseFloat(amount);
+                    if(val <= this.siteBalance) {
+                        await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(-val) });
+                        await addDoc(collection(db, "transactions"), { uid: this.user.uid, type: 'withdraw', amount: val, timestamp: serverTimestamp() });
+                    }
+                }
+            },
+
+            /* --- BRAIN --- */
             resolveBets: async function() {
-                if(!confirm("RATKAISE VEDOT? Tämä hakee tulokset APIsta.")) return;
+                if(!confirm("RATKAISE VEDOT?")) return;
                 const pendingBets = await getDocs(query(collection(db, "bets"), where("status", "==", "pending")));
                 let resolvedCount = 0;
                 for (const betDoc of pendingBets.docs) {
@@ -415,7 +547,6 @@
                             const winnerName = matchData.winner?.name;
                             const userSelection = bet.selections[0].team;
                             let isWin = false;
-                            // Yksinkertainen voittaja-tarkistus (HUOM: Admin ratkaisee tässä vain voittajavedot)
                             if (userSelection === winnerName) isWin = true;
                             
                             const profit = bet.potentialWin || (bet.stake * bet.totalOdds);
@@ -465,12 +596,41 @@
                         clearInterval(interval);
                         resultEl.innerText = roll.toFixed(2);
                         resultEl.style.color = isWin ? 'var(--success)' : 'var(--danger)';
-                        const updates = { balance: increment(profit) };
-                        if (isWin) updates.totalProfit = increment(profit);
-                        await updateDoc(doc(db, "profiles", this.user.uid), updates);
-                        btn.disabled = false; btn.style.opacity = "1";
+                        
+                        try {
+                            const updates = { balance: increment(profit) };
+                            if (isWin) updates.totalProfit = increment(profit);
+                            await updateDoc(doc(db, "profiles", this.user.uid), updates);
+                            
+                            // TALLENNA DICE HISTORIAAN (JULKINEN)
+                            await addDoc(collection(db, "dice_rolls"), {
+                                username: this.username,
+                                result: parseFloat(roll.toFixed(2)),
+                                isWin: isWin,
+                                profit: parseFloat(profit.toFixed(4)),
+                                timestamp: serverTimestamp()
+                            });
+                        } catch(e) { console.error(e); }
+                        finally {
+                            btn.disabled = false; btn.style.opacity = "1";
+                        }
                     }
-                }, 30);
+                }, 50);
+            },
+
+            /* --- DICE HISTORY LISTENER --- */
+            listenDiceHistory: function() {
+                const q = query(collection(db, "dice_rolls"), orderBy("timestamp", "desc"), limit(15));
+                onSnapshot(q, (snap) => {
+                    document.getElementById('dice-history-container').innerHTML = snap.docs.map(doc => {
+                        const d = doc.data();
+                        const resultClass = d.isWin ? 'win' : 'loss';
+                        return `<div class="roll-pill ${resultClass}">
+                            <span class="roll-user">${d.username}</span>
+                            <span>${d.result}</span>
+                        </div>`;
+                    }).join('');
+                });
             },
 
             updateMatches: async function() {
@@ -524,46 +684,27 @@
                         </div>
                         <div style="font-size:0.8rem; color:var(--text-dim);">${match.league.name} - BO${match.number_of_games}</div>
                     </div>
-                    
                     <div class="market-group">
                         <div class="market-title">Ottelun Voittaja</div>
                         <div class="market-options">
-                            <div class="market-btn ${this.isBetSelected(match.id, 'match_winner', t1.name) ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'match_winner', '${t1.name}', 1.85, 'Voittaja')">
-                                <span class="market-name">${t1.name}</span><span class="market-odd">1.85</span>
-                            </div>
-                            <div class="market-btn ${this.isBetSelected(match.id, 'match_winner', t2.name) ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'match_winner', '${t2.name}', 1.85, 'Voittaja')">
-                                <span class="market-name">${t2.name}</span><span class="market-odd">1.85</span>
-                            </div>
+                            <div class="market-btn ${this.isBetSelected(match.id, 'match_winner', t1.name) ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'match_winner', '${t1.name}', 1.85, 'Voittaja')"><span class="market-name">${t1.name}</span><span class="market-odd">1.85</span></div>
+                            <div class="market-btn ${this.isBetSelected(match.id, 'match_winner', t2.name) ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'match_winner', '${t2.name}', 1.85, 'Voittaja')"><span class="market-name">${t2.name}</span><span class="market-odd">1.85</span></div>
                         </div>
                     </div>
-
                     <div class="market-group">
                         <div class="market-title">Map 1 Voittaja</div>
                         <div class="market-options">
-                            <div class="market-btn ${this.isBetSelected(match.id, 'map1_winner', t1.name) ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'map1_winner', '${t1.name}', 1.80, 'Map 1')">
-                                <span class="market-name">${t1.name}</span><span class="market-odd">1.80</span>
-                            </div>
-                            <div class="market-btn ${this.isBetSelected(match.id, 'map1_winner', t2.name) ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'map1_winner', '${t2.name}', 1.90, 'Map 1')">
-                                <span class="market-name">${t2.name}</span><span class="market-odd">1.90</span>
-                            </div>
+                            <div class="market-btn ${this.isBetSelected(match.id, 'map1_winner', t1.name) ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'map1_winner', '${t1.name}', 1.80, 'Map 1')"><span class="market-name">${t1.name}</span><span class="market-odd">1.80</span></div>
+                            <div class="market-btn ${this.isBetSelected(match.id, 'map1_winner', t2.name) ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'map1_winner', '${t2.name}', 1.90, 'Map 1')"><span class="market-name">${t2.name}</span><span class="market-odd">1.90</span></div>
                         </div>
                     </div>
-
                     <div class="market-group">
                         <div class="market-title">Tulosveto (BO3)</div>
                         <div class="market-options">
-                            <div class="market-btn ${this.isBetSelected(match.id, 'score_2_0', t1.name + ' 2-0') ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'score_2_0', '${t1.name} 2-0', 3.50, 'Tulos')">
-                                <span class="market-name">2 - 0</span><span class="market-odd">3.50</span>
-                            </div>
-                            <div class="market-btn ${this.isBetSelected(match.id, 'score_0_2', t2.name + ' 2-0') ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'score_0_2', '${t2.name} 2-0', 3.80, 'Tulos')">
-                                <span class="market-name">0 - 2</span><span class="market-odd">3.80</span>
-                            </div>
-                            <div class="market-btn ${this.isBetSelected(match.id, 'score_2_1', t1.name + ' 2-1') ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'score_2_1', '${t1.name} 2-1', 2.90, 'Tulos')">
-                                <span class="market-name">2 - 1</span><span class="market-odd">2.90</span>
-                            </div>
-                            <div class="market-btn ${this.isBetSelected(match.id, 'score_1_2', t2.name + ' 2-1') ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'score_1_2', '${t2.name} 2-1', 3.10, 'Tulos')">
-                                <span class="market-name">1 - 2</span><span class="market-odd">3.10</span>
-                            </div>
+                            <div class="market-btn ${this.isBetSelected(match.id, 'score_2_0', t1.name + ' 2-0') ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'score_2_0', '${t1.name} 2-0', 3.50, 'Tulos')"><span class="market-name">2 - 0</span><span class="market-odd">3.50</span></div>
+                            <div class="market-btn ${this.isBetSelected(match.id, 'score_0_2', t2.name + ' 2-0') ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'score_0_2', '${t2.name} 2-0', 3.80, 'Tulos')"><span class="market-name">0 - 2</span><span class="market-odd">3.80</span></div>
+                            <div class="market-btn ${this.isBetSelected(match.id, 'score_2_1', t1.name + ' 2-1') ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'score_2_1', '${t1.name} 2-1', 2.90, 'Tulos')"><span class="market-name">2 - 1</span><span class="market-odd">2.90</span></div>
+                            <div class="market-btn ${this.isBetSelected(match.id, 'score_1_2', t2.name + ' 2-1') ? 'selected' : ''}" onclick="app.toggleBet('${match.id}', 'score_1_2', '${t2.name} 2-1', 3.10, 'Tulos')"><span class="market-name">1 - 2</span><span class="market-odd">3.10</span></div>
                         </div>
                     </div>
                 `;
@@ -594,7 +735,7 @@
                 document.getElementById('submit-bet-btn').innerText = keys.length > 1 ? "VAHVISTA YHDISTELMÄ" : "VAHVISTA VETO";
                 document.getElementById('selected-chips').innerHTML = keys.map(k => {
                     const b = this.selectedBets[k];
-                    return `<span style="background:var(--primary); color:#000; padding:4px 10px; border-radius:8px; font-size:0.7rem; font-weight:900; white-space:nowrap;">${b.team}</span>`;
+                    return `<span style="background:var(--primary); color:#000; padding:4px 10px; border-radius:8px; font-size:0.7rem; font-weight:900; white-space:nowrap;">${b.team} (${b.marketLabel})</span>`;
                 }).join('');
                 const totalOdds = Object.values(this.selectedBets).reduce((acc, b) => acc * b.odds, 1).toFixed(2);
                 document.getElementById('display-total-odds').innerText = totalOdds;
@@ -684,14 +825,6 @@
                 const provider = new ethers.BrowserProvider(window.ethereum);
                 const accounts = await provider.send("eth_requestAccounts", []);
                 document.getElementById('prof-address').innerText = accounts[0];
-            },
-            depositCurrency: async function(c, i) {
-                const { value: amount } = await Swal.fire({ title: `Talleta ${c}`, input: 'number', imageUrl: i, imageWidth: 40, showCancelButton: true });
-                if (amount) await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(parseFloat(amount)) });
-            },
-            uiWithdraw: async function() {
-                const { value: amount } = await Swal.fire({ title: 'Nosta ETH', input: 'number', showCancelButton: true });
-                if (amount && parseFloat(amount) <= this.siteBalance) await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(-parseFloat(amount)) });
             },
             loginEmail: async function() { try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); } catch(e){alert(e.message)} },
             registerNewUser: async function() { try { const res = await createUserWithEmailAndPassword(auth, document.getElementById('reg-email').value, document.getElementById('reg-pass').value); await setDoc(doc(db, "profiles", res.user.uid), { username: document.getElementById('reg-username').value.trim(), balance: 0, totalProfit: 0 }); } catch(e){alert(e.message)} }
