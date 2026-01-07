@@ -20,29 +20,20 @@
             --glass-border: rgba(255, 255, 255, 0.08);
             --text-main: #e1e1e1;
             --text-dim: #888;
-            --bottom-nav-height: 65px;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: radial-gradient(circle at 50% -20%, #1e2533, #07090d); color: var(--text-main); margin: 0; padding-bottom: 150px; min-height: 100vh; overflow-x: hidden; }
 
-        /* --- NAVBAR (Desktop) --- */
+        /* --- NAVBAR --- */
         .navbar { display: flex; justify-content: space-between; align-items: center; height: 70px; padding: 0 30px; background: var(--nav-bg); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--glass-border); box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
         .nav-left { display: flex; align-items: center; gap: 30px; }
         .nav-logo { font-size: 1.4rem; font-weight: 900; color: #fff; letter-spacing: -0.5px; cursor: pointer; font-family: 'Orbitron', sans-serif; white-space: nowrap; }
         .nav-logo span { color: var(--primary); }
         .nav-links { display: flex; gap: 10px; }
         .nav-link { font-size: 0.75rem; font-weight: 700; color: var(--text-dim); text-decoration: none; text-transform: uppercase; cursor: pointer; padding: 8px 12px; border-radius: 8px; transition: 0.2s; white-space: nowrap; }
-        .nav-link:hover, .nav-link.active { color: #fff; background: rgba(243, 156, 18, 0.15); border: 1px solid rgba(243, 156, 18, 0.3); }
+        .nav-link.active { color: #fff; background: rgba(243, 156, 18, 0.15); border: 1px solid rgba(243, 156, 18, 0.3); }
         .nav-right { display: flex; align-items: center; gap: 10px; }
-
-        /* --- MOBILE BOTTOM NAV (New) --- */
-        .mobile-bottom-nav { display: none; position: fixed; bottom: 0; left: 0; width: 100%; height: var(--bottom-nav-height); background: #0b0e14; border-top: 1px solid var(--glass-border); z-index: 1400; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom); }
-        .mb-item { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; height: 100%; cursor: pointer; color: var(--text-dim); transition: 0.2s; }
-        .mb-item svg { width: 24px; height: 24px; margin-bottom: 4px; fill: currentColor; }
-        .mb-item span { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; }
-        .mb-item.active { color: var(--primary); }
-        .mb-item.active svg { filter: drop-shadow(0 0 5px var(--primary)); }
 
         /* --- UI ELEMENTS --- */
         .container { max-width: 1100px; margin: 20px auto; padding: 0 15px; width: 100%; }
@@ -63,7 +54,7 @@
         .banner-container { width: 100%; height: 250px; margin-bottom: 25px; border-radius: 24px; overflow: hidden; border: 1px solid var(--glass-border); position: relative; }
         .banner-container img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        /* --- MATCH CARDS (Grid) --- */
+        /* --- MATCH CARDS (GRID ALIGNMENT) --- */
         .match-card { background: var(--card-bg); margin-bottom: 12px; padding: 20px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--glass-border); width: 100%; cursor: pointer; transition: 0.2s; gap: 20px; }
         .match-card:hover { border-color: rgba(255,255,255,0.2); background: rgba(30, 36, 48, 0.95); }
         .teams { display: flex; flex-direction: column; gap: 12px; flex: 1; }
@@ -110,14 +101,16 @@
         .game-btn { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); color: var(--text-dim); padding: 12px 20px; border-radius: 12px; font-weight: 800; font-size: 0.75rem; cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .game-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
 
-        /* --- ADMIN, PROFILE & WALLET LISTS --- */
+        /* --- ADMIN & PROFILE & WALLET LISTS --- */
         .admin-tx-row, .leaderboard-row { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; background: rgba(255,255,255,0.03); margin-bottom: 8px; border-radius: 14px; border: 1px solid var(--glass-border); }
         .tx-row { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .tx-info { display: flex; flex-direction: column; gap: 4px; text-align: left; }
-        .tx-type { font-weight: 800; font-size: 0.8rem; }
+        .tx-type { font-weight: 800; font-size: 0.8rem; text-transform: uppercase; }
         .tx-type.deposit { color: var(--success); }
         .tx-type.withdraw { color: var(--danger); }
         .tx-type.pending { color: var(--warning); }
+        .tx-type.win { color: var(--success); } /* UUSI */
+        .tx-type.loss { color: var(--danger); } /* UUSI */
         .tx-amount { font-family: monospace; font-weight: 900; font-size: 1rem; text-align: right; }
         .tx-date { font-size: 0.7rem; color: var(--text-dim); }
 
@@ -148,7 +141,7 @@
         .crypto-option img { width: 32px; }
 
         /* --- BET BAR --- */
-        .floating-bet-bar { display: none; position: fixed; bottom: calc(var(--bottom-nav-height) + 15px); left: 50%; transform: translateX(-50%); width: 95%; max-width: 800px; background: rgba(11, 14, 20, 0.98); backdrop-filter: blur(25px); border-radius: 20px; padding: 15px; border: 1px solid var(--primary); z-index: 1300; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.8); gap: 10px; }
+        .floating-bet-bar { display: none; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 800px; background: rgba(11, 14, 20, 0.98); backdrop-filter: blur(25px); border-radius: 20px; padding: 20px; border: 1px solid var(--primary); z-index: 1500; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.8); gap: 15px; }
 
         /* --- OVERLAYS --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; z-index: 2000; }
@@ -165,19 +158,18 @@
 
         /* --- MOBILE TWEAKS --- */
         @media (max-width: 768px) {
-            .navbar { padding: 15px; }
-            .nav-links { display: none; } /* Hide Desktop Links */
-            .mobile-bottom-nav { display: flex; } /* Show Mobile Nav */
+            .navbar { height: auto; flex-wrap: wrap; padding: 15px 10px; }
+            .nav-left { display: flex; align-items: center; width: 100%; }
+            .nav-right { display: block; position: absolute; right: 15px; top: 15px; }
+            .nav-links { order: 3; width: 100%; margin-top: 50px; overflow-x: auto; justify-content: flex-start; gap: 10px; padding-bottom: 5px; }
             
-            .match-card { flex-direction: column; align-items: stretch; }
+            .match-card { flex-direction: column; align-items: stretch; padding: 15px; }
             .team { grid-template-columns: 32px 1fr 60px; }
             .details { border: none; border-top: 1px solid var(--glass-border); padding: 10px 0 0 0; text-align: center; }
+            .deposit-grid { grid-template-columns: repeat(2, 1fr); }
             .slots-window { height: 100px; }
             .reel { font-size: 2.5rem; height: 80px; }
             .banner-container { height: 180px; }
-            
-            /* Chat toggle removed on mobile as it is in bottom nav */
-            #chat-toggle-btn { display: none; } 
         }
 
         #loading-global { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); display: flex; justify-content: center; align-items: center; z-index: 3000; }
@@ -200,9 +192,10 @@
                 <div class="nav-link active" id="btn-matches" onclick="app.showSection('matches')">Ottelut</div>
                 <div class="nav-link" id="btn-dice" onclick="app.showSection('dice')">Dice</div>
                 <div class="nav-link" id="btn-slots" onclick="app.showSection('slots')">Slots</div>
-                <div class="nav-link" id="btn-leaderboard" onclick="app.showSection('leaderboard')">Top</div>
-                <div class="nav-link" id="btn-history" onclick="app.showSection('history')">History</div>
-                <div class="nav-link" id="btn-wallet" onclick="app.showSection('wallet')">Wallet</div>
+                <div class="nav-link" id="btn-leaderboard" onclick="app.showSection('leaderboard')">Top-Lista</div>
+                <div class="nav-link" id="btn-history" onclick="app.showSection('history')">Historia</div>
+                <div class="nav-link" id="btn-wallet" onclick="app.showSection('wallet')">Lompakko</div>
+                <div class="nav-link" id="btn-profile" onclick="app.showSection('profile')">Profiili</div>
             </div>
         </div>
         <div class="nav-right" id="nav-auth-container">
@@ -211,28 +204,9 @@
         <div id="admin-btn" onclick="app.openAdminMenu()">⚙️</div>
     </nav>
 
-    <div class="mobile-bottom-nav">
-        <div class="mb-item active" onclick="app.showSection('matches')" id="mb-matches">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-            <span>Sports</span>
-        </div>
-        <div class="mb-item" onclick="app.showSection('dice')" id="mb-dice">
-            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 12c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm5-3c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm5 3c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0-6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
-            <span>Dice</span>
-        </div>
-        <div class="mb-item" onclick="app.showSection('slots')" id="mb-slots">
-            <svg viewBox="0 0 24 24"><path d="M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2m0 2v14h14V5H5m7 2a2 2 0 012 2 2 2 0 01-2 2 2 2 0 01-2-2 2 2 0 012-2m-4 6a2 2 0 012 2 2 2 0 01-2 2 2 2 0 01-2-2 2 2 0 012-2m8 0a2 2 0 012 2 2 2 0 01-2 2 2 2 0 01-2-2 2 2 0 012-2"/></svg>
-            <span>Slots</span>
-        </div>
-        <div class="mb-item" onclick="app.showSection('wallet')" id="mb-wallet">
-            <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-            <span>Wallet</span>
-        </div>
-        <div class="mb-item" onclick="app.toggleChat()" id="mb-chat">
-            <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-            <span>Chat</span>
-        </div>
-    </div>
+    <button id="chat-toggle-btn" onclick="app.toggleChat()">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+    </button>
 
     <div id="chat-sidebar">
         <div style="padding: 20px; border-bottom: 1px solid var(--glass-border); font-weight: 900; color: var(--primary); display: flex; justify-content: space-between;">
@@ -275,7 +249,7 @@
                 </div>
                 <div class="dice-stats">
                     <div class="dice-stat"><small>KERROIN</small><div id="dice-mult">1.96x</div></div>
-                    <div class="dice-stat"><small>VOITTOMAHDOLLISUUS</small><div id="dice-chance">48.00%</div></div>
+                    <div class="dice-stat"><small>MAHDOLLISUUS</small><div id="dice-chance">48.00%</div></div>
                 </div>
                 
                 <div class="input-group">
@@ -344,10 +318,9 @@
         </div>
 
         <div id="wallet-view" class="section-view">
-            <h2 style="color:var(--primary)">Oma Lompakko</h2>
             <div class="card-panel">
                 <div class="balance-hero" style="text-align:center;">
-                    <small style="color:var(--text-dim); text-transform:uppercase; font-weight:800; letter-spacing:1px;">Alpha Saldo</small>
+                    <small style="color:var(--text-dim); text-transform:uppercase; font-weight:800; letter-spacing:1px;">Total Balance</small>
                     <div id="prof-site-balance" style="font-size:2.8rem; font-weight:900; color:#fff; margin:10px 0;">0.000 ETH</div>
                 </div>
                 <div class="deposit-grid">
@@ -369,12 +342,13 @@
                     </div>
                 </div>
                 <div class="profile-stats-row">
-                    <div class="stat-box"><small>SALDO</small><div id="prof-stat-balance">0.000</div></div>
-                    <div class="stat-box"><small>VOITOT</small><div id="prof-stat-profit" style="color:var(--success)">0.000</div></div>
+                    <div class="stat-box"><small>SALDO</small><div id="prof-stat-balance">0.000 ETH</div></div>
+                    <div class="stat-box"><small>VOITOT</small><div id="prof-stat-profit" style="color:var(--success)">0.000 ETH</div></div>
                 </div>
                 <div class="profile-tabs">
-                    <button class="profile-tab active" onclick="app.showProfileTab('settings', this)">Asetukset</button>
-                    <button class="profile-tab" onclick="app.showProfileTab('tx', this)">Rahansiirrot</button>
+                    <button class="profile-tab active" onclick="app.showProfileTab('settings', this)">Settings</button>
+                    <button class="profile-tab" onclick="app.showProfileTab('tx', this)">Transactions</button>
+                    <button class="profile-tab" onclick="app.showProfileTab('bets', this)">Bets</button>
                 </div>
                 <div id="prof-content-settings" class="prof-tab-content">
                     <label style="display:block; color:var(--text-dim); font-size:0.7rem; font-weight:800; margin-bottom:8px;">DISPLAY NAME</label>
@@ -382,6 +356,7 @@
                     <button class="deposit-btn" style="width:100%" onclick="app.updateUsername()">UPDATE</button>
                 </div>
                 <div id="prof-content-tx" class="prof-tab-content" style="display:none;"><div id="tx-list"></div></div>
+                <div id="prof-content-bets" class="prof-tab-content" style="display:none;"><div id="prof-bets-list"></div></div>
             </div>
         </div>
     </div>
@@ -490,13 +465,23 @@
                         this.updateNavVisibility(true);
                         const userDoc = await getDoc(doc(db, "profiles", user.uid));
                         if (!userDoc.exists()) await setDoc(doc(db, "profiles", user.uid), { username: user.displayName || "Player", balance: 0, totalProfit: 0 });
+                        
+                        // REALTIME PROFILE LISTENER (UPDATES STATS & BALANCE)
                         onSnapshot(doc(db, "profiles", user.uid), (snap) => {
                             if (snap.exists()) {
-                                this.siteBalance = snap.data().balance || 0;
-                                this.username = snap.data().username;
+                                const data = snap.data();
+                                this.siteBalance = data.balance || 0;
+                                this.username = data.username;
                                 this.updateBalanceUI();
+                                
+                                // Direct DOM update for Profile Stats
+                                if(document.getElementById('prof-stat-balance')) 
+                                    document.getElementById('prof-stat-balance').innerText = this.siteBalance.toFixed(3) + " ETH";
+                                if(document.getElementById('prof-stat-profit')) 
+                                    document.getElementById('prof-stat-profit').innerText = (data.totalProfit || 0).toFixed(3) + " ETH";
+
                                 if (this.username === 'Admin') document.getElementById('admin-btn').style.display = 'flex';
-                                this.loadProfileData();
+                                this.loadProfileData(); // Reload tx/bets
                             }
                         });
                         this.closeAuthModal();
@@ -510,22 +495,14 @@
             },
 
             updateNavVisibility: function(isLoggedIn) {
-                // Desktop
-                document.querySelectorAll('.nav-links .nav-link').forEach(l => {
-                    if(['btn-history', 'btn-wallet', 'btn-profile'].includes(l.id)) l.style.display = isLoggedIn ? 'block' : 'none';
-                });
-                // Mobile
-                const mobIds = ['mb-wallet']; 
-                mobIds.forEach(id => {
-                   if(document.getElementById(id)) document.getElementById(id).style.display = isLoggedIn ? 'flex' : 'none';
-                });
+                const display = isLoggedIn ? 'block' : 'none';
+                ['btn-history', 'btn-wallet', 'btn-profile'].forEach(id => document.getElementById(id).style.display = display);
             },
 
             updateBalanceUI: function() {
                 if (!this.user) return;
                 const b = this.siteBalance.toFixed(3) + " ETH";
                 document.getElementById('nav-auth-container').innerHTML = `<div class="balance-pill"><div class="eth-display">${b}</div><button class="deposit-btn" onclick="app.logout()">OUT</button></div>`;
-                if(document.getElementById('prof-site-balance')) document.getElementById('prof-site-balance').innerText = b;
             },
 
             renderNavbarLoggedOut: function() {
@@ -533,7 +510,7 @@
             },
 
             logout: async function() { await signOut(auth); location.reload(); },
-            loginGoogle: async () => { try { await signInWithPopup(auth, googleProvider); } catch(e) { console.error(e); alert("Kirjautumisvirhe."); } },
+            loginGoogle: async () => { try { await signInWithPopup(auth, googleProvider); } catch(e) { console.error(e); } },
             openAuthModal: () => document.getElementById('auth-modal').style.display = 'flex',
             closeAuthModal: () => { document.getElementById('auth-modal').style.display = 'none'; document.getElementById('register-modal').style.display = 'none'; },
             showRegister: () => { document.getElementById('auth-modal').style.display = 'none'; document.getElementById('register-modal').style.display = 'flex'; },
@@ -542,16 +519,9 @@
             showSection: function(s) {
                 if (!this.user && ['history', 'wallet', 'profile'].includes(s)) { this.openAuthModal(); return; }
                 document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
-                
-                // Desktop Highlight
                 document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                if(document.getElementById('btn-'+s)) document.getElementById('btn-'+s).classList.add('active');
-
-                // Mobile Highlight
-                document.querySelectorAll('.mb-item').forEach(m => m.classList.remove('active'));
-                if(document.getElementById('mb-'+s)) document.getElementById('mb-'+s).classList.add('active');
-
                 document.getElementById(s + '-view').classList.add('active');
+                if(document.getElementById('btn-'+s)) document.getElementById('btn-'+s).classList.add('active');
                 if(s === 'history') this.loadHistory();
                 if(s === 'leaderboard') this.loadLeaderboard();
                 if(s === 'profile') this.loadProfileData();
@@ -563,7 +533,7 @@
                 el.parentElement.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
                 el.classList.add('active');
                 document.getElementById('dice-auto-controls').style.display = mode === 'auto' ? 'block' : 'none';
-                document.getElementById('dice-btn').innerText = mode === 'auto' ? 'START AUTO' : 'HEITÄ NOPPAA';
+                document.getElementById('dice-btn').innerText = mode === 'auto' ? 'START AUTO' : 'ROLL';
             },
             setSlotsMode: function(mode, el) {
                 this.slotsMode = mode;
@@ -832,8 +802,7 @@
                     await addDoc(collection(db, "bets"), { uid: this.user.uid, selections: Object.values(this.selectedBets), stake, totalOdds: totalOdds, potentialWin: stake * parseFloat(totalOdds), timestamp: serverTimestamp(), status: 'pending', type: Object.keys(this.selectedBets).length > 1 ? 'combo' : 'single' });
                     await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(-stake) });
                     this.selectedBets = {}; this.updateBetBar();
-                    this.renderMatches(this.matchCache.live, 'live-container', true);
-                    this.renderMatches(this.matchCache.upcoming, 'match-container', false);
+                    this.updateMatches();
                     document.getElementById('match-details-modal').style.display='none';
                     Swal.fire("Veto asetettu!", "", "success");
                 } catch(e) { console.error(e); alert("Virhe vedon tallennuksessa: " + e.message); }
@@ -904,10 +873,14 @@
             },
             approveTx: async (id) => await updateDoc(doc(db, "transactions", id), { status: 'completed' }),
             rejectTx: async (id, uid, amt) => { await updateDoc(doc(db, "profiles", uid), { balance: increment(amt) }); await updateDoc(doc(db, "transactions", id), { status: 'rejected' }); },
-            loadProfileData: () => {
+            
+            // PROFILE DATA LOADING
+            loadProfileData: function() {
                 document.getElementById('prof-username-display').innerText = window.app.username;
                 document.getElementById('prof-email-display').innerText = window.app.user.email;
                 document.getElementById('prof-avatar').innerText = window.app.username.charAt(0).toUpperCase();
+                
+                // Transactions
                 const q = query(collection(db, "transactions"), where("uid", "==", window.app.user.uid), limit(10));
                 onSnapshot(q, (s) => {
                     const sorted = s.docs.sort((a, b) => (b.data().timestamp?.toMillis() || 0) - (a.data().timestamp?.toMillis() || 0));
@@ -916,7 +889,40 @@
                         return `<div class="tx-row"><div class="tx-info"><div class="tx-type ${d.data().type}">${d.data().type === 'deposit' ? 'TALLETUS' : 'NOSTO'}</div><div class="tx-date">${date}</div></div><div class="tx-amount">${d.data().amount} ETH</div></div>`
                     }).join('')
                 });
+
+                // Bets in Profile (NEW)
+                this.loadProfileBets();
             },
+
+            loadProfileBets: function() {
+                const q = query(collection(db, "bets"), where("uid", "==", this.user.uid), limit(10));
+                onSnapshot(q, (snap) => {
+                    const container = document.getElementById('prof-bets-list');
+                    if (snap.empty) { container.innerHTML = '<div style="padding:15px; color:#888;">Ei vetoja.</div>'; return; }
+                    
+                    const sortedDocs = snap.docs.sort((a, b) => {
+                        const tA = a.data().timestamp ? a.data().timestamp.toMillis() : Date.now();
+                        const tB = b.data().timestamp ? b.data().timestamp.toMillis() : Date.now();
+                        return tB - tA;
+                    });
+
+                    container.innerHTML = sortedDocs.map(doc => {
+                        const b = doc.data();
+                        const statusClass = b.status || 'pending';
+                        const selectionText = b.selections.map(s => s.team).join(', ');
+                        
+                        return `
+                        <div class="tx-row">
+                            <div class="tx-info">
+                                <div class="tx-type ${statusClass}">${statusClass.toUpperCase()}</div>
+                                <div class="tx-date">${selectionText}</div>
+                            </div>
+                            <div class="tx-amount">${b.stake} ETH</div>
+                        </div>`;
+                    }).join('');
+                });
+            },
+
             showProfileTab: (tab, el) => {
                 document.querySelectorAll('.prof-tab-content').forEach(c => c.style.display = 'none');
                 document.getElementById('prof-content-' + tab).style.display = 'block';
