@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AlphaOdds - Crypto Esports</title>
+    <title>AlphaOdds - Crypto Esports & Dice</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -37,33 +37,13 @@
         .eth-display { font-weight: 800; font-size: 0.8rem; color: #fff; }
         .deposit-btn { background: var(--primary); color: #000; border: none; padding: 8px 15px; border-radius: 10px; font-weight: 800; font-size: 0.75rem; cursor: pointer; }
 
-        /* --- MATCH CARDS --- */
+        /* --- VIEWS --- */
         .container { max-width: 1100px; margin: 20px auto; padding: 0 15px; width: 100%; }
         .section-view { display: none; animation: fadeIn 0.3s ease; }
         .section-view.active { display: block; }
         .banner-container { width: 100%; height: 250px; margin-bottom: 25px; border-radius: 24px; overflow: hidden; border: 1px solid var(--glass-border); }
         .banner-container img { width: 100%; height: 100%; object-fit: cover; }
-
-        .match-card { background: var(--card-bg); margin-bottom: 12px; padding: 15px 25px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--glass-border); width: 100%; }
-        .teams { display: flex; align-items: center; gap: 40px; flex: 3; }
-        .team { display: grid; grid-template-columns: 36px 1fr 80px; align-items: center; gap: 15px; flex: 1; min-width: 0; }
-        .team img { width: 36px; height: 36px; object-fit: contain; }
-        .team span { font-weight: 700; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .odds-badge { background: rgba(255, 255, 255, 0.04); color: var(--primary); padding: 10px; border-radius: 12px; font-weight: 800; border: 1px solid rgba(255, 255, 255, 0.06); cursor: pointer; width: 80px; text-align: center; flex-shrink: 0; transition: 0.15s; }
-        .odds-badge.selected { background: var(--primary) !important; color: #000 !important; border-color: #fff !important; }
-        .details { flex: 1; text-align: right; border-left: 1px solid var(--glass-border); padding-left: 25px; min-width: 100px; flex-shrink: 0; }
-        .live-score-box { font-family: 'monospace'; color: var(--primary); font-weight: 900; font-size: 1.2rem; }
-
-        /* --- VIEWS --- */
         .card-panel { background: var(--card-bg); padding: 30px; border-radius: 24px; border: 1px solid var(--glass-border); margin-bottom: 30px; }
-        .balance-hero { text-align: center; padding: 20px; }
-        .balance-hero div { font-size: 2.8rem; font-weight: 900; color: #fff; margin: 10px 0; }
-        .deposit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
-        .crypto-option { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 20px 10px; background: rgba(255,255,255,0.03); border-radius: 20px; border: 1px solid var(--glass-border); cursor: pointer; transition: 0.2s ease; }
-        .crypto-option:hover { background: rgba(255,255,255,0.08); transform: translateY(-3px); border-color: var(--primary); }
-        .crypto-option img { width: 32px; height: 32px; }
-        .crypto-option span { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; }
 
         /* --- DICE STYLES --- */
         .dice-container { max-width: 600px; margin: 0 auto; background: #0b0e14; padding: 40px; border-radius: 24px; border: 1px solid var(--glass-border); text-align: center; }
@@ -76,6 +56,24 @@
         .dice-stat { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; }
         .dice-stat small { display: block; font-size: 0.6rem; color: var(--text-dim); margin-bottom: 5px; }
         .dice-stat div { font-weight: 900; font-size: 1.2rem; }
+
+        /* --- MATCH CARDS --- */
+        .match-card { background: var(--card-bg); margin-bottom: 12px; padding: 15px 25px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--glass-border); width: 100%; }
+        .teams { display: flex; align-items: center; gap: 40px; flex: 3; }
+        .team { display: grid; grid-template-columns: 36px 1fr 80px; align-items: center; gap: 15px; flex: 1; min-width: 0; }
+        .team img { width: 36px; height: 36px; object-fit: contain; }
+        .team span { font-weight: 700; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .odds-badge { background: rgba(255, 255, 255, 0.04); color: var(--primary); padding: 10px; border-radius: 12px; font-weight: 800; border: 1px solid rgba(255, 255, 255, 0.06); cursor: pointer; width: 80px; text-align: center; flex-shrink: 0; }
+        .odds-badge.selected { background: var(--primary) !important; color: #000 !important; }
+        .details { flex: 1; text-align: right; border-left: 1px solid var(--glass-border); padding-left: 25px; min-width: 100px; flex-shrink: 0; }
+        .live-score-box { font-family: 'monospace'; color: var(--primary); font-weight: 900; font-size: 1.2rem; }
+
+        /* --- DEPOSIT GRID --- */
+        .deposit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .crypto-option { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 20px 10px; background: rgba(255,255,255,0.03); border-radius: 20px; border: 1px solid var(--glass-border); cursor: pointer; transition: 0.2s ease; }
+        .crypto-option:hover { background: rgba(255,255,255,0.08); transform: translateY(-3px); border-color: var(--primary); }
+        .crypto-option img { width: 32px; height: 32px; }
+        .crypto-option span { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; }
 
         /* --- CHAT --- */
         #chat-toggle-btn { position: fixed; bottom: 30px; left: 30px; width: 55px; height: 55px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1600; box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3); border: none; transition: 0.3s; }
@@ -98,7 +96,6 @@
         .glass-card { background: rgba(26, 31, 41, 0.95); padding: 40px; border-radius: 32px; border: 1px solid var(--glass-border); text-align: center; width: 90%; max-width: 400px; }
         .google-btn { background: #ffffff !important; color: #1f1f1f !important; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; border: none; border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; margin-bottom: 20px; }
         .modal-input { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0, 0, 0, 0.3); color: white; outline: none; }
-        
         #loading-global { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); display: flex; justify-content: center; align-items: center; z-index: 3000; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
         .tournament-header { margin: 30px 0 15px 0; font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
@@ -160,7 +157,7 @@
                 </div>
                 <div style="text-align:left; margin-bottom:20px;">
                     <small style="color:var(--text-dim); font-weight:800;">PANOS (ETH)</small>
-                    <input type="number" id="dice-stake" class="modal-input" style="margin:5px 0 0 0; width:100%;" value="0.01" step="0.001">
+                    <input type="number" id="dice-stake" style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); border-radius:12px; color:#fff; outline:none;" value="0.01" step="0.001">
                 </div>
                 <button class="deposit-btn" style="width:100%; padding:20px; font-size:1.1rem;" onclick="app.playDice()">HEITÄ NOPPAA</button>
             </div>
@@ -169,38 +166,25 @@
         <div id="wallet-view" class="section-view">
             <h2 style="color:var(--primary)">Oma Lompakko</h2>
             <div class="card-panel">
-                <div class="balance-hero">
-                    <small style="color:var(--text-dim); text-transform:uppercase; font-weight:800; letter-spacing:1px;">Alpha Saldo (ETH-arvo)</small>
-                    <div id="prof-site-balance">0.000 ETH</div>
+                <div class="balance-hero" style="text-align:center;">
+                    <small style="color:var(--text-dim); text-transform:uppercase; font-weight:800; letter-spacing:1px;">Alpha Saldo</small>
+                    <div id="prof-site-balance" style="font-size:2.8rem; font-weight:900; color:#fff; margin:10px 0;">0.000 ETH</div>
                 </div>
-                <div style="margin-top:20px;">
-                    <small style="color:var(--text-dim); font-weight:800; display:block; margin-bottom:15px; text-transform:uppercase;">Pikatalletus</small>
-                    <div class="deposit-grid">
-                        <div class="crypto-option" onclick="app.depositCurrency('BTC', 'https://cryptologos.cc/logos/bitcoin-btc-logo.svg')"><img src="https://cryptologos.cc/logos/bitcoin-btc-logo.svg"><span>Bitcoin</span></div>
-                        <div class="crypto-option" onclick="app.depositCurrency('ETH', 'https://cryptologos.cc/logos/ethereum-eth-logo.svg')"><img src="https://cryptologos.cc/logos/ethereum-eth-logo.svg"><span>Ethereum</span></div>
-                        <div class="crypto-option" onclick="app.depositCurrency('SOL', 'https://cryptologos.cc/logos/solana-sol-logo.svg')"><img src="https://cryptologos.cc/logos/solana-sol-logo.svg"><span>Solana</span></div>
-                        <div class="crypto-option" onclick="app.depositCurrency('DOGE', 'https://cryptologos.cc/logos/dogecoin-doge-logo.svg')"><img src="https://cryptologos.cc/logos/dogecoin-doge-logo.svg"><span>Dogecoin</span></div>
-                        <div class="crypto-option" onclick="app.depositCurrency('USDT', 'https://cryptologos.cc/logos/tether-usdt-logo.svg')"><img src="https://cryptologos.cc/logos/tether-usdt-logo.svg"><span>Tether</span></div>
-                        <div class="crypto-option" onclick="app.depositCurrency('USDC', 'https://cryptologos.cc/logos/usd-coin-usdc-logo.svg')"><img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.svg"><span>USDC</span></div>
-                    </div>
+                <div class="deposit-grid">
+                    <div class="crypto-option" onclick="app.depositCurrency('BTC', 'https://cryptologos.cc/logos/bitcoin-btc-logo.svg')"><img src="https://cryptologos.cc/logos/bitcoin-btc-logo.svg"><span>Bitcoin</span></div>
+                    <div class="crypto-option" onclick="app.depositCurrency('ETH', 'https://cryptologos.cc/logos/ethereum-eth-logo.svg')"><img src="https://cryptologos.cc/logos/ethereum-eth-logo.svg"><span>Ethereum</span></div>
+                    <div class="crypto-option" onclick="app.depositCurrency('SOL', 'https://cryptologos.cc/logos/solana-sol-logo.svg')"><img src="https://cryptologos.cc/logos/solana-sol-logo.svg"><span>Solana</span></div>
                 </div>
                 <button class="deposit-btn" style="width:100%; margin-top:25px; background:var(--danger); color:#fff; padding:18px;" onclick="app.uiWithdraw()">NOSTA VAROJA</button>
             </div>
         </div>
 
         <div id="profile-view" class="section-view">
-            <h2 style="color:var(--primary)">Profiilin hallinta</h2>
+            <h2 style="color:var(--primary)">Profiili</h2>
             <div class="card-panel">
-                <div style="margin-bottom: 20px;">
-                    <label style="display:block; color:var(--text-dim); font-size:0.7rem; font-weight:800; margin-bottom:8px; text-transform:uppercase;">Käyttäjänimi</label>
-                    <input type="text" id="edit-username" class="modal-input" style="margin:0; width:100%;" placeholder="Uusi nimi">
-                    <button class="deposit-btn" style="margin-top:15px;" onclick="app.updateUsername()">PÄIVITÄ NIMI</button>
-                </div>
-                <div style="margin-top:30px; padding-top:25px; border-top:1px solid var(--glass-border);">
-                    <small style="color:var(--text-dim)">METAMASK OSOITE</small>
-                    <div id="prof-address" style="font-family:monospace; margin:10px 0; font-size:0.75rem; opacity:0.7; word-break:break-all;">Ei yhdistetty</div>
-                    <button class="deposit-btn" style="background:rgba(255,255,255,0.05); color:#fff; border:1px solid var(--glass-border)" onclick="app.connectWallet()">Yhdistä Lompakko</button>
-                </div>
+                <label style="display:block; color:var(--text-dim); font-size:0.7rem; font-weight:800; margin-bottom:8px; text-transform:uppercase;">Käyttäjänimi</label>
+                <input type="text" id="edit-username" style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); border-radius:12px; color:#fff; outline:none; margin-bottom:20px;">
+                <button class="deposit-btn" style="width:100%" onclick="app.updateUsername()">PÄIVITÄ NIMI</button>
             </div>
         </div>
     </div>
@@ -226,31 +210,29 @@
         <div class="glass-card">
             <h2 style="color:var(--primary); margin-bottom:20px; font-weight:900;">ALPHA ODDS</h2>
             <button class="google-btn" onclick="app.loginGoogle()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"> Jatka Googlella</button>
-            <div style="color:var(--text-dim); font-size:0.7rem; margin-bottom:15px; font-weight:800;">TAI SÄHKÖPOSTILLA</div>
-            <input type="email" id="login-email" class="modal-input" placeholder="Sähköposti">
-            <input type="password" id="login-pass" class="modal-input" placeholder="Salasana">
-            <button class="deposit-btn" style="width:100%; margin-top:10px; padding:14px;" onclick="app.loginEmail()">SISÄÄN</button>
-            <button style="background:none; border:none; color:var(--text-dim); margin-top:20px; cursor:pointer; font-size:0.8rem;" onclick="app.showRegister()">Luo uusi tili</button>
+            <input type="email" id="login-email" class="modal-input" placeholder="Sähköposti" style="width:100%; padding:15px; margin-bottom:10px; border-radius:12px; background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); color:white;">
+            <input type="password" id="login-pass" class="modal-input" placeholder="Salasana" style="width:100%; padding:15px; margin-bottom:10px; border-radius:12px; background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); color:white;">
+            <button class="deposit-btn" style="width:100%; padding:15px;" onclick="app.loginEmail()">SISÄÄN</button>
+            <button style="background:none; border:none; color:var(--text-dim); margin-top:20px; cursor:pointer;" onclick="app.showRegister()">Luo uusi tili</button>
             <button style="background:none; border:none; color:var(--text-dim); margin-top:10px; cursor:pointer;" onclick="app.closeAuthModal()">Sulje</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="register-modal">
         <div class="glass-card">
-            <h2 style="color:var(--primary); margin-bottom:20px;">Luo uusi tili</h2>
-            <input type="text" id="reg-username" class="modal-input" placeholder="Käyttäjänimi">
-            <input type="email" id="reg-email" class="modal-input" placeholder="Sähköposti">
-            <input type="password" id="reg-pass" class="modal-input" placeholder="Salasana">
-            <button class="deposit-btn" style="width:100%; margin-top:10px; padding:14px;" onclick="app.registerNewUser()">REKISTERÖIDY</button>
+            <h2 style="color:var(--primary); margin-bottom:20px;">Luo tili</h2>
+            <input type="text" id="reg-username" class="modal-input" placeholder="Käyttäjänimi" style="width:100%; padding:15px; margin-bottom:10px; border-radius:12px; background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); color:white;">
+            <input type="email" id="reg-email" class="modal-input" placeholder="Sähköposti" style="width:100%; padding:15px; margin-bottom:10px; border-radius:12px; background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); color:white;">
+            <input type="password" id="reg-pass" class="modal-input" placeholder="Salasana" style="width:100%; padding:15px; margin-bottom:10px; border-radius:12px; background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); color:white;">
+            <button class="deposit-btn" style="width:100%; padding:15px;" onclick="app.registerNewUser()">REKISTERÖIDY</button>
             <button style="background:none; border:none; color:var(--text-dim); margin-top:20px; cursor:pointer;" onclick="app.showLogin()">Takaisin</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithRedirect, getRedirectResult, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, onSnapshot, addDoc, increment, getDocs, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { ethers } from "https://esm.sh/ethers@6.7.0";
+        import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithRedirect, getRedirectResult, GoogleAuthProvider, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, onSnapshot, addDoc, increment, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCyj2zKkNw8JP_gG0F6AjyHiIr_EUjbFMA", authDomain: "cs2-leaderboard.firebaseapp.com", projectId: "cs2-leaderboard", storageBucket: "cs2-leaderboard.firebasestorage.app", messagingSenderId: "596762153722", appId: "1:596762153722:web:6d16722d0be705c21baf43" };
         const fbApp = initializeApp(firebaseConfig);
@@ -261,11 +243,16 @@
         const LOGO_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='50' height='50'%3E%3Cpath fill='%232a303c' d='M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z'/%3E%3C/svg%3E";
 
         window.app = {
-            user: null, username: null, siteBalance: 0, walletAddress: null, selectedGame: 'csgo', selectedBets: {}, 
+            user: null, username: null, siteBalance: 0, selectedGame: 'csgo', selectedBets: {}, 
             matchCache: { live: [], upcoming: [] },
 
-            init: function() {
+            init: async function() {
+                // PAKOTETAAN PYSYVYYS
+                await setPersistence(auth, browserLocalPersistence);
+                
                 this.updateMatches(); this.listenToChat(); this.updateDiceUI();
+                
+                // Käsitellään paluu Google-kirjautumisesta
                 getRedirectResult(auth).catch(e => console.error(e));
 
                 onAuthStateChanged(auth, async (user) => {
@@ -292,38 +279,10 @@
                 document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') this.sendChatMessage(); });
             },
 
-            /* --- DICE LOGIC --- */
-            updateDiceUI: function() {
-                const val = document.getElementById('dice-input').value;
-                const chance = 100 - val;
-                const multiplier = (98 / chance).toFixed(2);
-                document.getElementById('dice-track').style.width = chance + "%";
-                document.getElementById('dice-mult').innerText = multiplier + "x";
-                document.getElementById('dice-chance').innerText = chance.toFixed(2) + "%";
-            },
-
-            playDice: async function() {
-                if (!this.user) return this.openAuthModal();
-                const stake = parseFloat(document.getElementById('dice-stake').value);
-                const target = parseInt(document.getElementById('dice-input').value);
-                if (stake > this.siteBalance) return Swal.fire("Hups", "Saldo ei riitä!", "warning");
-                
-                const roll = (Math.random() * 100);
-                const win = roll > target;
-                const mult = 98 / (100 - target);
-                const profit = win ? (stake * mult) - stake : -stake;
-
-                document.getElementById('dice-result').innerText = roll.toFixed(2);
-                document.getElementById('dice-result').style.color = win ? 'var(--success)' : 'var(--danger)';
-
-                await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(profit) });
-            },
-
             updateBalanceUI: function() {
-                const container = document.getElementById('nav-auth-container');
-                if (!this.user) { this.renderNavbarLoggedOut(); return; }
+                if (!this.user) return;
                 const b = this.siteBalance.toFixed(3) + " ETH";
-                container.innerHTML = `<div class="balance-pill"><div class="eth-display">${b}</div><button class="deposit-btn" onclick="app.logout()">OUT</button></div>`;
+                document.getElementById('nav-auth-container').innerHTML = `<div class="balance-pill"><div class="eth-display">${b}</div><button class="deposit-btn" onclick="app.logout()">OUT</button></div>`;
                 if (document.getElementById('prof-site-balance')) document.getElementById('prof-site-balance').innerText = b;
                 if (document.getElementById('edit-username')) document.getElementById('edit-username').value = this.username || "";
             },
@@ -346,37 +305,27 @@
                 if(document.getElementById('btn-'+s)) document.getElementById('btn-'+s).classList.add('active');
             },
 
-            updateUsername: async function() {
-                const newName = document.getElementById('edit-username').value.trim();
-                if (!newName || !this.user) return;
-                await updateDoc(doc(db, "profiles", this.user.uid), { username: newName });
-                Swal.fire("Nimi päivitetty!", "", "success");
+            /* --- DICE --- */
+            updateDiceUI: function() {
+                const val = document.getElementById('dice-input').value;
+                const chance = 100 - val;
+                const mult = (98 / chance).toFixed(2);
+                document.getElementById('dice-track').style.width = chance + "%";
+                document.getElementById('dice-mult').innerText = mult + "x";
+                document.getElementById('dice-chance').innerText = chance.toFixed(2) + "%";
             },
 
-            connectWallet: async function() {
-                if (!window.ethereum) return Swal.fire("MetaMask", "Asenna MetaMask!", "info");
-                const provider = new ethers.BrowserProvider(window.ethereum);
-                const accounts = await provider.send("eth_requestAccounts", []);
-                this.walletAddress = accounts[0];
-                if(document.getElementById('prof-address')) document.getElementById('prof-address').innerText = this.walletAddress;
-            },
-
-            depositCurrency: async function(currency, icon) {
-                if(!this.user) return this.openAuthModal();
-                const { value: amount } = await Swal.fire({ title: `Talleta ${currency}`, input: 'number', imageUrl: icon, imageWidth: 40, showCancelButton: true });
-                if (amount) {
-                    await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(parseFloat(amount)) });
-                    Swal.fire("Talletus onnistui!", "", "success");
-                }
-            },
-
-            uiWithdraw: async function() {
-                if(!this.user) return;
-                const { value: amount } = await Swal.fire({ title: 'Nosta ETH', input: 'number', showCancelButton: true });
-                if (amount && parseFloat(amount) <= this.siteBalance) {
-                    await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(-parseFloat(amount)) });
-                    Swal.fire("Nostettu!", "", "success");
-                }
+            playDice: async function() {
+                if (!this.user) return this.openAuthModal();
+                const stake = parseFloat(document.getElementById('dice-stake').value);
+                const target = parseInt(document.getElementById('dice-input').value);
+                if (stake > this.siteBalance) return Swal.fire("Hups", "Saldo ei riitä!", "warning");
+                const roll = (Math.random() * 100);
+                const win = roll > target;
+                const profit = win ? (stake * (98 / (100 - target))) - stake : -stake;
+                document.getElementById('dice-result').innerText = roll.toFixed(2);
+                document.getElementById('dice-result').style.color = win ? 'var(--success)' : 'var(--danger)';
+                await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(profit) });
             },
 
             updateMatches: async function() {
@@ -455,9 +404,28 @@
                 await addDoc(collection(db, "messages"), { username: this.username, text: input.value, createdAt: serverTimestamp() });
                 input.value = '';
             },
-            setGame: function(g, el) { this.selectedGame = g; document.querySelectorAll('.game-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); this.updateMatches(); },
+            updateUsername: async function() {
+                const newName = document.getElementById('edit-username').value.trim();
+                if (newName && this.user) await updateDoc(doc(db, "profiles", this.user.uid), { username: newName });
+                Swal.fire("Nimi päivitetty!", "", "success");
+            },
+            connectWallet: async function() {
+                if (!window.ethereum) return;
+                const provider = new ethers.BrowserProvider(window.ethereum);
+                const accounts = await provider.send("eth_requestAccounts", []);
+                document.getElementById('prof-address').innerText = accounts[0];
+            },
+            depositCurrency: async function(c, i) {
+                const { value: amount } = await Swal.fire({ title: `Talleta ${c}`, input: 'number', imageUrl: i, imageWidth: 40, showCancelButton: true });
+                if (amount) await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(parseFloat(amount)) });
+            },
+            uiWithdraw: async function() {
+                const { value: amount } = await Swal.fire({ title: 'Nosta ETH', input: 'number', showCancelButton: true });
+                if (amount && parseFloat(amount) <= this.siteBalance) await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(-parseFloat(amount)) });
+            },
             loginEmail: async function() { try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); } catch(e){alert(e.message)} },
-            registerNewUser: async function() { try { const res = await createUserWithEmailAndPassword(auth, document.getElementById('reg-email').value, document.getElementById('reg-pass').value); await setDoc(doc(db, "profiles", res.user.uid), { username: document.getElementById('reg-username').value.trim(), balance: 0 }); } catch(e){alert(e.message)} }
+            registerNewUser: async function() { try { const res = await createUserWithEmailAndPassword(auth, document.getElementById('reg-email').value, document.getElementById('reg-pass').value); await setDoc(doc(db, "profiles", res.user.uid), { username: document.getElementById('reg-username').value.trim(), balance: 0 }); } catch(e){alert(e.message)} },
+            setGame: function(g, el) { this.selectedGame = g; document.querySelectorAll('.game-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); this.updateMatches(); }
         };
         app.init();
     </script>
