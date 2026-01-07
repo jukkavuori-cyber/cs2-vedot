@@ -448,10 +448,6 @@
                         this.user = null;
                         this.renderNavbarLoggedOut();
                         this.updateNavVisibility(false);
-                        const activeSection = document.querySelector('.section-view.active').id;
-                        if (['history-view', 'wallet-view', 'profile-view'].includes(activeSection)) {
-                            this.showSection('matches');
-                        }
                     }
                     document.getElementById('loading-global').style.display = 'none';
                 });
@@ -485,10 +481,7 @@
             showLogin: () => { document.getElementById('register-modal').style.display = 'none'; document.getElementById('auth-modal').style.display = 'flex'; },
 
             showSection: function(s) {
-                if (!this.user && ['history', 'wallet', 'profile'].includes(s)) {
-                    this.openAuthModal();
-                    return;
-                }
+                if (!this.user && ['history', 'wallet', 'profile'].includes(s)) { this.openAuthModal(); return; }
                 document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
                 document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
                 document.getElementById(s + '-view').classList.add('active');
@@ -508,39 +501,25 @@
             simulateDeposit: async function(currency) {
                 const { value: amount } = await Swal.fire({ title: `Talleta ${currency}`, input: 'number', inputLabel: 'Määrä', showCancelButton: true });
                 if (!amount) return;
-
                 const modal = document.getElementById('deposit-modal');
                 document.getElementById('dep-crypto-name').innerText = currency;
-                
                 const addr = currency === 'BTC' ? 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh' : (currency === 'ETH' ? '0x71C7656EC7ab88b098defB751B7401B5f6d8976F' : '7xKXtg2CN8798kksYGW76WKG83eW671192');
                 document.getElementById('dep-address').innerText = addr;
                 document.getElementById('dep-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${addr}`;
-                
                 document.getElementById('step-1').className = 'step-row active';
                 document.getElementById('step-2').className = 'step-row';
                 document.getElementById('step-3').className = 'step-row';
-                
                 modal.style.display = 'flex';
-
-                setTimeout(() => {
-                    document.getElementById('step-1').className = 'step-row completed';
-                    document.getElementById('step-2').className = 'step-row active';
-                }, 3000);
-
+                setTimeout(() => { document.getElementById('step-1').className = 'step-row completed'; document.getElementById('step-2').className = 'step-row active'; }, 3000);
                 setTimeout(async () => {
                     document.getElementById('step-2').className = 'step-row completed';
                     document.getElementById('step-3').className = 'step-row completed active';
-                    
                     const val = parseFloat(amount);
                     try {
                         await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(val) });
                         await addDoc(collection(db, "transactions"), { uid: this.user.uid, type: 'deposit', amount: val, status: 'completed', timestamp: serverTimestamp() });
                         setTimeout(() => { modal.style.display = 'none'; Swal.fire('Talletus saapui!', '', 'success'); }, 1000);
-                    } catch(e) {
-                        console.error(e);
-                        alert("Virhe talletuksessa. Tarkista oikeudet.");
-                        modal.style.display = 'none';
-                    }
+                    } catch(e) { console.error(e); alert("Virhe talletuksessa."); modal.style.display = 'none'; }
                 }, 6000);
             },
 
@@ -554,41 +533,26 @@
                             await addDoc(collection(db, "transactions"), { uid: this.user.uid, type: 'withdraw', amount: val, status: 'pending', username: this.username, timestamp: serverTimestamp() });
                             Swal.fire('Nostopyyntö lähetetty!', 'Ylläpito käsittelee sen pian.', 'info');
                         } catch(e) { console.error(e); alert("Virhe nostossa."); }
-                    } else {
-                        Swal.fire('Virhe', 'Saldo ei riitä.', 'error');
-                    }
+                    } else { Swal.fire('Virhe', 'Saldo ei riitä.', 'error'); }
                 }
             },
 
             openAdminMenu: function() { document.getElementById('admin-modal').style.display = 'flex'; },
             
             loadPendingWithdrawals: function() {
-                // YKSINKERTAISTETTU KYSELY (EI orderBy)
                 const q = query(collection(db, "transactions"), where("type", "==", "withdraw"), where("status", "==", "pending"));
                 onSnapshot(q, (snap) => {
                     const container = document.getElementById('admin-content');
                     if (snap.empty) { container.innerHTML = 'Ei odottavia nostoja.'; return; }
                     container.innerHTML = snap.docs.map(doc => {
                         const d = doc.data();
-                        return `<div class="admin-tx-row">
-                            <div><b>${d.username}</b><br><small>${d.amount} ETH</small></div>
-                            <div class="admin-tx-actions">
-                                <button class="btn-approve" onclick="app.approveTx('${doc.id}')">✔</button>
-                                <button class="btn-reject" onclick="app.rejectTx('${doc.id}', '${d.uid}', ${d.amount})">✕</button>
-                            </div>
-                        </div>`;
+                        return `<div class="admin-tx-row"><div><b>${d.username}</b><br><small>${d.amount} ETH</small></div><div class="admin-tx-actions"><button class="btn-approve" onclick="app.approveTx('${doc.id}')">✔</button><button class="btn-reject" onclick="app.rejectTx('${doc.id}', '${d.uid}', ${d.amount})">✕</button></div></div>`;
                     }).join('');
                 });
             },
 
-            approveTx: async function(txId) {
-                await updateDoc(doc(db, "transactions", txId), { status: 'completed' });
-            },
-
-            rejectTx: async function(txId, uid, amount) {
-                await updateDoc(doc(db, "profiles", uid), { balance: increment(amount) });
-                await updateDoc(doc(db, "transactions", txId), { status: 'rejected' });
-            },
+            approveTx: async function(txId) { await updateDoc(doc(db, "transactions", txId), { status: 'completed' }); },
+            rejectTx: async function(txId, uid, amount) { await updateDoc(doc(db, "profiles", uid), { balance: increment(amount) }); await updateDoc(doc(db, "transactions", txId), { status: 'rejected' }); },
 
             loadProfileData: function() {
                 if (!this.user) return;
@@ -596,9 +560,7 @@
                 document.getElementById('prof-email-display').innerText = this.user.email;
                 document.getElementById('prof-avatar').innerText = this.username.charAt(0).toUpperCase();
                 document.getElementById('prof-stat-balance').innerText = this.siteBalance.toFixed(3) + " ETH";
-                getDoc(doc(db, "profiles", this.user.uid)).then(snap => {
-                    if(snap.exists()) document.getElementById('prof-stat-profit').innerText = (snap.data().totalProfit || 0).toFixed(3) + " ETH";
-                });
+                getDoc(doc(db, "profiles", this.user.uid)).then(snap => { if(snap.exists()) document.getElementById('prof-stat-profit').innerText = (snap.data().totalProfit || 0).toFixed(3) + " ETH"; });
                 this.loadTransactions();
                 this.loadProfileBets();
             },
@@ -611,13 +573,11 @@
             },
 
             loadTransactions: function() {
-                // POISTETTU orderBy KORJAAMAAN INDEKSIONGELMA
                 const q = query(collection(db, "transactions"), where("uid", "==", this.user.uid), limit(20));
                 onSnapshot(q, (snap) => {
                     const container = document.getElementById('tx-list');
                     if (snap.empty) { container.innerHTML = '<div style="padding:20px;">Ei tapahtumia.</div>'; return; }
                     
-                    // JARJESTETAAN JS:SSA
                     const sortedDocs = snap.docs.sort((a, b) => {
                         const tA = a.data().timestamp ? a.data().timestamp.toMillis() : Date.now();
                         const tB = b.data().timestamp ? b.data().timestamp.toMillis() : Date.now();
@@ -629,20 +589,18 @@
                         let typeClass = t.type;
                         if(t.status === 'pending') typeClass = 'pending';
                         const typeLabel = t.type === 'deposit' ? 'TALLETUS' : (t.status === 'pending' ? 'NOSTO (ODOTTAA)' : 'NOSTO');
-                        const date = t.timestamp ? t.timestamp.toDate().toLocaleDateString() : '-';
+                        const date = t.timestamp ? t.timestamp.toDate().toLocaleDateString() : 'Nyt';
                         return `<div class="tx-row"><div><div class="tx-type ${typeClass}">${typeLabel}</div><div class="tx-date">${date}</div></div><div class="tx-amount">${t.amount} ETH</div></div>`;
                     }).join('');
                 });
             },
 
             loadProfileBets: function() {
-                // POISTETTU orderBy KORJAAMAAN INDEKSIONGELMA
                 const q = query(collection(db, "bets"), where("uid", "==", this.user.uid), limit(10));
                 onSnapshot(q, (snap) => {
                     const container = document.getElementById('prof-bets-list');
                     if (snap.empty) { container.innerHTML = '<div style="padding:20px; color:#888;">Ei vetoja.</div>'; return; }
                     
-                    // JARJESTETAAN JS:SSA
                     const sortedDocs = snap.docs.sort((a, b) => {
                         const tA = a.data().timestamp ? a.data().timestamp.toMillis() : Date.now();
                         const tB = b.data().timestamp ? b.data().timestamp.toMillis() : Date.now();
@@ -651,14 +609,15 @@
 
                     container.innerHTML = sortedDocs.map(doc => {
                         const b = doc.data();
-                        return `<div class="history-ticket ${b.status || 'pending'}" style="margin-bottom:10px; padding:10px;"><div class="ticket-selection" style="font-size:0.8rem;">${b.selections.map(s => s.team).join(', ')}</div><div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-top:5px;"><span>${b.stake} ETH</span><span style="font-weight:bold;">${b.status ? b.status.toUpperCase() : 'PENDING'}</span></div></div>`;
+                        const selections = b.selections || [];
+                        const teamText = selections.length > 0 ? selections.map(s => s.team).join(', ') : 'Veto';
+                        return `<div class="history-ticket ${b.status || 'pending'}" style="margin-bottom:10px; padding:10px;"><div class="ticket-selection" style="font-size:0.8rem;">${teamText}</div><div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-top:5px;"><span>${b.stake} ETH</span><span style="font-weight:bold;">${b.status ? b.status.toUpperCase() : 'PENDING'}</span></div></div>`;
                     }).join('');
                 });
             },
 
             resolveBets: async function() {
                 if(!confirm("RATKAISE VEDOT?")) return;
-                // POISTETTU orderBy
                 const pendingBets = await getDocs(query(collection(db, "bets"), where("status", "==", "pending")));
                 let resolvedCount = 0;
                 for (const betDoc of pendingBets.docs) {
@@ -672,6 +631,7 @@
                             const userSelection = bet.selections[0].team;
                             let isWin = false;
                             if (userSelection === winnerName) isWin = true;
+                            
                             const profit = bet.potentialWin || (bet.stake * bet.totalOdds);
                             if (isWin) {
                                 await updateDoc(doc(db, "bets", betDoc.id), { status: 'win' });
@@ -724,14 +684,8 @@
                             const updates = { balance: increment(profit) };
                             if (isWin) updates.totalProfit = increment(profit);
                             await updateDoc(doc(db, "profiles", this.user.uid), updates);
-                            await addDoc(collection(db, "dice_rolls"), {
-                                username: this.username,
-                                result: parseFloat(roll.toFixed(2)),
-                                isWin: isWin,
-                                profit: parseFloat(profit.toFixed(4)),
-                                timestamp: serverTimestamp()
-                            });
-                        } catch(e) { console.error(e); alert("Virhe tallennuksessa!"); }
+                            await addDoc(collection(db, "dice_rolls"), { username: this.username, result: parseFloat(roll.toFixed(2)), isWin: isWin, profit: parseFloat(profit.toFixed(4)), timestamp: serverTimestamp() });
+                        } catch(e) { console.error(e); }
                         finally { btn.disabled = false; btn.style.opacity = "1"; }
                     }
                 }, 50);
@@ -872,18 +826,16 @@
                     this.renderMatches(this.matchCache.upcoming, 'match-container', false);
                     document.getElementById('match-details-modal').style.display='none';
                     Swal.fire("Veto asetettu!", "", "success");
-                } catch(e) { console.error(e); alert("Virhe vedon tallennuksessa."); }
+                } catch(e) { console.error(e); alert("Virhe vedon tallennuksessa: " + e.message); }
             },
 
             loadHistory: function() {
                 if (!this.user) return;
-                // POISTETTU orderBy
                 const q = query(collection(db, "bets"), where("uid", "==", this.user.uid), limit(20));
                 onSnapshot(q, (snap) => {
                     const container = document.getElementById('history-list');
                     if (snap.empty) { container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-dim);">Ei vielä vetoja.</div>'; return; }
                     
-                    // JARJESTETAAN JS:SSA
                     const sortedDocs = snap.docs.sort((a, b) => {
                         const tA = a.data().timestamp ? a.data().timestamp.toMillis() : Date.now();
                         const tB = b.data().timestamp ? b.data().timestamp.toMillis() : Date.now();
@@ -896,8 +848,11 @@
                         let statusText = "ODOTTAA", statusColor = "var(--primary)";
                         if (status === 'win') { statusText = "VOITTO"; statusColor = "var(--success)"; }
                         if (status === 'loss') { statusText = "HÄVIÖ"; statusColor = "var(--danger)"; }
+                        
                         const date = b.timestamp ? b.timestamp.toDate().toLocaleDateString() : 'Nyt';
-                        const teams = b.selections.map(s => `${s.team} (${s.marketLabel || 'Voittaja'})`).join('<br>');
+                        const selections = b.selections || [];
+                        const teams = selections.length > 0 ? selections.map(s => `${s.team} (${s.marketLabel || 'Voittaja'})`).join('<br>') : 'Virhe';
+
                         return `<div class="history-ticket ${status}"><div class="ticket-header"><span>${date}</span><span>${b.type === 'combo' ? 'YHDISTELMÄ' : 'SINGLE'}</span></div><div class="ticket-selection" style="font-size:0.9rem;">${teams}</div><div style="display:flex; gap:10px; align-items:center;"><span class="ticket-odds">${parseFloat(b.totalOdds).toFixed(2)}</span><span style="font-size:0.8rem; color:#888;">kerroin</span></div><div class="ticket-footer"><div><div style="font-size:0.7rem; color:#888;">PANOS</div><div style="font-weight:bold;">${b.stake} ETH</div></div><div class="status-badge" style="background:${statusColor}">${statusText}</div></div></div>`;
                     }).join('');
                 });
