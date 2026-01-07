@@ -45,6 +45,28 @@
         .banner-container img { width: 100%; height: 100%; object-fit: cover; }
         .card-panel { background: var(--card-bg); padding: 30px; border-radius: 24px; border: 1px solid var(--glass-border); margin-bottom: 30px; }
 
+        /* --- GAME SELECTOR --- */
+        .game-selector { display: flex; gap: 12px; margin-bottom: 25px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .game-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            color: var(--text-dim);
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .game-btn:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+        .game-btn.active { 
+            background: var(--primary); 
+            color: #000; 
+            border-color: var(--primary); 
+        }
+
         /* --- DICE STYLES --- */
         .dice-container { max-width: 600px; margin: 0 auto; background: #0b0e14; padding: 40px; border-radius: 24px; border: 1px solid var(--glass-border); text-align: center; }
         #dice-result { font-size: 4rem; font-weight: 900; color: var(--primary); margin-bottom: 20px; }
@@ -139,6 +161,14 @@
     <div class="container">
         <div id="matches-view" class="section-view active">
             <div class="banner-container"><img src="banner2.png" alt="Banner" onerror="this.src='https://images.alphacoders.com/133/1331713.png'"></div>
+            
+            <div class="game-selector">
+                <button class="game-btn active" onclick="app.setGame('csgo', this)">CS:GO / CS2</button>
+                <button class="game-btn" onclick="app.setGame('dota2', this)">Dota 2</button>
+                <button class="game-btn" onclick="app.setGame('leaguoflegends', this)">League of Legends</button>
+                <button class="game-btn" onclick="app.setGame('valorant', this)">Valorant</button>
+            </div>
+
             <div id="live-container"></div>
             <div id="match-container"></div>
         </div>
@@ -231,7 +261,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithRedirect, getRedirectResult, GoogleAuthProvider, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, onSnapshot, addDoc, increment, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCyj2zKkNw8JP_gG0F6AjyHiIr_EUjbFMA", authDomain: "cs2-leaderboard.firebaseapp.com", projectId: "cs2-leaderboard", storageBucket: "cs2-leaderboard.firebasestorage.app", messagingSenderId: "596762153722", appId: "1:596762153722:web:6d16722d0be705c21baf43" };
@@ -247,14 +277,10 @@
             matchCache: { live: [], upcoming: [] },
 
             init: async function() {
-                // PAKOTETAAN PYSYVYYS
                 await setPersistence(auth, browserLocalPersistence);
                 
                 this.updateMatches(); this.listenToChat(); this.updateDiceUI();
                 
-                // Käsitellään paluu Google-kirjautumisesta
-                getRedirectResult(auth).catch(e => console.error(e));
-
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
                         this.user = user;
@@ -292,7 +318,16 @@
             },
 
             logout: async function() { await signOut(auth); location.reload(); },
-            loginGoogle: () => signInWithRedirect(auth, googleProvider),
+            
+            loginGoogle: async () => {
+                try {
+                    await signInWithPopup(auth, googleProvider);
+                } catch(e) {
+                    console.error(e);
+                    alert("Kirjautuminen epäonnistui. Tarkista Authorized Domains Firebase-asetuksista.");
+                }
+            },
+
             openAuthModal: () => document.getElementById('auth-modal').style.display = 'flex',
             closeAuthModal: () => { document.getElementById('auth-modal').style.display = 'none'; document.getElementById('register-modal').style.display = 'none'; },
             showRegister: () => { document.getElementById('auth-modal').style.display = 'none'; document.getElementById('register-modal').style.display = 'flex'; },
@@ -303,6 +338,13 @@
                 document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
                 document.getElementById(s + '-view').classList.add('active');
                 if(document.getElementById('btn-'+s)) document.getElementById('btn-'+s).classList.add('active');
+            },
+
+            setGame: function(g, el) { 
+                this.selectedGame = g; 
+                el.parentElement.querySelectorAll('.game-btn').forEach(b => b.classList.remove('active'));
+                el.classList.add('active'); 
+                this.updateMatches(); 
             },
 
             /* --- DICE --- */
@@ -424,8 +466,7 @@
                 if (amount && parseFloat(amount) <= this.siteBalance) await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(-parseFloat(amount)) });
             },
             loginEmail: async function() { try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); } catch(e){alert(e.message)} },
-            registerNewUser: async function() { try { const res = await createUserWithEmailAndPassword(auth, document.getElementById('reg-email').value, document.getElementById('reg-pass').value); await setDoc(doc(db, "profiles", res.user.uid), { username: document.getElementById('reg-username').value.trim(), balance: 0 }); } catch(e){alert(e.message)} },
-            setGame: function(g, el) { this.selectedGame = g; document.querySelectorAll('.game-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); this.updateMatches(); }
+            registerNewUser: async function() { try { const res = await createUserWithEmailAndPassword(auth, document.getElementById('reg-email').value, document.getElementById('reg-pass').value); await setDoc(doc(db, "profiles", res.user.uid), { username: document.getElementById('reg-username').value.trim(), balance: 0 }); } catch(e){alert(e.message)} }
         };
         app.init();
     </script>
