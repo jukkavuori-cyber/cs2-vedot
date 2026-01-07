@@ -48,7 +48,7 @@
         .match-card { background: var(--card-bg); margin-bottom: 12px; padding: 15px 25px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--glass-border); width: 100%; }
         .teams { display: flex; align-items: center; gap: 40px; flex: 3; }
         .team { display: grid; grid-template-columns: 36px 1fr 80px; align-items: center; gap: 15px; flex: 1; min-width: 0; }
-        .team img { width: 36px; height: 36px; object-fit: contain; }
+        .team img { width: 36px; height: 36px; object-fit: contain; flex-shrink: 0; }
         .team span { font-weight: 700; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .odds-badge { background: rgba(255, 255, 255, 0.04); color: var(--primary); padding: 10px; border-radius: 12px; font-weight: 800; border: 1px solid rgba(255, 255, 255, 0.06); cursor: pointer; width: 80px; text-align: center; flex-shrink: 0; transition: 0.15s; }
@@ -67,7 +67,7 @@
         .crypto-option img { width: 32px; height: 32px; }
         .crypto-option span { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; }
 
-        /* --- CHAT (DUEL STYLE) --- */
+        /* --- CHAT --- */
         #chat-toggle-btn { position: fixed; bottom: 30px; left: 30px; width: 55px; height: 55px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1600; box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3); border: none; transition: 0.3s; }
         #chat-toggle-btn:hover { transform: scale(1.1); }
         #chat-sidebar { position: fixed; left: -350px; top: 0; width: 320px; height: 100%; background: var(--nav-bg); z-index: 2000; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-right: 1px solid var(--glass-border); display: flex; flex-direction: column; }
@@ -75,6 +75,8 @@
 
         /* --- BET BAR --- */
         .floating-bet-bar { display: none; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 850px; background: rgba(11, 14, 20, 0.98); backdrop-filter: blur(25px); border-radius: 24px; padding: 20px 30px; border: 1px solid var(--primary); z-index: 1500; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.8); gap: 15px; }
+        .bet-bar-top { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .btn-clear { background: rgba(231, 76, 60, 0.1); color: var(--danger); border: 1px solid rgba(231, 76, 60, 0.2); padding: 6px 12px; border-radius: 8px; font-size: 0.65rem; font-weight: 800; cursor: pointer; text-transform: uppercase; }
 
         @media (max-width: 768px) {
             .navbar { height: auto; flex-direction: column; padding: 10px; }
@@ -88,11 +90,13 @@
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); display: none; justify-content: center; align-items: center; z-index: 2000; }
         .glass-card { background: rgba(26, 31, 41, 0.95); padding: 40px; border-radius: 32px; border: 1px solid var(--glass-border); text-align: center; width: 90%; max-width: 400px; }
+        .google-btn { background: #ffffff !important; color: #1f1f1f !important; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; border: none; border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; margin-bottom: 20px; }
         .modal-input { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0, 0, 0, 0.3); color: white; outline: none; }
         
         #loading-global { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); display: flex; justify-content: center; align-items: center; z-index: 3000; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
         .tournament-header { margin: 30px 0 15px 0; font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .tournament-header::after { content: ""; height: 1px; background: var(--glass-border); flex: 1; }
     </style>
 </head>
 
@@ -169,7 +173,7 @@
             <div class="card-panel">
                 <div style="margin-bottom: 20px;">
                     <label style="display:block; color:var(--text-dim); font-size:0.7rem; font-weight:800; margin-bottom:8px; text-transform:uppercase;">Käyttäjänimi</label>
-                    <input type="text" id="edit-username" style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); border-radius:12px; color:#fff; outline:none;" placeholder="Uusi nimi">
+                    <input type="text" id="edit-username" class="modal-input" style="margin:0; width:100%;" placeholder="Syötä uusi nimi">
                     <button class="deposit-btn" style="margin-top:15px;" onclick="app.updateUsername()">PÄIVITÄ NIMI</button>
                 </div>
                 <div style="margin-top:30px; padding-top:25px; border-top:1px solid var(--glass-border);">
@@ -184,7 +188,7 @@
     <div id="bet-bar" class="floating-bet-bar">
         <div class="bet-bar-top">
             <div id="selected-chips" style="display:flex; gap:8px; overflow-x:auto; flex:1;"></div>
-            <button style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.7rem; font-weight:800;" onclick="app.clearBets()">TYHJENNÄ</button>
+            <button class="btn-clear" onclick="app.clearBets()">TYHJENNÄ</button>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; width:100%; gap:20px;">
             <div style="display:flex; gap:20px;">
@@ -202,6 +206,7 @@
         <div class="glass-card">
             <h2 style="color:var(--primary); margin-bottom:20px; font-weight:900;">ALPHA ODDS</h2>
             <button class="google-btn" onclick="app.loginGoogle()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"> Jatka Googlella</button>
+            <div style="color:var(--text-dim); font-size:0.7rem; margin-bottom:15px; font-weight:800;">TAI SÄHKÖPOSTILLA</div>
             <input type="email" id="login-email" class="modal-input" placeholder="Sähköposti">
             <input type="password" id="login-pass" class="modal-input" placeholder="Salasana">
             <button class="deposit-btn" style="width:100%; margin-top:10px; padding:14px;" onclick="app.loginEmail()">SISÄÄN</button>
@@ -223,7 +228,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithRedirect, getRedirectResult, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, onSnapshot, addDoc, increment, getDocs, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { ethers } from "https://esm.sh/ethers@6.7.0";
 
@@ -241,6 +246,10 @@
 
             init: function() {
                 this.updateMatches(); this.listenToChat();
+                
+                // TARKISTETAAN REDIRECT-KIRJAUTUMINEN (Korjaa COOP-virheen)
+                getRedirectResult(auth).catch(e => console.error("Redirect error", e));
+
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
                         this.user = user;
@@ -271,10 +280,9 @@
                 document.getElementById('nav-auth-container').innerHTML = `<button class="deposit-btn" onclick="app.openAuthModal()">KIRJAUDU SISÄÄN</button>`;
             },
 
-            logout: async function() {
-                await signOut(auth);
-                location.reload();
-            },
+            loginGoogle: () => signInWithRedirect(auth, googleProvider), // Vaihdettu Redirectiin
+
+            logout: async function() { await signOut(auth); location.reload(); },
 
             showSection: function(s) {
                 document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
@@ -300,12 +308,12 @@
 
             depositCurrency: async function(currency, icon) {
                 if(!this.user) return this.openAuthModal();
-                const { value: amount } = await Swal.fire({ title: `Talleta ${currency}`, input: 'number', inputLabel: `Määrä`, imageUrl: icon, imageWidth: 40, showCancelButton: true });
+                const { value: amount } = await Swal.fire({ title: `Talleta ${currency}`, input: 'number', imageUrl: icon, imageWidth: 40, showCancelButton: true });
                 if (amount) {
                     Swal.fire({ title: 'Käsitellään...', didOpen: () => Swal.showLoading() });
                     setTimeout(async () => {
                         await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(parseFloat(amount)) });
-                        Swal.fire("Valmis!", "Alpha Saldo päivitetty.", "success");
+                        Swal.fire("Talletus onnistui!", "", "success");
                     }, 1200);
                 }
             },
@@ -399,12 +407,12 @@
                 await addDoc(collection(db, "messages"), { username: this.username, text: input.value, createdAt: serverTimestamp() });
                 input.value = '';
             },
+            setGame: function(g, el) { this.selectedGame = g; document.querySelectorAll('.game-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); this.updateMatches(); },
             openAuthModal: () => document.getElementById('auth-modal').style.display = 'flex',
             closeAuthModal: () => { document.getElementById('auth-modal').style.display = 'none'; document.getElementById('register-modal').style.display = 'none'; },
             showRegister: () => { document.getElementById('auth-modal').style.display = 'none'; document.getElementById('register-modal').style.display = 'flex'; },
             showLogin: () => { document.getElementById('register-modal').style.display = 'none'; document.getElementById('auth-modal').style.display = 'flex'; },
             loginEmail: async function() { try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); } catch(e){alert(e.message)} },
-            loginGoogle: () => signInWithPopup(auth, googleProvider),
             registerNewUser: async function() {
                 try {
                     const res = await createUserWithEmailAndPassword(auth, document.getElementById('reg-email').value, document.getElementById('reg-pass').value);
