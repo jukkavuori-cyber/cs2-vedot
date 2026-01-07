@@ -126,6 +126,10 @@
         .lb-balance { font-family: monospace; font-weight: 900; color: var(--success); }
         .leaderboard-row.rank-1 { background: linear-gradient(90deg, rgba(241, 196, 15, 0.15), rgba(0,0,0,0)); border-color: rgba(241, 196, 15, 0.4); }
         .leaderboard-row.rank-1 .lb-rank { color: #f1c40f; text-shadow: 0 0 10px rgba(241, 196, 15, 0.5); }
+        .leaderboard-row.rank-2 { border-color: rgba(189, 195, 199, 0.4); }
+        .leaderboard-row.rank-2 .lb-rank { color: #bdc3c7; }
+        .leaderboard-row.rank-3 { border-color: rgba(211, 84, 0, 0.4); }
+        .leaderboard-row.rank-3 .lb-rank { color: #d35400; }
         
         .history-ticket { background: linear-gradient(145deg, rgba(30, 36, 48, 0.9), rgba(20, 25, 35, 0.95)); border: 1px solid var(--glass-border); border-top: 3px solid var(--text-dim); padding: 15px; border-radius: 16px; margin-bottom: 15px; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.2); transition: 0.3s; }
         .history-ticket.win { border-top-color: var(--success); }
@@ -424,7 +428,7 @@
                     if (user) {
                         this.user = user;
                         this.updateBalanceUI();
-                        this.updateNavVisibility(true); // NÄYTÄ LINKIT
+                        this.updateNavVisibility(true);
                         const userDoc = await getDoc(doc(db, "profiles", user.uid));
                         if (!userDoc.exists()) await setDoc(doc(db, "profiles", user.uid), { username: user.displayName || "Pelaaja", balance: 0, totalProfit: 0 });
                         
@@ -443,8 +447,7 @@
                     } else {
                         this.user = null;
                         this.renderNavbarLoggedOut();
-                        this.updateNavVisibility(false); // PIILOTA LINKIT
-                        // Ohjaa pois suojatuilta sivuilta jos ollaan niillä
+                        this.updateNavVisibility(false);
                         const activeSection = document.querySelector('.section-view.active').id;
                         if (['history-view', 'wallet-view', 'profile-view'].includes(activeSection)) {
                             this.showSection('matches');
@@ -482,7 +485,6 @@
             showLogin: () => { document.getElementById('register-modal').style.display = 'none'; document.getElementById('auth-modal').style.display = 'flex'; },
 
             showSection: function(s) {
-                // Estä pääsy jos ei kirjautunut ja yrittää suojattua sivua
                 if (!this.user && ['history', 'wallet', 'profile'].includes(s)) {
                     this.openAuthModal();
                     return;
@@ -503,7 +505,6 @@
                 this.updateMatches(); 
             },
 
-            /* --- REALISTIC DEPOSIT SIMULATION --- */
             simulateDeposit: async function(currency) {
                 const { value: amount } = await Swal.fire({ title: `Talleta ${currency}`, input: 'number', inputLabel: 'Määrä', showCancelButton: true });
                 if (!amount) return;
@@ -531,10 +532,15 @@
                     document.getElementById('step-3').className = 'step-row completed active';
                     
                     const val = parseFloat(amount);
-                    await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(val) });
-                    await addDoc(collection(db, "transactions"), { uid: this.user.uid, type: 'deposit', amount: val, status: 'completed', timestamp: serverTimestamp() });
-                    
-                    setTimeout(() => { modal.style.display = 'none'; Swal.fire('Talletus saapui!', '', 'success'); }, 1000);
+                    try {
+                        await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(val) });
+                        await addDoc(collection(db, "transactions"), { uid: this.user.uid, type: 'deposit', amount: val, status: 'completed', timestamp: serverTimestamp() });
+                        setTimeout(() => { modal.style.display = 'none'; Swal.fire('Talletus saapui!', '', 'success'); }, 1000);
+                    } catch(e) {
+                        console.error(e);
+                        alert("Virhe talletuksessa. Tarkista oikeudet.");
+                        modal.style.display = 'none';
+                    }
                 }, 6000);
             },
 
@@ -543,19 +549,21 @@
                 if (amount) {
                     const val = parseFloat(amount);
                     if(val <= this.siteBalance) {
-                        await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(-val) });
-                        await addDoc(collection(db, "transactions"), { uid: this.user.uid, type: 'withdraw', amount: val, status: 'pending', username: this.username, timestamp: serverTimestamp() });
-                        Swal.fire('Nostopyyntö lähetetty!', 'Ylläpito käsittelee sen pian.', 'info');
+                        try {
+                            await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(-val) });
+                            await addDoc(collection(db, "transactions"), { uid: this.user.uid, type: 'withdraw', amount: val, status: 'pending', username: this.username, timestamp: serverTimestamp() });
+                            Swal.fire('Nostopyyntö lähetetty!', 'Ylläpito käsittelee sen pian.', 'info');
+                        } catch(e) { console.error(e); alert("Virhe nostossa."); }
                     } else {
                         Swal.fire('Virhe', 'Saldo ei riitä.', 'error');
                     }
                 }
             },
 
-            /* --- ADMIN PANEL --- */
             openAdminMenu: function() { document.getElementById('admin-modal').style.display = 'flex'; },
             
             loadPendingWithdrawals: function() {
+                // YKSINKERTAISTETTU KYSELY (EI orderBy)
                 const q = query(collection(db, "transactions"), where("type", "==", "withdraw"), where("status", "==", "pending"));
                 onSnapshot(q, (snap) => {
                     const container = document.getElementById('admin-content');
@@ -582,7 +590,6 @@
                 await updateDoc(doc(db, "transactions", txId), { status: 'rejected' });
             },
 
-            /* --- PROFILE LOGIC --- */
             loadProfileData: function() {
                 if (!this.user) return;
                 document.getElementById('prof-username-display').innerText = this.username;
@@ -604,11 +611,20 @@
             },
 
             loadTransactions: function() {
-                const q = query(collection(db, "transactions"), where("uid", "==", this.user.uid), orderBy("timestamp", "desc"), limit(10));
+                // POISTETTU orderBy KORJAAMAAN INDEKSIONGELMA
+                const q = query(collection(db, "transactions"), where("uid", "==", this.user.uid), limit(20));
                 onSnapshot(q, (snap) => {
                     const container = document.getElementById('tx-list');
                     if (snap.empty) { container.innerHTML = '<div style="padding:20px;">Ei tapahtumia.</div>'; return; }
-                    container.innerHTML = snap.docs.map(doc => {
+                    
+                    // JARJESTETAAN JS:SSA
+                    const sortedDocs = snap.docs.sort((a, b) => {
+                        const tA = a.data().timestamp ? a.data().timestamp.toMillis() : Date.now();
+                        const tB = b.data().timestamp ? b.data().timestamp.toMillis() : Date.now();
+                        return tB - tA;
+                    });
+
+                    container.innerHTML = sortedDocs.map(doc => {
                         const t = doc.data();
                         let typeClass = t.type;
                         if(t.status === 'pending') typeClass = 'pending';
@@ -620,20 +636,29 @@
             },
 
             loadProfileBets: function() {
-                const q = query(collection(db, "bets"), where("uid", "==", this.user.uid), orderBy("timestamp", "desc"), limit(5));
+                // POISTETTU orderBy KORJAAMAAN INDEKSIONGELMA
+                const q = query(collection(db, "bets"), where("uid", "==", this.user.uid), limit(10));
                 onSnapshot(q, (snap) => {
                     const container = document.getElementById('prof-bets-list');
                     if (snap.empty) { container.innerHTML = '<div style="padding:20px; color:#888;">Ei vetoja.</div>'; return; }
-                    container.innerHTML = snap.docs.map(doc => {
+                    
+                    // JARJESTETAAN JS:SSA
+                    const sortedDocs = snap.docs.sort((a, b) => {
+                        const tA = a.data().timestamp ? a.data().timestamp.toMillis() : Date.now();
+                        const tB = b.data().timestamp ? b.data().timestamp.toMillis() : Date.now();
+                        return tB - tA;
+                    });
+
+                    container.innerHTML = sortedDocs.map(doc => {
                         const b = doc.data();
                         return `<div class="history-ticket ${b.status || 'pending'}" style="margin-bottom:10px; padding:10px;"><div class="ticket-selection" style="font-size:0.8rem;">${b.selections.map(s => s.team).join(', ')}</div><div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-top:5px;"><span>${b.stake} ETH</span><span style="font-weight:bold;">${b.status ? b.status.toUpperCase() : 'PENDING'}</span></div></div>`;
                     }).join('');
                 });
             },
 
-            /* --- BRAIN & DICE --- */
             resolveBets: async function() {
                 if(!confirm("RATKAISE VEDOT?")) return;
+                // POISTETTU orderBy
                 const pendingBets = await getDocs(query(collection(db, "bets"), where("status", "==", "pending")));
                 let resolvedCount = 0;
                 for (const betDoc of pendingBets.docs) {
@@ -706,7 +731,7 @@
                                 profit: parseFloat(profit.toFixed(4)),
                                 timestamp: serverTimestamp()
                             });
-                        } catch(e) { console.error(e); }
+                        } catch(e) { console.error(e); alert("Virhe tallennuksessa!"); }
                         finally { btn.disabled = false; btn.style.opacity = "1"; }
                     }
                 }, 50);
@@ -839,22 +864,33 @@
                 const stake = parseFloat(document.getElementById('bet-amount').value);
                 const totalOdds = document.getElementById('display-total-odds').innerText;
                 if (stake > this.siteBalance) return Swal.fire("Hups", "Saldo ei riitä!", "warning");
-                await addDoc(collection(db, "bets"), { uid: this.user.uid, selections: Object.values(this.selectedBets), stake, totalOdds: totalOdds, potentialWin: stake * parseFloat(totalOdds), timestamp: serverTimestamp(), status: 'pending', type: Object.keys(this.selectedBets).length > 1 ? 'combo' : 'single' });
-                await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(-stake) });
-                this.selectedBets = {}; this.updateBetBar();
-                this.renderMatches(this.matchCache.live, 'live-container', true);
-                this.renderMatches(this.matchCache.upcoming, 'match-container', false);
-                document.getElementById('match-details-modal').style.display='none';
-                Swal.fire("Veto asetettu!", "", "success");
+                try {
+                    await addDoc(collection(db, "bets"), { uid: this.user.uid, selections: Object.values(this.selectedBets), stake, totalOdds: totalOdds, potentialWin: stake * parseFloat(totalOdds), timestamp: serverTimestamp(), status: 'pending', type: Object.keys(this.selectedBets).length > 1 ? 'combo' : 'single' });
+                    await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(-stake) });
+                    this.selectedBets = {}; this.updateBetBar();
+                    this.renderMatches(this.matchCache.live, 'live-container', true);
+                    this.renderMatches(this.matchCache.upcoming, 'match-container', false);
+                    document.getElementById('match-details-modal').style.display='none';
+                    Swal.fire("Veto asetettu!", "", "success");
+                } catch(e) { console.error(e); alert("Virhe vedon tallennuksessa."); }
             },
 
             loadHistory: function() {
                 if (!this.user) return;
-                const q = query(collection(db, "bets"), where("uid", "==", this.user.uid), orderBy("timestamp", "desc"), limit(20));
+                // POISTETTU orderBy
+                const q = query(collection(db, "bets"), where("uid", "==", this.user.uid), limit(20));
                 onSnapshot(q, (snap) => {
                     const container = document.getElementById('history-list');
                     if (snap.empty) { container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-dim);">Ei vielä vetoja.</div>'; return; }
-                    container.innerHTML = snap.docs.map(doc => {
+                    
+                    // JARJESTETAAN JS:SSA
+                    const sortedDocs = snap.docs.sort((a, b) => {
+                        const tA = a.data().timestamp ? a.data().timestamp.toMillis() : Date.now();
+                        const tB = b.data().timestamp ? b.data().timestamp.toMillis() : Date.now();
+                        return tB - tA;
+                    });
+
+                    container.innerHTML = sortedDocs.map(doc => {
                         const b = doc.data();
                         const status = b.status || 'pending'; 
                         let statusText = "ODOTTAA", statusColor = "var(--primary)";
