@@ -24,7 +24,7 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', sans-serif; background: radial-gradient(circle at 50% -20%, #1e2533, #07090d); color: var(--text-main); margin: 0; padding-bottom: 100px; min-height: 100vh; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background: radial-gradient(circle at 50% -20%, #1e2533, #07090d); color: var(--text-main); margin: 0; padding-bottom: 150px; min-height: 100vh; overflow-x: hidden; }
 
         /* --- NAVBAR (DESKTOP DEFAULT) --- */
         .navbar { display: flex; justify-content: space-between; align-items: center; height: 70px; padding: 0 30px; background: var(--nav-bg); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--glass-border); box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
@@ -62,7 +62,7 @@
         .banner-container { width: 100%; height: 250px; margin-bottom: 25px; border-radius: 24px; overflow: hidden; border: 1px solid var(--glass-border); position: relative; }
         .banner-container img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        /* --- MATCH CARDS (GRID ALIGNMENT) --- */
+        /* --- MATCH CARDS & TOURNAMENT HEADERS --- */
         .match-card { background: var(--card-bg); margin-bottom: 12px; padding: 20px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--glass-border); width: 100%; cursor: pointer; transition: 0.2s; gap: 20px; }
         .match-card:hover { border-color: rgba(255,255,255,0.2); background: rgba(30, 36, 48, 0.95); }
         .teams { display: flex; flex-direction: column; gap: 12px; flex: 1; }
@@ -75,6 +75,20 @@
         .details { text-align: right; border-left: 1px solid var(--glass-border); padding-left: 20px; min-width: 80px; display: flex; flex-direction: column; justify-content: center; height: 100%; }
         .live-score-box { font-family: 'monospace'; color: var(--primary); font-weight: 900; font-size: 1.1rem; }
         .time-box { font-size: 0.75rem; font-weight: 700; color: var(--text-dim); }
+
+        /* UUSI: Turnausotsikko */
+        .league-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            font-weight: 900;
+            margin: 25px 0 10px 5px;
+            padding-left: 10px;
+            border-left: 3px solid var(--primary);
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
 
         /* --- GAME COMPONENTS --- */
         .game-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -96,7 +110,7 @@
         .dice-history-bar { margin-top: 25px; display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); scrollbar-width: none; }
         .roll-pill { background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.75rem; white-space: nowrap; border: 1px solid var(--glass-border); display: flex; gap: 8px; }
         .roll-pill.win { border-color: var(--success); color: var(--success); }
-        .roll-pill.loss { border-color: rgba(255,255,255,0.1); color: var(--text-dim); }
+        .roll-pill.loss { border-color: var(--text-dim); color: var(--text-dim); opacity: 0.7; }
 
         .slots-window { display: flex; gap: 10px; background: #000; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #333; height: 150px; align-items: center; overflow: hidden; }
         .reel { flex: 1; height: 120px; background: linear-gradient(180deg, #111, #222, #111); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; border: 1px solid #333; }
@@ -149,8 +163,33 @@
         .crypto-option:hover { border-color: var(--primary); background: rgba(255,255,255,0.06); }
         .crypto-option img { width: 32px; }
 
-        /* --- BET BAR --- */
+        /* --- BET BAR (FIXED FOR MULTI SELECTION) --- */
         .floating-bet-bar { display: none; position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 800px; background: rgba(11, 14, 20, 0.98); backdrop-filter: blur(25px); border-radius: 20px; padding: 15px; border: 1px solid var(--primary); z-index: 1300; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.8); gap: 10px; }
+        
+        #selected-chips { 
+            display: flex; 
+            gap: 10px; 
+            overflow-x: auto; /* Allow horizontal scroll */
+            flex: 1; 
+            white-space: nowrap; /* Force single line */
+            scrollbar-width: none; /* Hide scrollbar Firefox */
+            -webkit-overflow-scrolling: touch; /* Smooth scroll iOS */
+        }
+        #selected-chips::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome/Safari */
+        
+        .bet-chip {
+            background: var(--primary);
+            color: #000;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            white-space: nowrap;
+            flex-shrink: 0; /* Prevent squashing */
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
 
         /* --- OVERLAYS --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; z-index: 2000; }
@@ -168,6 +207,22 @@
         /* --- DESKTOP CHAT BUTTON --- */
         #chat-toggle-btn { position: fixed; bottom: 30px; left: 30px; width: 55px; height: 55px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1600; box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3); border: none; transition: 0.3s; }
 
+        /* --- DETAILS MODAL --- */
+        .match-detail-header { text-align: center; margin-bottom: 30px; }
+        .detail-teams { display: flex; justify-content: center; align-items: center; gap: 30px; margin-bottom: 10px; }
+        .detail-team { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100px; }
+        /* Logo fix for modal mobile */
+        .detail-team img { width: 60px; height: 60px; object-fit: contain; display: block; }
+        .detail-vs { font-weight: 900; color: var(--text-dim); font-size: 1.2rem; }
+        .market-group { margin-bottom: 25px; }
+        .market-title { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; font-weight: 800; margin-bottom: 10px; padding-left: 5px; border-left: 3px solid var(--primary); }
+        .market-options { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+        .market-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); padding: 15px; border-radius: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+        .market-btn:hover { background: rgba(255,255,255,0.06); }
+        .market-btn.selected { background: var(--primary); color: #000; border-color: var(--primary); }
+        .market-name { font-size: 0.8rem; font-weight: 700; }
+        .market-odd { font-weight: 900; font-family: monospace; }
+
         /* --- MOBILE SPECIFIC STYLES --- */
         @media (max-width: 768px) {
             .navbar { padding: 10px 20px; height: 60px; }
@@ -181,6 +236,11 @@
             .reel { font-size: 2.5rem; height: 80px; }
             .banner-container { height: 180px; }
             
+            /* MODAL FIX: Pienemmät kuvat mobiilissa */
+            .detail-team img { width: 40px; height: 40px; }
+            .detail-teams { gap: 15px; }
+            .match-detail-header { margin-bottom: 20px; }
+
             /* Hide the floating chat button on mobile because it's in the bottom nav */
             #chat-toggle-btn { display: none; }
             
@@ -270,7 +330,7 @@
         <div id="matches-view" class="section-view active">
             <div class="banner-container"><img src="banner2.png" alt="Banner" onerror="this.src='https://images.alphacoders.com/133/1331713.png'"></div>
             <div class="game-selector">
-                <button class="game-btn active" onclick="app.setGame('csgo', this)">CS2</button>
+                <button class="game-btn active" onclick="app.setGame('csgo', this)">CS:GO / CS2</button>
                 <button class="game-btn" onclick="app.setGame('dota2', this)">Dota 2</button>
                 <button class="game-btn" onclick="app.setGame('leaguoflegends', this)">League of Legends</button>
                 <button class="game-btn" onclick="app.setGame('valorant', this)">Valorant</button>
@@ -296,7 +356,7 @@
                 </div>
                 <div class="dice-stats">
                     <div class="dice-stat"><small>KERROIN</small><div id="dice-mult">1.96x</div></div>
-                    <div class="dice-stat"><small>MAHDOLLISUUS</small><div id="dice-chance">48.00%</div></div>
+                    <div class="dice-stat"><small>VOITTOMAHDOLLISUUS</small><div id="dice-chance">48.00%</div></div>
                 </div>
                 
                 <div class="input-group">
@@ -365,10 +425,9 @@
         </div>
 
         <div id="wallet-view" class="section-view">
-            <h2 style="color:var(--primary)">Oma Lompakko</h2>
             <div class="card-panel">
                 <div class="balance-hero" style="text-align:center;">
-                    <small style="color:var(--text-dim); text-transform:uppercase; font-weight:800; letter-spacing:1px;">Alpha Saldo</small>
+                    <small style="color:var(--text-dim); text-transform:uppercase; font-weight:800; letter-spacing:1px;">Total Balance</small>
                     <div id="prof-site-balance" style="font-size:2.8rem; font-weight:900; color:#fff; margin:10px 0;">0.000 ETH</div>
                 </div>
                 <div class="deposit-grid">
@@ -394,9 +453,9 @@
                     <div class="stat-box"><small>VOITOT</small><div id="prof-stat-profit" style="color:var(--success)">0.000 ETH</div></div>
                 </div>
                 <div class="profile-tabs">
-                    <button class="profile-tab active" onclick="app.showProfileTab('settings', this)">Asetukset</button>
-                    <button class="profile-tab" onclick="app.showProfileTab('tx', this)">Rahansiirrot</button>
-                    <button class="profile-tab" onclick="app.showProfileTab('bets', this)">Viimeiset Vedot</button>
+                    <button class="profile-tab active" onclick="app.showProfileTab('settings', this)">Settings</button>
+                    <button class="profile-tab" onclick="app.showProfileTab('tx', this)">Transactions</button>
+                    <button class="profile-tab" onclick="app.showProfileTab('bets', this)">Bets</button>
                 </div>
                 <div id="prof-content-settings" class="prof-tab-content">
                     <label style="display:block; color:var(--text-dim); font-size:0.7rem; font-weight:800; margin-bottom:8px;">DISPLAY NAME</label>
@@ -469,8 +528,8 @@
 
     <div id="bet-bar" class="floating-bet-bar">
         <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-            <div id="selected-chips" style="display:flex; gap:8px; overflow-x:auto; flex:1;"></div>
-            <button style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.7rem; font-weight:800;" onclick="app.clearBets()">CLEAR</button>
+            <div id="selected-chips"></div>
+            <button style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.7rem; font-weight:800; padding:0 10px;" onclick="app.clearBets()">CLEAR</button>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; width:100%; gap:20px;">
             <div style="display:flex; gap:20px;">
@@ -757,21 +816,38 @@
             renderMatches: function(data, id, isLive) {
                 const container = document.getElementById(id);
                 if (!data || !data.length) { container.innerHTML = isLive ? '' : '<div style="text-align:center; padding:40px; color:var(--text-dim);">Ei otteluita.</div>'; return; }
-                container.innerHTML = `<div class="tournament-header">${isLive ? 'LIVE NYT' : 'TULEVAT'}</div>` + data.map(m => {
-                    const t1 = m.opponents[0]?.opponent; const t2 = m.opponents[1]?.opponent;
-                    if (!t1 || !t2) return '';
-                    return `<div class="match-card" onclick="app.openMatchDetails(${m.id})">
-                        <div class="teams">
-                            <div class="team"><img src="${t1.image_url || LOGO_PLACEHOLDER}"><span>${t1.name}</span>
-                                <div class="odds-badge ${this.isBetSelected(m.id, 'match_winner', t1.name) ? 'selected' : ''}" onclick="event.stopPropagation(); app.toggleBet('${m.id}', 'match_winner', '${t1.name}', 1.85, 'Voittaja')">1.85</div>
+
+                // 1. Group by League
+                const groups = {};
+                data.forEach(m => {
+                    const league = m.league?.name || "Muut Turnaukset";
+                    if(!groups[league]) groups[league] = [];
+                    groups[league].push(m);
+                });
+
+                // 2. Build HTML
+                let html = `<div class="tournament-header">${isLive ? 'LIVE NYT' : 'TULEVAT'}</div>`;
+
+                for (const [leagueName, matches] of Object.entries(groups)) {
+                    html += `<div class="league-header">${leagueName}</div>`;
+                    html += matches.map(m => {
+                        const t1 = m.opponents[0]?.opponent; 
+                        const t2 = m.opponents[1]?.opponent;
+                        if (!t1 || !t2) return '';
+                        return `<div class="match-card" onclick="app.openMatchDetails(${m.id})">
+                            <div class="teams">
+                                <div class="team"><img src="${t1.image_url || LOGO_PLACEHOLDER}"><span>${t1.name}</span>
+                                    <div class="odds-badge ${this.isBetSelected(m.id, 'match_winner', t1.name) ? 'selected' : ''}" onclick="event.stopPropagation(); app.toggleBet('${m.id}', 'match_winner', '${t1.name}', 1.85, 'Voittaja')">1.85</div>
+                                </div>
+                                <div class="team"><img src="${t2.image_url || LOGO_PLACEHOLDER}"><span>${t2.name}</span>
+                                    <div class="odds-badge ${this.isBetSelected(m.id, 'match_winner', t2.name) ? 'selected' : ''}" onclick="event.stopPropagation(); app.toggleBet('${m.id}', 'match_winner', '${t2.name}', 1.85, 'Voittaja')">1.85</div>
+                                </div>
                             </div>
-                            <div class="team"><img src="${t2.image_url || LOGO_PLACEHOLDER}"><span>${t2.name}</span>
-                                <div class="odds-badge ${this.isBetSelected(m.id, 'match_winner', t2.name) ? 'selected' : ''}" onclick="event.stopPropagation(); app.toggleBet('${m.id}', 'match_winner', '${t2.name}', 1.85, 'Voittaja')">1.85</div>
-                            </div>
-                        </div>
-                        <div class="details">${isLive ? `<div class="live-score-box">${m.results[0].score}-${m.results[1].score}</div>` : `<div style="font-size:0.8rem; font-weight:800; color:var(--text-dim);">${new Date(m.begin_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>`}</div>
-                    </div>`;
-                }).join('');
+                            <div class="details">${isLive ? `<div class="live-score-box">${m.results[0].score}-${m.results[1].score}</div>` : `<div style="font-size:0.8rem; font-weight:800; color:var(--text-dim);">${new Date(m.begin_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>`}</div>
+                        </div>`;
+                    }).join('');
+                }
+                container.innerHTML = html;
             },
 
             openMatchDetails: function(matchId) {
@@ -843,7 +919,7 @@
                 document.getElementById('submit-bet-btn').innerText = keys.length > 1 ? "VAHVISTA YHDISTELMÄ" : "VAHVISTA VETO";
                 document.getElementById('selected-chips').innerHTML = keys.map(k => {
                     const b = this.selectedBets[k];
-                    return `<span style="background:var(--primary); color:#000; padding:4px 10px; border-radius:8px; font-size:0.7rem; font-weight:900; white-space:nowrap;">${b.team} (${b.marketLabel})</span>`;
+                    return `<div class="bet-chip"><span>${b.team}</span><span style="opacity:0.7">(${b.marketLabel})</span></div>`;
                 }).join('');
                 const totalOdds = Object.values(this.selectedBets).reduce((acc, b) => acc * b.odds, 1).toFixed(2);
                 document.getElementById('display-total-odds').innerText = totalOdds;
