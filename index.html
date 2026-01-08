@@ -26,22 +26,15 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Inter', sans-serif; background: radial-gradient(circle at 50% -20%, #1e2533, #07090d); color: var(--text-main); margin: 0; padding-bottom: 150px; min-height: 100vh; overflow-x: hidden; }
 
-        /* --- NAVBAR (DESKTOP DEFAULT) --- */
+        /* --- NAVBAR --- */
         .navbar { display: flex; justify-content: space-between; align-items: center; height: 70px; padding: 0 30px; background: var(--nav-bg); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--glass-border); box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
         .nav-left { display: flex; align-items: center; gap: 30px; }
         .nav-logo { font-size: 1.4rem; font-weight: 900; color: #fff; letter-spacing: -0.5px; cursor: pointer; font-family: 'Orbitron', sans-serif; white-space: nowrap; }
         .nav-logo span { color: var(--primary); }
-        
-        /* Desktop Links */
         .nav-links { display: flex; gap: 10px; }
         .nav-link { font-size: 0.75rem; font-weight: 700; color: var(--text-dim); text-decoration: none; text-transform: uppercase; cursor: pointer; padding: 8px 12px; border-radius: 8px; transition: 0.2s; white-space: nowrap; }
         .nav-link.active { color: #fff; background: rgba(243, 156, 18, 0.15); border: 1px solid rgba(243, 156, 18, 0.3); }
-        .nav-link:hover { color: #fff; }
-
         .nav-right { display: flex; align-items: center; gap: 10px; }
-
-        /* --- MOBILE BOTTOM NAV (HIDDEN ON DESKTOP) --- */
-        .mobile-bottom-nav { display: none; }
 
         /* --- UI ELEMENTS --- */
         .container { max-width: 1100px; margin: 20px auto; padding: 0 15px; width: 100%; }
@@ -62,7 +55,7 @@
         .banner-container { width: 100%; height: 250px; margin-bottom: 25px; border-radius: 24px; overflow: hidden; border: 1px solid var(--glass-border); position: relative; }
         .banner-container img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        /* --- MATCH CARDS & TOURNAMENT HEADERS --- */
+        /* --- MATCH CARDS (GRID ALIGNMENT) --- */
         .match-card { background: var(--card-bg); margin-bottom: 12px; padding: 20px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--glass-border); width: 100%; cursor: pointer; transition: 0.2s; gap: 20px; }
         .match-card:hover { border-color: rgba(255,255,255,0.2); background: rgba(30, 36, 48, 0.95); }
         .teams { display: flex; flex-direction: column; gap: 12px; flex: 1; }
@@ -76,19 +69,7 @@
         .live-score-box { font-family: 'monospace'; color: var(--primary); font-weight: 900; font-size: 1.1rem; }
         .time-box { font-size: 0.75rem; font-weight: 700; color: var(--text-dim); }
 
-        /* UUSI: Turnausotsikko */
-        .league-header {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
-            color: var(--primary);
-            text-transform: uppercase;
-            font-weight: 900;
-            margin: 25px 0 10px 5px;
-            padding-left: 10px;
-            border-left: 3px solid var(--primary);
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px var(--primary-glow);
-        }
+        .league-header { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: var(--primary); text-transform: uppercase; font-weight: 900; margin: 25px 0 10px 5px; padding-left: 10px; border-left: 3px solid var(--primary); letter-spacing: 1px; text-shadow: 0 0 10px var(--primary-glow); }
 
         /* --- GAME COMPONENTS --- */
         .game-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -165,31 +146,9 @@
 
         /* --- BET BAR (FIXED FOR MULTI SELECTION) --- */
         .floating-bet-bar { display: none; position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 800px; background: rgba(11, 14, 20, 0.98); backdrop-filter: blur(25px); border-radius: 20px; padding: 15px; border: 1px solid var(--primary); z-index: 1300; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.8); gap: 10px; }
-        
-        #selected-chips { 
-            display: flex; 
-            gap: 10px; 
-            overflow-x: auto; /* Allow horizontal scroll */
-            flex: 1; 
-            white-space: nowrap; /* Force single line */
-            scrollbar-width: none; /* Hide scrollbar Firefox */
-            -webkit-overflow-scrolling: touch; /* Smooth scroll iOS */
-        }
-        #selected-chips::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome/Safari */
-        
-        .bet-chip {
-            background: var(--primary);
-            color: #000;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 800;
-            white-space: nowrap;
-            flex-shrink: 0; /* Prevent squashing */
-            display: flex;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        }
+        #selected-chips { display: flex; gap: 10px; overflow-x: auto; flex: 1; white-space: nowrap; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        #selected-chips::-webkit-scrollbar { display: none; }
+        .bet-chip { background: var(--primary); color: #000; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; white-space: nowrap; flex-shrink: 0; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
 
         /* --- OVERLAYS --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; z-index: 2000; }
@@ -256,9 +215,21 @@
         .mb-item.active { color: var(--primary); }
         .mb-item.active svg { filter: drop-shadow(0 0 5px var(--primary)); }
 
+        /* --- ADMIN TABS & CONTENT --- */
+        .admin-tabs { display: flex; margin-bottom: 20px; border-bottom: 1px solid var(--glass-border); }
+        .admin-tab { flex: 1; padding: 10px; background: none; border: none; color: var(--text-dim); font-weight: 700; cursor: pointer; border-bottom: 2px solid transparent; }
+        .admin-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .admin-user-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 8px; }
+        .admin-btn-small { padding: 4px 8px; border-radius: 4px; border:none; font-weight: 700; cursor: pointer; font-size: 0.7rem; }
+        .btn-green { background: var(--success); color:#000; }
+        .btn-red { background: var(--danger); color:#fff; }
+        .stat-card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center; }
+        .stat-card h3 { margin: 0; font-size: 1.5rem; color: #fff; }
+        .stat-card small { color: var(--text-dim); font-size: 0.7rem; text-transform: uppercase; }
+
         #loading-global { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); display: flex; justify-content: center; align-items: center; z-index: 3000; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
-        .tournament-header { margin: 30px 0 15px 0; font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
     </style>
 </head>
 
@@ -516,12 +487,36 @@
 
     <div class="modal-overlay" id="admin-modal">
         <div class="glass-card" style="max-width: 600px; text-align:left;">
-            <h2 style="color:var(--danger);">ADMIN</h2>
-            <div style="display:flex; gap:10px; margin-bottom:20px;">
-                <button class="deposit-btn" onclick="app.resolveBets()">RESOLVE BETS</button>
-                <button class="deposit-btn" onclick="app.loadPendingWithdrawals()">WITHDRAWALS</button>
+            <h2 style="color:var(--danger);">ADMIN PANEL</h2>
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="app.showAdminTab('dashboard', this)">Dashboard</button>
+                <button class="admin-tab" onclick="app.showAdminTab('users', this)">Users</button>
+                <button class="admin-tab" onclick="app.showAdminTab('withdrawals', this)">Withdrawals</button>
             </div>
-            <div id="admin-content" style="max-height:300px; overflow-y:auto;"></div>
+
+            <div id="admin-view-dashboard">
+                <div class="stat-card-row">
+                    <div class="stat-card">
+                        <small>TOTAL USERS</small>
+                        <h3 id="admin-total-users">-</h3>
+                    </div>
+                     <div class="stat-card">
+                        <small>PENDING WITHDRAWALS</small>
+                        <h3 id="admin-pending-count">-</h3>
+                    </div>
+                </div>
+                <button class="deposit-btn" style="width:100%; margin-bottom:10px;" onclick="app.resolveBets()">RESOLVE ALL PENDING BETS</button>
+            </div>
+
+            <div id="admin-view-users" style="display:none;">
+                <input type="text" id="admin-user-search" class="modal-input" placeholder="Search user..." onkeyup="app.adminSearchUsers()">
+                <div id="admin-user-list" style="max-height: 300px; overflow-y: auto;"></div>
+            </div>
+
+            <div id="admin-view-withdrawals" style="display:none;">
+                <div id="admin-withdraw-list"></div>
+            </div>
+
             <button style="margin-top:20px; background:none; border:none; color:#888; cursor:pointer;" onclick="document.getElementById('admin-modal').style.display='none'">Close</button>
         </div>
     </div>
@@ -560,6 +555,7 @@
             user: null, username: null, siteBalance: 0, selectedGame: 'csgo', selectedBets: {}, 
             diceMode: 'manual', slotsMode: 'manual', autoDiceActive: false, autoSlotsActive: false,
             matchCache: { live: [], upcoming: [] },
+            allUsersCache: [],
 
             init: async function() {
                 await setPersistence(auth, browserLocalPersistence);
@@ -585,7 +581,10 @@
                                 if(document.getElementById('prof-stat-profit')) 
                                     document.getElementById('prof-stat-profit').innerText = (data.totalProfit || 0).toFixed(3) + " ETH";
 
-                                if (this.username === 'Admin') document.getElementById('admin-btn').style.display = 'flex';
+                                if (this.username === 'Admin') {
+                                    document.getElementById('admin-btn').style.display = 'flex';
+                                    this.adminFetchData();
+                                }
                                 this.loadProfileData(); 
                             }
                         });
@@ -600,11 +599,9 @@
             },
 
             updateNavVisibility: function(isLoggedIn) {
-                // Desktop
                 document.querySelectorAll('.nav-links .nav-link').forEach(l => {
                     if(['btn-history', 'btn-wallet', 'btn-profile'].includes(l.id)) l.style.display = isLoggedIn ? 'block' : 'none';
                 });
-                // Mobile
                 const bottomNav = document.querySelector('.mobile-bottom-nav');
                 if(bottomNav) bottomNav.style.display = isLoggedIn ? 'flex' : 'none';
             },
@@ -631,11 +628,9 @@
                 if (!this.user && ['history', 'wallet', 'profile'].includes(s)) { this.openAuthModal(); return; }
                 document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
                 
-                // Desktop Highlight
                 document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
                 if(document.getElementById('btn-'+s)) document.getElementById('btn-'+s).classList.add('active');
 
-                // Mobile Highlight
                 document.querySelectorAll('.mb-item').forEach(m => m.classList.remove('active'));
                 if(document.getElementById('mb-'+s)) document.getElementById('mb-'+s).classList.add('active');
 
@@ -643,6 +638,69 @@
                 if(s === 'history') this.loadHistory();
                 if(s === 'leaderboard') this.loadLeaderboard();
                 if(s === 'profile') this.loadProfileData();
+            },
+
+            /* --- ADMIN PANEL LOGIC (NEW) --- */
+            openAdminMenu: function() { document.getElementById('admin-modal').style.display = 'flex'; this.showAdminTab('dashboard', document.querySelector('.admin-tab')); },
+            
+            showAdminTab: function(tabName, el) {
+                ['dashboard', 'users', 'withdrawals'].forEach(t => document.getElementById('admin-view-'+t).style.display = 'none');
+                document.getElementById('admin-view-'+tabName).style.display = 'block';
+                document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                el.classList.add('active');
+            },
+
+            adminFetchData: async function() {
+                // Fetch Users
+                const usersSnap = await getDocs(collection(db, "profiles"));
+                this.allUsersCache = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+                document.getElementById('admin-total-users').innerText = this.allUsersCache.length;
+                this.renderAdminUsers(this.allUsersCache);
+
+                // Fetch Withdrawals
+                onSnapshot(query(collection(db, "transactions"), where("type", "==", "withdraw"), where("status", "==", "pending")), (snap) => {
+                    document.getElementById('admin-pending-count').innerText = snap.size;
+                    document.getElementById('admin-withdraw-list').innerHTML = snap.docs.map(doc => {
+                        const d = doc.data();
+                        return `<div class="admin-tx-row">
+                            <div><b>${d.username}</b><br><small>${d.amount} ETH</small></div>
+                            <div class="admin-tx-actions">
+                                <button class="btn-approve" onclick="app.approveTx('${doc.id}')">✔</button>
+                                <button class="btn-reject" onclick="app.rejectTx('${doc.id}', '${d.uid}', ${d.amount})">✕</button>
+                            </div>
+                        </div>`;
+                    }).join('');
+                });
+            },
+
+            renderAdminUsers: function(users) {
+                document.getElementById('admin-user-list').innerHTML = users.map(u => `
+                    <div class="admin-user-row">
+                        <div>
+                            <div style="font-weight:bold;">${u.username}</div>
+                            <div style="font-size:0.7rem; color:#888;">${(u.balance || 0).toFixed(4)} ETH</div>
+                        </div>
+                        <div style="display:flex; gap:5px;">
+                            <button class="admin-btn-small btn-green" onclick="app.adminUpdateBalance('${u.id}', 10)">+10</button>
+                            <button class="admin-btn-small btn-green" onclick="app.adminUpdateBalance('${u.id}', 100)">+100</button>
+                            <button class="admin-btn-small btn-red" onclick="app.adminUpdateBalance('${u.id}', -10)">-10</button>
+                        </div>
+                    </div>
+                `).join('');
+            },
+
+            adminSearchUsers: function() {
+                const term = document.getElementById('admin-user-search').value.toLowerCase();
+                const filtered = this.allUsersCache.filter(u => u.username.toLowerCase().includes(term));
+                this.renderAdminUsers(filtered);
+            },
+
+            adminUpdateBalance: async function(uid, amount) {
+                if(!confirm(`Are you sure you want to add/deduct ${amount} ETH?`)) return;
+                await updateDoc(doc(db, "profiles", uid), { balance: increment(amount) });
+                await addDoc(collection(db, "transactions"), { uid: uid, type: 'admin_adjustment', amount: amount, timestamp: serverTimestamp(), status: 'completed' });
+                this.adminFetchData(); // Refresh list
+                alert("Balance updated.");
             },
 
             /* --- AUTO MODE LOGIC --- */
@@ -816,8 +874,8 @@
             renderMatches: function(data, id, isLive) {
                 const container = document.getElementById(id);
                 if (!data || !data.length) { container.innerHTML = isLive ? '' : '<div style="text-align:center; padding:40px; color:var(--text-dim);">Ei otteluita.</div>'; return; }
-
-                // 1. Group by League
+                
+                // Group by League
                 const groups = {};
                 data.forEach(m => {
                     const league = m.league?.name || "Muut Turnaukset";
@@ -825,14 +883,11 @@
                     groups[league].push(m);
                 });
 
-                // 2. Build HTML
                 let html = `<div class="tournament-header">${isLive ? 'LIVE NYT' : 'TULEVAT'}</div>`;
-
                 for (const [leagueName, matches] of Object.entries(groups)) {
                     html += `<div class="league-header">${leagueName}</div>`;
                     html += matches.map(m => {
-                        const t1 = m.opponents[0]?.opponent; 
-                        const t2 = m.opponents[1]?.opponent;
+                        const t1 = m.opponents[0]?.opponent; const t2 = m.opponents[1]?.opponent;
                         if (!t1 || !t2) return '';
                         return `<div class="match-card" onclick="app.openMatchDetails(${m.id})">
                             <div class="teams">
@@ -937,8 +992,7 @@
                     await addDoc(collection(db, "bets"), { uid: this.user.uid, selections: Object.values(this.selectedBets), stake, totalOdds: totalOdds, potentialWin: stake * parseFloat(totalOdds), timestamp: serverTimestamp(), status: 'pending', type: Object.keys(this.selectedBets).length > 1 ? 'combo' : 'single' });
                     await updateDoc(doc(db, "profiles", this.user.uid), { balance: increment(-stake) });
                     this.selectedBets = {}; this.updateBetBar();
-                    this.renderMatches(this.matchCache.live, 'live-container', true);
-                    this.renderMatches(this.matchCache.upcoming, 'match-container', false);
+                    this.updateMatches();
                     document.getElementById('match-details-modal').style.display='none';
                     Swal.fire("Veto asetettu!", "", "success");
                 } catch(e) { console.error(e); alert("Virhe vedon tallennuksessa: " + e.message); }
@@ -1091,7 +1145,46 @@
                 const val = document.getElementById('edit-username').value; if(val) await updateDoc(doc(db, "profiles", window.app.user.uid), { username: val });
             },
             loginEmail: async () => { try { await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value); } catch(e){alert(e.message)} },
-            registerNewUser: async () => { try { const res = await createUserWithEmailAndPassword(auth, document.getElementById('reg-email').value, document.getElementById('reg-pass').value); await setDoc(doc(db, "profiles", res.user.uid), { username: document.getElementById('reg-username').value.trim(), balance: 0, totalProfit: 0 }); } catch(e){alert(e.message)} }
+            registerNewUser: async () => { try { const res = await createUserWithEmailAndPassword(auth, document.getElementById('reg-email').value, document.getElementById('reg-pass').value); await setDoc(doc(db, "profiles", res.user.uid), { username: document.getElementById('reg-username').value.trim(), balance: 0, totalProfit: 0 }); } catch(e){alert(e.message)} },
+            
+            // ADMIN
+            openAdminMenu: function() { document.getElementById('admin-modal').style.display = 'flex'; this.showAdminTab('dashboard', document.querySelector('.admin-tab')); },
+            showAdminTab: function(tabName, el) {
+                ['dashboard', 'users', 'withdrawals'].forEach(t => document.getElementById('admin-view-'+t).style.display = 'none');
+                document.getElementById('admin-view-'+tabName).style.display = 'block';
+                document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                el.classList.add('active');
+            },
+            adminFetchData: async function() {
+                const usersSnap = await getDocs(collection(db, "profiles"));
+                this.allUsersCache = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+                document.getElementById('admin-total-users').innerText = this.allUsersCache.length;
+                this.renderAdminUsers(this.allUsersCache);
+                onSnapshot(query(collection(db, "transactions"), where("type", "==", "withdraw"), where("status", "==", "pending")), (snap) => {
+                    document.getElementById('admin-pending-count').innerText = snap.size;
+                    document.getElementById('admin-withdraw-list').innerHTML = snap.docs.map(doc => {
+                        const d = doc.data(); return `<div class="admin-tx-row"><div><b>${d.username}</b><br><small>${d.amount} ETH</small></div><div class="admin-tx-actions"><button class="btn-approve" onclick="app.approveTx('${doc.id}')">✔</button><button class="btn-reject" onclick="app.rejectTx('${doc.id}', '${d.uid}', ${d.amount})">✕</button></div></div>`;
+                    }).join('');
+                });
+            },
+            renderAdminUsers: function(users) {
+                document.getElementById('admin-user-list').innerHTML = users.map(u => `<div class="admin-user-row"><div><div style="font-weight:bold;">${u.username}</div><div style="font-size:0.7rem; color:#888;">${(u.balance || 0).toFixed(4)} ETH</div></div><div style="display:flex; gap:5px;"><button class="admin-btn-small btn-green" onclick="app.adminUpdateBalance('${u.id}', 10)">+10</button><button class="admin-btn-small btn-green" onclick="app.adminUpdateBalance('${u.id}', 100)">+100</button><button class="admin-btn-small btn-red" onclick="app.adminUpdateBalance('${u.id}', -10)">-10</button></div></div>`).join('');
+            },
+            adminSearchUsers: function() {
+                const term = document.getElementById('admin-user-search').value.toLowerCase();
+                const filtered = this.allUsersCache.filter(u => u.username.toLowerCase().includes(term));
+                this.renderAdminUsers(filtered);
+            },
+            adminUpdateBalance: async function(uid, amount) {
+                if(!confirm(`Are you sure you want to add/deduct ${amount} ETH?`)) return;
+                await updateDoc(doc(db, "profiles", uid), { balance: increment(amount) });
+                await addDoc(collection(db, "transactions"), { uid: uid, type: 'admin_adjustment', amount: amount, timestamp: serverTimestamp(), status: 'completed' });
+                this.adminFetchData();
+                alert("Balance updated.");
+            },
+            approveTx: async function(txId) { await updateDoc(doc(db, "transactions", txId), { status: 'completed' }); },
+            rejectTx: async function(txId, uid, amount) { await updateDoc(doc(db, "profiles", uid), { balance: increment(amount) }); await updateDoc(doc(db, "transactions", txId), { status: 'rejected' }); },
+            resolveBets: async function() { if(!confirm("RATKAISE VEDOT?")) return; const pendingBets = await getDocs(query(collection(db, "bets"), where("status", "==", "pending"))); let resolvedCount = 0; for (const betDoc of pendingBets.docs) { const bet = betDoc.data(); if (!bet.selections || !bet.selections[0].matchId) continue; try { const res = await fetch(`${PROXY_URL}?endpoint=/matches/${bet.selections[0].matchId}`); const matchData = await res.json(); if (matchData.status === 'finished') { const winnerName = matchData.winner?.name; const userSelection = bet.selections[0].team; let isWin = false; if (userSelection === winnerName) isWin = true; const profit = bet.potentialWin || (bet.stake * bet.totalOdds); if (isWin) { await updateDoc(doc(db, "bets", betDoc.id), { status: 'win' }); await updateDoc(doc(db, "profiles", bet.uid), { balance: increment(profit), totalProfit: increment(profit - bet.stake) }); } else { await updateDoc(doc(db, "bets", betDoc.id), { status: 'loss' }); await updateDoc(doc(db, "profiles", bet.uid), { totalProfit: increment(-bet.stake) }); } resolvedCount++; } } catch (e) { console.error(e); } } Swal.fire(`Valmis! ${resolvedCount} vetoa ratkaistu.`); this.loadHistory(); }
         };
         app.init();
     </script>
